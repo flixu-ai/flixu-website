@@ -1,0 +1,96 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/ui/Section.astro";
+import { useTranslations, locales } from "../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Root (English default)
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+---
+
+<BaseLayout title={t.about.title} chapter="Manifesto">
+  <Section
+    data-chapter={`01 — ${t.rail.manifesto.toUpperCase()}`}
+    class="hero-section"
+  >
+    <div class="max-w-4xl mx-auto text-center">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+        >{t.about.bgLabel}</span
+      >
+      <h1
+        class="font-serif text-6xl md:text-8xl text-stone-900 mb-8 tracking-tight leading-[1]"
+      >
+        {t.about.title}
+      </h1>
+      <p
+        class="font-sans text-xl md:text-2xl text-stone-500 max-w-2xl mx-auto leading-relaxed"
+      >
+        {t.about.subtitle}
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`02 — ${t.rail.notes.toUpperCase()}`}
+    class="content-section bg-[#FDFCF8]"
+  >
+    <div class="max-w-2xl mx-auto">
+      <!-- The Narrative -->
+      <div
+        class="space-y-10 text-xl md:text-2xl leading-relaxed font-serif text-stone-800"
+      >
+        <p
+          class="first-letter:text-5xl first-letter:font-bold first-letter:text-orange-700 first-letter:mr-3 first-letter:float-left"
+        >
+          {t.about.p1}
+        </p>
+
+        <p>{t.about.p2}</p>
+
+        <!-- Pull Quote / Insight -->
+        <div class="py-8 my-8 border-y border-stone-100">
+          <p class="text-3xl text-stone-900 italic text-center">
+            "{t.about.quote}"
+          </p>
+        </div>
+
+        <p>{t.about.p3}</p>
+        <p>{t.about.p4}</p>
+      </div>
+
+      <!-- Signature -->
+      <div class="mt-20 pt-8 border-t border-stone-100 flex items-center gap-6">
+        <div
+          class="w-16 h-16 bg-stone-100 rounded-full overflow-hidden grayscale relative"
+        >
+          <!-- Placeholder: Hier später dein Bild -->
+          <span
+            class="absolute inset-0 flex items-center justify-center font-serif italic text-stone-400 text-2xl"
+            >D</span
+          >
+        </div>
+        <div>
+          <div class="font-serif text-2xl text-stone-900 italic">
+            {t.about.sign}
+          </div>
+          <div
+            class="font-mono text-xs text-orange-700 uppercase tracking-widest mt-1"
+          >
+            {t.about.role}
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

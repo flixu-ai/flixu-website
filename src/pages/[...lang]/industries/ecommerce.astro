@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroEcommerce from "../../../components/visuals/HeroEcommerce.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = (await useTranslations(lang)) as any;
+
+const breadcrumbItems = [
+  { name: t?.breadcrumbs?.home || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: t?.navigation?.whofor?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  },
+  { name: t?.navigation?.industries?.title || "Industries", url: "#" },
+  { name: "Ecommerce", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Can Flixu handle product feeds?",
+    answer:
+      "Yes. Upload CSV, JSON, or XML product feeds. Flixu translates descriptions, titles, and metadata while preserving SKUs, prices, and structural data.",
+  },
+  {
+    question: "How fast can I translate a product catalog?",
+    answer:
+      "A 1,000-product catalog typically processes in under 10 minutes, depending on description length and language pairs.",
+  },
+  {
+    question: "Can I integrate Flixu with my PIM or CMS?",
+    answer:
+      "Yes. Via our API or file upload workflows, you can seamlessly translate exports from Akeneo, Shopify, or Magento, and re-import the localized feeds without breaking data structures.",
+  },
+  {
+    question: "Does Flixu translate SEO metadata as well?",
+    answer:
+      "Yes, Flixu processes title tags, meta descriptions, and alt text while adhering strictly to your brand glossary and character length limits, guaranteeing native search engine visibility.",
+  },
+  {
+    question: "How does Flixu handle continuous product updates?",
+    answer:
+      "You only translate the delta. Flixu's Translation Memory ensures you never pay twice for strings we have already translated. We only process and bill for net-new descriptions.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Ecommerce Translation",
+      description:
+        "Translate product descriptions, categories, and marketing copy for your online store. Context-aware AI preserves brand voice across every marketplace.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Ecommerce Translation — Product Descriptions That Convert"
+  description="Translate product descriptions, categories, and marketing copy for your online store. Context-aware AI preserves brand voice across every marketplace."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Industry</span>
+        <h1 class="hero-title">Ecommerce.</h1>
+        <p class="hero-desc">
+          Product descriptions that read like they were written for each market
+          — because they were.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroEcommerce client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Ecommerce platforms heavily rely on their product descriptions and discoverability. While classic translation memory saves money, it can struggle to capture persuasive, culturally adapted marketing copy. Flixu bridges this gap. By uploading XML/JSON product feeds, Flixu utilizes your custom Brand Voice to recreate high-converting texts in hundreds of languages automatically. It ensures identical technical specifications via strict glossaries and dynamically translates SEO metadata without risking catalog integrity."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — SCALE" class="content-section">
+    <div class="hero-container prose-inline">
+      <KeyTakeaways
+        items={[
+          "Upload product feeds (CSV, JSON, XML) and translate 1,000s of SKUs in minutes.",
+          "Glossary enforcement ensures technical specs and materials remain hyper-accurate.",
+          "Brand Voice configuration creates persuasive, market-specific copy that actually converts.",
+        ]}
+      />
+      <h2>Why do e-commerce translations need strict context?</h2>
+      <p>
+        Generic MT produces flat, uninspiring product descriptions.
+        "High-quality leather bag with adjustable strap" becomes a statement
+        nobody clicks on. Context-aware translation with brand voice settings
+        produces descriptions that sound like your brand — persuasive, specific,
+        and locally relevant, driving immediate conversion uplifts natively.
+      </p>
+      <p>
+        With glossary enforcement, your product-specific terms (sizes,
+        materials, care instructions) are translated consistently across your
+        entire catalog. Your support team avoids negative tickets regarding
+        mismatched dimensions, while your brand authority increases globally by
+        avoiding literal, inaccurate translations.
+      </p>
+      <p>
+        Furthermore, global discoverability requires more than just translating
+        the visible product description. Flixu seamlessly processes your hidden
+        metadata—title tags, meta descriptions, structured data, and alt
+        text—ensuring that your products rank natively on regional search
+        engines instead of getting buried. By enforcing character limits
+        directly during the AI generation process, your localized SERP snippets
+        remain perfectly optimized without requiring tedious manual truncation
+        by your marketing team.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="03 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <Section data-chapter="04 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Expand to new markets.</h2>
+        <p class="cta-footer-desc">
+          Translate your catalog with context-aware AI.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand"
+        >View Pricing</a
+      >
+    </div>
+  </Section>
+</BaseLayout>

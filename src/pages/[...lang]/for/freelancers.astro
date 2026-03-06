@@ -1,0 +1,414 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroFreelancers from "../../../components/visuals/HeroFreelancers.jsx";
+import {
+  useTranslations,
+  locales,
+  getLocalizedPath,
+} from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const content = t.forFreelancers;
+const isDE = lang === "de";
+
+const isDev = import.meta.env.DEV;
+const appUrl = isDev ? "http://localhost:3000" : "https://app.flixu.ai";
+
+// Breadcrumbs Setup
+const tNav = t.navigation as any;
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.who?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  }, // Since there is no hub file yet, link to first item.
+  { name: content.hero.label, url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Will Flixu's AI replace my freelance business?",
+    answer:
+      "No. Flixu provides algorithmic leverage to top-tier linguists. Instead of typing from scratch or fixing uncontextualized MT output, you curate high-fidelity AI drafts generated with your client's exact Glossary and Brand Voice, allowing you to triple your daily word count capacity.",
+  },
+  {
+    question: "Do I have to do Desktop Publishing (DTP) formatting?",
+    answer:
+      "Never. Flixu uses Spatial Parsing to extract text from complex formats like IDML or DOCX. After you review the translated text, Flixu algorithmically reconstructs the original document layout perfectly.",
+  },
+  {
+    question: "How does Context Injection fix Machine Translation errors?",
+    answer:
+      "Legacy MT tools translate word-by-word, leading to terminology errors. Flixu forces the AI to obey the client's Glossary (Context Injection) before drafting, ensuring technical terms are absolutely flawless so you can focus purely on tone and nuance.",
+  },
+  {
+    question:
+      "Does Flixu support translation of code files without breaking them?",
+    answer:
+      "Yes. Flixu automatically parses JSON, YAML, and other markup formats. It mathematically protects variables, CDATA, and code structures while translating only the human-readable text, eliminating compiler errors.",
+  },
+  {
+    question: "Is there a limit on how many words I can process?",
+    answer:
+      "Our Pro and Business plans provide generous API limits, allowing you to process tens of thousands of words per hour. You are limited only by the speed at which you can curate the high-fidelity semantic drafts.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu for Freelance Translators",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={isDE ? "Für Freelancer | Flixu" : "For Freelancers | Flixu"}
+  description={isDE
+    ? "Flixu für professionelle Übersetzer: TM, Glossar und Brand Voice automatisch angewendet."
+    : "Flixu for professional translators: TM, Glossary, and Brand Voice applied automatically on every project."}
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <!-- HERO -->
+  <Section
+    data-chapter={`01 — ${t.rail.intro.toUpperCase()}`}
+    class="hero-section"
+  >
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">{content.hero.label}</span>
+        <h1 class="hero-title">
+          {content.hero.h1}
+        </h1>
+        <p class="hero-desc">
+          {content.hero.sub}
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroFreelancers client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Flixu transitions professional translators into high-output Context Engineers. Instead of manually typing or fixing uncontextualized machine translation, Flixu utilizes your client's Glossary and Brand Voice to instantly generate flawless base drafts. Furthermore, it mathematically handles DTP layout reconstruction and code variable protection, allowing you to process over 6,000 words a day simply by focusing on nuance and tone."
+      />
+    </div>
+  </Section>
+
+  <!-- PROBLEM / BEFORE & AFTER -->
+  <Section
+    data-chapter={`03 — ${t.rail.problem.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.problem.label}</span
+      >
+      <h2 class="mb-6">
+        {content.problem.h2}
+      </h2>
+      <p class="text-xl">
+        {content.problem.body}
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {
+        content.problem.items.map((item) => (
+          <div
+            class={`p-8 rounded-sm border ${item.dim ? "border-stone-200 bg-stone-50/50" : "border-orange-200 bg-orange-50/30"}`}
+          >
+            <div class="font-mono text-[10px] uppercase tracking-widest mb-3 text-stone-400">
+              {item.num}
+            </div>
+            <h3
+              class={`mb-3 ${item.dim ? "text-stone-500" : "text-stone-900"}`}
+            >
+              {item.label}
+            </h3>
+            <p
+              class={`text-sm leading-relaxed ${item.dim ? "text-stone-400" : "text-stone-600"}`}
+            >
+              {item.body}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- WORKFLOW STEPS -->
+  <Section
+    data-chapter={`04 — ${t.rail.workflow.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.workflow.label}</span
+      >
+      <h2>{content.workflow.h2}</h2>
+    </div>
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-stone-200 rounded-sm overflow-hidden"
+    >
+      {
+        content.workflow.steps.map((step, i) => (
+          <div
+            class={`p-8 ${i < 2 ? "border-b" : ""} ${i % 2 === 0 ? "md:border-r" : ""} border-stone-200`}
+          >
+            <div class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-3">
+              {step.step}
+            </div>
+            <h3 class="mb-2">{step.title}</h3>
+            <p class="text-stone-500 text-sm leading-relaxed">{step.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- FORMAT LIST -->
+  <Section
+    data-chapter={`05 — ${t.rail.formats.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div>
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+          >{content.formats.label}</span
+        >
+        <h2 class="mb-6">
+          {content.formats.h2}
+        </h2>
+        <a
+          href={`/${lang !== "en" ? lang + "/" : ""}product/documents`}
+          class="text-sm text-orange-700 hover:underline"
+        >
+          {isDE ? "Alle Formate ansehen →" : "View all formats →"}
+        </a>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        {
+          content.formats.list.map((fmt) => (
+            <div class="flex items-center gap-3 py-3 border-b border-stone-100">
+              <div class="w-1.5 h-1.5 rounded-full bg-orange-700 flex-shrink-0" />
+              <span class="font-mono text-sm text-stone-700">{fmt}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="06 — DEEP DIVE"
+        class="content-section border-b border-stone-100"
+      >
+        <div class="max-w-3xl prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <KeyTakeaways
+            items={[
+              "AI will not replace top linguists; it elevates them to 'Context Engineers.'",
+              "Flixu escapes the biological per-word billing cap, allowing you to process 6,000+ words a day.",
+              "Pre-injected glossaries eliminate the frustration of fixing trivial terminology errors in MT-output.",
+              "Spatial Parsing handles complex client document layouts automatically (No more DTP fixing).",
+            ]}
+          />
+          <h2>How is the freelance translator role evolving?</h2>
+          <p>
+            For the past decade, the professional translation industry has been
+            gripped by a persistent, exhausting narrative: AI and Machine
+            Translation (MT) are coming to replace human linguists. Freelancers
+            have watched their per-word rates stagnate, while localization
+            agencies increasingly demand "Post-Editing" of raw, uncontextualized
+            machine output—a process that often takes more time to fix than
+            translating from scratch.
+          </p>
+          <p>
+            This dynamic has created a deeply adversarial relationship between
+            top-tier linguistic professionals and automation technology. But
+            this friction is not the fault of the translator; it is the fault of
+            the outdated underlying architecture of legacy Translation
+            Management Systems (TMS). Legacy tools decoupled the text from its
+            required context, forcing freelancers to blindly translate isolated,
+            fragmented XML strings without understanding the overarching brand
+            voice, user interface layout, or enterprise terminology rules.
+          </p>
+          <p>
+            In 2026, the paradigm has entirely shifted. AI isn't replacing elite
+            linguists; it is providing them with infinite algorithmic leverage.
+          </p>
+
+          <h2>How can you escape the per-word margin trap?</h2>
+          <p>
+            The fundamental economic flaw of freelance translation is that
+            revenue is constrained by manual translation speed. A highly skilled
+            professional can manually translate between 2,000 and 2,500 words
+            per day. Even if you command premium rates, your monthly earnings
+            are strictly bound by the number of hours you can physically sit at
+            a keyboard. To increase revenue, you must work nights and weekends.
+          </p>
+          <p>
+            Flixu bypasses this manual constraint. We transitioned the workflow
+            away from manual text generation toward high-fidelity AI Context
+            Orchestration. When you accept a 10,000-word software, legal, or
+            marketing project, Flixu does not give you a blank page. Instead,
+            the engine utilizes your client's specific Glossary, their dedicated
+            Translation Memory, and precise Brand Voice parameters (e.g.,
+            "Formal German", "Assertive B2B Tone") to generate a mathematically
+            constrained, highly accurate operational draft in seconds.
+          </p>
+          <p>
+            Your role evolves instantly. You are no longer paid to type words
+            individually; you are paid to conduct high-level Linguistic Quality
+            Assurance (LQA), architectural review, and cultural adaptation. By
+            combining your elite linguistic expertise with Flixu’s instantaneous
+            drafting capabilities, your daily throughput scales from 2,000 words
+            to 6,000 or even 8,000 words—dramatically increasing your effective
+            hourly rate without compromising output quality.
+          </p>
+
+          <h2>How does Flixu resolve the post-editing quality crisis?</h2>
+          <p>
+            The reason traditional Machine Translation Post-Editing (MTPE) is
+            universally despised by freelancers is due to its lack of context.
+            Legacy MT engines like Google Translate or DeepL do not understand
+            that "Screen" meant "Monitor" in chapter 2, and they certainly don't
+            understand that the client specifically outlawed the word "User" in
+            favor of "Customer" in their style guide.
+          </p>
+          <p>
+            Flixu eliminates this frustration through Context Injection. When
+            Flixu generates the initial draft, the AI is mathematically forced
+            to obey the client's terminology list. When you encounter a highly
+            specialized medical, legal, or SaaS text, you aren't wasting hours
+            fixing elementary terminology hallucinations. You are focusing
+            strictly on flow, emotional resonance, and highly nuanced cultural
+            idioms.
+          </p>
+          <p>
+            Furthermore, Flixu dynamically preserves all structural variables.
+            You will never again have to manually re-type `&lt;span
+            class="font-bold"&gt;` or accidentally break a
+            `&#123;user_name&#125;` placeholder, causing a compiler error. The
+            system protects the code geometry, allowing you to focus purely on
+            the semantics.
+          </p>
+
+          <h2>How does Flixu eliminate Desktop Publishing (DTP) errors?</h2>
+          <p>
+            Professional freelancers routinely reject highly lucrative projects
+            because the client provides the source material in complex,
+            uneditable formats—locked PDFs, layered Adobe InDesign (IDML) files,
+            or dense PowerPoint presentations. Standard CAT tools strip the text
+            out, but returning the translated text means the client has to spend
+            weeks manually fixing the resulting visual layout due to text
+            expansion (e.g., German text running off the edge of the slide).
+          </p>
+          <p>
+            Flixu's Spatial Parsing engine solves this entirely. When you upload
+            a complex presentation, Flixu separates the text from its spatial
+            geometry, translates it via your curated LLM context, and then
+            algorithmically reconstructs the original document format perfectly
+            in the target language. You can deliver a flawless, client-ready,
+            fully designed presentation deck in German without ever opening a
+            design program.
+          </p>
+
+          <h2>Why is algorithmic leverage the future of translation?</h2>
+          <p>
+            The most successful freelancers of the next decade won't be the
+            fastest typists. They will be "Context Engineers"—professionals who
+            utilize AI orchestration to enforce absolute brand consistency
+            across large volumes of text simultaneously.
+          </p>
+          <p>
+            Flixu isn't a threat to your freelance business. It is the
+            enterprise-grade infrastructure that finally allows you to decouple
+            your revenue from your time. Let the algorithm handle the typing,
+            the geometry, and the strict terminology enforcement. Reserve your
+            deeply human expertise for the final nuance. That is the era of
+            calm, precise, and infinitely scalable translation.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="07 — FAQ"
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section
+    data-chapter={`08 — ${t.rail.action.toUpperCase()}`}
+    class="content-section"
+  >
+    <div class="max-w-2xl">
+      <h2 class="mb-6">{content.cta.h2}</h2>
+      <p class="mb-10 text-xl">{content.cta.sub}</p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href={`${appUrl}/sign-up?plan=individual&intent=individual&interval=month`}
+          class="hidden"
+        >
+          {content.cta.primary}
+        </a>
+        <a
+          href={`/${lang !== "en" ? lang + "/" : ""}product/context`}
+          class="px-8 py-4 border border-stone-200 text-stone-600 rounded-sm hover:border-stone-400 transition-colors"
+        >
+          {content.cta.secondary}
+        </a>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

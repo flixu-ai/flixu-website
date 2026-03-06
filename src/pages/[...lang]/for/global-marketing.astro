@@ -1,0 +1,265 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroGlobalMarketing from "../../../components/visuals/HeroGlobalMarketing.jsx";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import {
+  getLocalizedPath,
+  locales,
+  useTranslations,
+} from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Brand Voice Translation for Marketing Teams | Flixu";
+const description =
+  "Maintain your global brand tone across every language automatically. Translate marketing campaigns in minutes instead of weeks.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Who it's for", url: getLocalizedPath("/for/agencies", lang) },
+  { name: "Global Marketing", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "How does Flixu maintain our brand voice?",
+    answer:
+      "Flixu turns your brand guidelines into rigid algorithmic prompts. We physically force the translation engine to follow your tone, register, and stylistic rules across all target languages.",
+  },
+  {
+    question: "Is Flixu cheaper than a localization agency?",
+    answer:
+      "Yes. Traditional agencies can charge up to $150,000 to translate one million words. Flixu's Output-Only billing architecture reduces that cost dramatically, saving you up to 80% on localization overhead.",
+  },
+  {
+    question: "Can I manage different tones for different campaigns?",
+    answer:
+      "Yes, you can configure unique Brand Voice Profiles. For example, use a formal, authoritative tone for a B2B whitepaper, and a casual, highly energetic tone for social media ads, switching effortlessly between them.",
+  },
+  {
+    question: "How fast can I translate a large marketing campaign?",
+    answer:
+      "Because Flixu operates via API and Contextual AI rather than manual human routing, multi-language marketing campaigns can be fully localized and returned in seconds instead of weeks.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Brand Voice Translation",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">For Marketing Leaders</span>
+        <h1 class="hero-title">When 'Du' and 'Sie' dictates millions.</h1>
+        <p class="hero-desc">
+          Your brand voice guideline is 40 pages long. None of it survives
+          DeepL. Take back control of your global narrative with algorithmic
+          Tone Constraints.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroGlobalMarketing client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Global marketing teams often face a difficult choice: pay significant agency retainers and wait weeks for localized campaigns, or use generic machine translation that compromises their carefully crafted tone of voice. Flixu solves both. Our unique Brand Voice AI ensures that an assertive, youthful English campaign is translated into an equally assertive, youthful Japanese campaign—in seconds, and at a significantly reduced cost compared to manual workflows."
+      />
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="03 — CAPABILITIES"
+    class="content-section mt-12 border-t border-stone-200 pt-16"
+  >
+    <div class="max-w-3xl prose-inline">
+      <KeyTakeaways
+        items={[
+          "Enforce stylistic rules across 15+ languages simultaneously.",
+          "Prevent DeepL from flattening your creative marketing copy.",
+          "Centralize terminology in a globally recognized Glossary.",
+        ]}
+      />
+      <h2 class="mb-4">Why do global marketing channels fail at scale?</h2>
+      <p class="text-xl text-stone-600 leading-relaxed max-w-2xl mb-12">
+        Your core brand identity relies on specific tonal nuances. What happens
+        when your bold, assertive English copy gets translated into overly
+        formal German or overly casual Japanese? You lose control of the
+        narrative. Traditional machine translation (like Google Translate or
+        standalone DeepL) completely ignores corporate identity, acting purely
+        on statistical probability. Flixu forces the AI engine to abide by your
+        Brand Voice guidelines with absolute rigidity. By defining tone
+        parameters upfront, you ensure your marketing campaigns convert at
+        exactly the same rate in Tokyo as they do in New York.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Tone & Register Control</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Ensure formal "Sie" is never confused with informal "Du" in German.
+            Set precise audience instructions and let the AI rewrite the
+            translations to match your stylistic rules perfectly.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Central Glossaries</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Eliminate infinite review cycles. Input your product names and
+            industry jargon into the Glossary, and the AI algorithm is
+            mathematically forced to strictly adhere to them.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 2v20"></path><path d="m17 5-5-3-5 3"></path><path
+                d="m17 19-5 3-5-3"></path><path d="M2 12h20"></path><path
+                d="m5 7-3 5 3 5"></path><path d="m19 7 3 5-3 5"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Instant ROI</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Translating a high-volume blog or ad campaign using an agency can
+            cost upwards of $0.15 per word. Flixu's output-based billing
+            averages a fraction of a cent per word, slashing your localization
+            budget overnight.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect width="18" height="18" x="3" y="4" rx="2" ry="2"
+              ></rect><line x1="16" x2="16" y1="2" y2="6"></line><line
+                x1="8"
+                x2="8"
+                y1="2"
+                y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line><path
+                d="m9 16 2 2 4-4"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Quality Assurance for CMOs</h3>
+          <p class="text-stone-600 leading-relaxed">
+            You don't need to speak German to trust the German copy. Flixu's AI
+            Quality Scoring system evaluates the linguistic integrity
+            mathematically, giving you a green-light confidence dashboard.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+</BaseLayout>

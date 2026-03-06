@@ -1,0 +1,35 @@
+---
+/**
+ * Last Updated display — freshness signal for search engines and readers.
+ * Renders a formatted date with a machine-readable datetime attribute.
+ * Usage: <LastUpdated date={new Date("2026-03-01")} />
+ */
+interface Props {
+  date: Date;
+  label?: string;
+  lang?: string;
+}
+
+const { date, label = "Last updated", lang = "en" } = Astro.props;
+
+const localeMap: Record<string, string> = {
+  en: "en-US",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  it: "it-IT",
+  ja: "ja-JP",
+};
+
+const formatted = date.toLocaleDateString(localeMap[lang] || "en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const isoDate = date.toISOString().split("T")[0];
+---
+
+<div class="font-mono text-xs text-stone-400 uppercase tracking-widest">
+  {label}: <time datetime={isoDate}>{formatted}</time>
+</div>

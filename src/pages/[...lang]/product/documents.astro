@@ -1,0 +1,330 @@
+---
+import ProductLayout from "../../../layouts/ProductLayout.astro";
+import HeroDoc from "../../../components/visuals/HeroDoc.jsx";
+import DetailDoc from "../../../components/visuals/DetailDoc.jsx";
+import Section from "../../../components/ui/Section.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import { useTranslations, getLocalizedPath } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "de" } }];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const content = t.productDocuments;
+const specs = content.specs;
+
+const tNav = t.navigation as any;
+
+const faqs = [
+  {
+    question: "Do I need to recreate layouts after translation?",
+    answer:
+      "No. Flixu employs Structural Geometric Parsing to extract raw text, leaving a perfect metadata skeleton of your document. We then rebuild the translation into the original layout automatically, eliminating Desktop Publishing (DTP) tax.",
+  },
+  {
+    question: "Does Flixu support translation of Adobe InDesign (IDML) files?",
+    answer:
+      "Yes, Flixu natively supports translating complex nested file formats like IDML, DOCX, YAML, JSON, and Strings without breaking spatial constraints or code variables.",
+  },
+  {
+    question: "How does the system handle text expansion during localization?",
+    answer:
+      "Our parser algorithmically calculates text expansion. If a German translation expands by 30% and threatens to overflow the layout bounding box, the AI dynamically makes kerning adjustments or generates spatially efficient synonyms to maintain document geometry.",
+  },
+  {
+    question: "Do you support Right-to-Left (RTL) languages like Arabic?",
+    answer:
+      "Yes. Our parsing engine automatically mirrors the alignment and flow of the document when translating into an RTL language, ensuring complete layout compliance.",
+  },
+  {
+    question: "Can Flixu translate text embedded within images?",
+    answer:
+      "If the text is baked into a rasterized image, our engine flags it. However, if the text exists as an SVG path or layered vector element, Flixu can securely extract, translate, and re-embed it.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Document Translation",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<ProductLayout
+  title={lang === "de" ? "Dokumentenerhalt" : "Document Preservation"}
+  subtitle={lang === "de"
+    ? "Layout-Treue garantiert."
+    : "Translate content, keep the structure."}
+  specs={specs}
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <HeroDoc client:load slot="visual" />
+
+  <Section
+    data-chapter={`02 — ${t.rail.problem.toUpperCase()}`}
+    class="content-section"
+  >
+    <div class="max-w-3xl">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.problem.label}</span
+      >
+      <h2 class="font-serif text-4xl md:text-5xl text-stone-900 mb-8">
+        {content.problem.h2}
+      </h2>
+      <p class="text-xl text-stone-600 leading-relaxed mb-6">
+        {content.problem.p1}
+      </p>
+      <p class="text-xl text-stone-600 leading-relaxed">
+        {content.problem.p2}
+      </p>
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="We completely eradicate the Desktop Publishing (DTP) tax. Traditional translation often disrupts document layouts—Flixu extracts text, translates it, and mathematically reconstructs your IDML, DOCX, or PPTX with flawless structural geometry, saving weeks of manual formatting."
+      />
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`04 — ${t.rail.integrity.toUpperCase()}`}
+    class="content-section border-t border-stone-100"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div>
+        <h3 class="font-serif text-3xl text-stone-900 mb-6">
+          {content.integrity.h3}
+        </h3>
+        <p class="text-lg text-stone-600 mb-6">
+          {content.integrity.p}
+        </p>
+        <ul class="space-y-4 font-mono text-sm text-stone-500">
+          <li class="flex items-center gap-3">
+            <div class="w-1.5 h-1.5 bg-orange-700 rounded-full"></div>{
+              content.integrity.list[0]
+            }
+          </li>
+          <li class="flex items-center gap-3">
+            <div class="w-1.5 h-1.5 bg-orange-700 rounded-full"></div>{
+              content.integrity.list[1]
+            }
+          </li>
+          <li class="flex items-center gap-3">
+            <div class="w-1.5 h-1.5 bg-orange-700 rounded-full"></div>{
+              content.integrity.list[2]
+            }
+          </li>
+        </ul>
+      </div>
+      <div
+        class="aspect-square bg-stone-50 border border-stone-200 rounded-sm flex items-center justify-center p-8"
+      >
+        <DetailDoc client:load />
+      </div>
+    </div>
+  </Section>
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="05 — DEEP DIVE"
+        class="content-section border-t border-stone-100"
+      >
+        <div class="max-w-3xl prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <h2>Why does translation often disrupt document geometry?</h2>
+          <p>
+            Translating a plain text string in an API payload is an incredibly
+            simple computational task. Translating a 45-page, highly formatted
+            Adobe InDesign (IDML) marketing brochure or a dense legal PDF is an
+            operational challenge.
+          </p>
+          <p>
+            The primary friction in B2B enterprise localization is rarely
+            linguistic; it is geometric. Human languages do not occupy the same
+            physical space. If you translate an English sentence into German or
+            Russian, the character count typically expands by 20% to 35%.
+            Conversely, if you translate that same English sentence into
+            Japanese, the physical space required contracts significantly.
+          </p>
+          <p>
+            In a rigidly constructed business document—where text sits within
+            hardcoded bounding boxes, adjacent to carefully placed imagery or
+            strict tabular data—text expansion is a critical issue. The newly
+            translated German text mathematically overflows the bounding box. It
+            aggressively overwrites the adjacent imagery, breaks the line
+            height, and forces the document layout to collapse into visual
+            chaos.
+          </p>
+
+          <h3>The Desktop Publishing (DTP) Tax</h3>
+          <p>
+            For decades, the global translation industry solved this geometric
+            collision through brute force human labor.
+          </p>
+          <p>
+            When an enterprise client submitted a PDF or DOCX file to a legacy
+            Translation Management System (TMS), the text was forcefully
+            extracted. Once the text was translated by human linguists, it was
+            jammed back into the formatted file. Because the layout inevitably
+            broke, the agency was forced to route the file to a highly
+            specialized, expensive team of graphic designers.
+          </p>
+          <p>
+            This process is universally known as{" "}
+            <strong>Desktop Publishing (DTP)</strong>. The DTP team would
+            manually open the German document, painstakingly resize fonts, drag
+            bounding boxes, alter kerning, and manually un-break the layout page
+            by page. This manual DTP workflow introduces significant financial
+            costs, significantly delays the project turnaround time, and
+            actively prevents agile teams from executing Continuous Localization
+            on branded assets.
+          </p>
+
+          <h2>How does Flixu parse and reconstruct complex files?</h2>
+          <p>
+            Flixu completely eradicates the manual Desktop Publishing tax by
+            shifting the workload from graphic designers to an intelligent
+            algorithmic parser. We engineered our ingestion engine to understand
+            the physical physics of the document before a single word is
+            translated.
+          </p>
+
+          <h3>Layer 1: The Metadata Skeleton</h3>
+          <p>
+            When you upload a complex format—such as a heavily nested Microsoft
+            Word DOCX, an XML array, or an iOS .strings file—the Flixu engine
+            executes a deep structural analysis. Our parser deliberately
+            isolates the raw translatable text from the formatting metadata.
+          </p>
+          <p>
+            Every font size, color hex code, bold tag, hyperlink anchor, and
+            exact spatial coordinate is preserved perfectly in an invisible,
+            secure underlying skeleton. The raw English text is cleanly lifted
+            and ported into our Contextual AI Orchestration layer. Because the
+            AI is operating purely on the raw text, it experiences zero layout
+            confusion.
+          </p>
+
+          <h3>Layer 2: Algorithmic Geometry Handling</h3>
+          <p>
+            Once the text is translated via our LLM architecture—strictly bound
+            by your corporate terminology glossary and Brand Voice settings—the
+            German text is handed back to the ingestion engine.
+          </p>
+          <p>
+            Before we fuse the text back into the skeleton, our system
+            mathematically calculates the percentage of text expansion. If the
+            German phrase is 30% longer and will mathematically overflow the
+            historical bounding box, the parser utilizes its spatial context to
+            make micro-adjustments programmatically. It intelligently scales the
+            font size down by 4%, slightly tightened the kerning, or informs the
+            LLM to dynamically generate a more terse, spatially efficient
+            synonym.
+          </p>
+
+          <h3>Layer 3: Seamless Reconstruction</h3>
+          <p>
+            The final target document is reconstructed instantly. The English
+            presentation deck is transformed into a flawless German presentation
+            deck. The bold parameters remain on the exact correct translated
+            noun. The hyperlinks point to the correct localized URLs. The layout
+            is visually pristine.
+          </p>
+          <p>
+            By automating the structural reconstruction, Flixu allows enterprise
+            marketing and sales teams to localize dense slide decks, technical
+            whitepapers, and software guides in milliseconds rather than weeks.
+            The DTP tax is slashed to zero.
+          </p>
+
+          <h2>Which enterprise and development formats are supported?</h2>
+          <p>
+            A true localization engine must natively support the exact files
+            your engineers and designers utilize daily. Flixu's Structural
+            Geometric Parsing supports the heavy B2B formats that legacy systems
+            consistently break.
+          </p>
+
+          <h3>Software and Development Formats</h3>
+          <p>
+            Engineers despise managing heavy translation repositories. Flixu
+            processes standard software infrastructure natively. We ingest raw
+            JSON objects, YAML configuration files, Apple iOS string layouts,
+            and complex HTML/XML structures. We identify all non-translatable
+            CDATA tags or programmatic variables (e.g., `&#123;user_name&#125;`)
+            and algorithmically shield them. The AI translates the surrounding
+            human syntax but is mathematically barred from accidentally
+            translating or corrupting the code variables, ensuring your
+            application compiles flawlessly upon return.
+          </p>
+
+          <h3>Multimedia Subtitle Formats (SRT/VTT)</h3>
+          <p>
+            Video content dominates B2B SaaS marketing. However, translating
+            subtitles introduces rigid temporal constraints. If an English
+            speaker talks for three seconds, the localized German subtitle must
+            physically fit on the screen during that exact three-second window.
+            Flixu parses standard SubRip (SRT) and WebVTT formats, reading the
+            exact millisecond timestamps. We instruct the LLM to generate
+            high-fidelity translations that strictly adhere to the
+            character-per-second reading constraints, completely automating your
+            global video localization pipeline.
+          </p>
+
+          <h2>Why is algorithmic formatting fidelity important?</h2>
+          <p>
+            When you remove the friction of manual layout fixing, you
+            fundamentally unlock your global content velocity. Marketing teams
+            are no longer hesitant to translate their premium 30-page research
+            reports. Sales teams can instantly generate localized slide decks
+            for a major foreign pitch tomorrow morning.
+          </p>
+          <p>
+            By utilizing Flixu's Document Translation architecture, enterprise
+            organizations preserve their brand fidelity, eliminate expensive DTP
+            consulting fees, and guarantee that their foreign customers receive
+            the exact same visually stunning, highly structured experience as
+            their domestic English audience. This is the new standard of B2B
+            localization.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="06 — FAQ"
+    class="content-section border-t border-stone-100"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+</ProductLayout>

@@ -1,0 +1,335 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import HeroPricing from "../../components/visuals/HeroPricing.jsx";
+import PricingGrid from "../../components/widget/PricingGrid.jsx";
+import Breadcrumbs from "../../components/seo/Breadcrumbs.astro";
+import Section from "../../components/ui/Section.astro";
+import TldrBlock from "../../components/seo/TldrBlock.astro";
+import FAQSection from "../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../components/seo/SchemaOrg.astro";
+import { useTranslations, locales, getLocalizedPath } from "../../i18n/utils";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Root (English default)
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = (await useTranslations(lang)) as any;
+const tNav = t.navigation;
+
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  { name: tNav?.pricing?.title || "Pricing", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Do I have to pay per language?",
+    answer:
+      "No. Flixu uses a Global Resource Pool. You purchase translation volume, and you can spend it across any of our 50+ supported languages. No artificial locks.",
+  },
+  {
+    question: "What happens if I don't use all my credits in a month?",
+    answer:
+      "Flixu ensures you keep what you pay for. All unused credits roll over to the next billing cycle as long as your subscription is active.",
+  },
+  {
+    question: "Can I bring my own LLM API keys?",
+    answer:
+      "Enterprise customers can use their own custom LLM deployments (e.g., Azure OpenAI) for inference. Contact sales for technical requirements.",
+  },
+  {
+    question: "Is there a free trial?",
+    answer:
+      "Yes, you can upload a document or test the API for free to see geometric parsing and Brand Voice in action.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={t.pricing.pageTitle} description={t.pricing.pageDesc}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  {/* Hero Section */}
+  <Section data-chapter="01 — INTRO" class="hero-section pb-24 border-none">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div class="lg:col-span-5">
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 class="mb-6" set:html={t.pricing.hero.h1} />
+        <p class="font-sans text-stone-500 max-w-md">
+          {t.pricing.hero.sub}
+        </p>
+      </div>
+      <div
+        class="lg:col-span-7 h-[400px] border border-stone-200 rounded-lg overflow-hidden shadow-sm"
+      >
+        <HeroPricing client:visible />
+      </div>
+    </div>
+  </Section>
+
+  {/* Pricing Grid */}
+  <Section data-chapter="02 — PLANS" class="content-section">
+    <PricingGrid
+      client:visible
+      plans={t.pricingGrid}
+      enterprise={t.enterpriseCard}
+    />
+  </Section>
+
+  {/* Pool Mechanics */}
+  <Section data-chapter="03 — MECHANICS" class="content-section">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-stone-50 p-6 rounded-sm border-l-2 border-stone-300">
+        <h4 class="font-serif text-lg text-stone-900 mb-2">
+          {t.pricing.pool.fair.title}
+        </h4>
+        <p class="text-sm text-stone-500 font-sans">
+          {t.pricing.pool.fair.sub}
+        </p>
+      </div>
+      <div class="bg-stone-50 p-6 rounded-sm border-l-2 border-stone-300">
+        <h4 class="font-serif text-lg text-stone-900 mb-2">
+          {t.pricing.pool.media.title}
+        </h4>
+        <p class="text-sm text-stone-500 font-sans">
+          {t.pricing.pool.media.sub}
+        </p>
+      </div>
+      <div class="bg-stone-50 p-6 rounded-sm border-l-2 border-orange-700">
+        <h4 class="font-serif text-lg text-stone-900 mb-2">
+          {t.pricing.pool.rollover.title}
+        </h4>
+        <p class="text-sm text-stone-500 font-sans">
+          {t.pricing.pool.rollover.sub}
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  {/* Add-ons & Top-ups */}
+  <Section
+    data-chapter="04 — ADD-ONS"
+    class="content-section border-t border-stone-100 pb-16"
+  >
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <h2 class="mb-4">
+        {t.pricing.addons?.title || "Add-ons & Credit Top-ups"}
+      </h2>
+      <p class="text-stone-500">
+        {
+          t.pricing.addons?.subtitle ||
+            "Customize your plan to fit your workflow."
+        }
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      {/* Top-ups */}
+      <div
+        class="bg-white border border-stone-200 p-8 rounded-sm shadow-sm relative"
+      >
+        <div class="absolute -top-3 left-8 bg-white px-2">
+          <span
+            class="text-[10px] font-mono tracking-widest text-stone-400 font-bold uppercase"
+            >Volume</span
+          >
+        </div>
+        <h3 class="font-serif text-2xl mb-2 text-stone-900">
+          {t.pricing.addons?.topups?.title || "Credit Top-ups"}
+        </h3>
+        <p class="text-sm text-stone-500 mb-8">
+          {t.pricing.addons?.topups?.desc}
+        </p>
+
+        <ul class="space-y-3">
+          {
+            t.pricing.addons?.topups?.items?.map((item: any) => (
+              <li class="flex items-center justify-between py-3 border-b border-stone-100 last:border-0">
+                <span class="font-medium text-stone-700">{item.name}</span>
+                <span class="font-mono text-stone-500">{item.price}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {/* Packs */}
+      <div
+        class="bg-white border border-stone-200 p-8 rounded-sm shadow-sm relative"
+      >
+        <div class="absolute -top-3 left-8 bg-white px-2">
+          <span
+            class="text-[10px] font-mono tracking-widest text-stone-400 font-bold uppercase"
+            >Capabilities</span
+          >
+        </div>
+        <h3 class="font-serif text-2xl mb-2 text-stone-900">
+          {t.pricing.addons?.packs?.title || "Resource & Feature Packs"}
+        </h3>
+        <p class="text-sm text-stone-500 mb-8">
+          {t.pricing.addons?.packs?.desc}
+        </p>
+
+        <ul class="space-y-3">
+          {
+            t.pricing.addons?.packs?.items?.map((item: any) => (
+              <li class="flex items-center justify-between py-3 border-b border-stone-100 last:border-0">
+                <span class="font-medium text-stone-700">{item.name}</span>
+                <span class="font-mono text-stone-500">{item.price}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  {/* Detailed Comparison Table */}
+  <Section
+    data-chapter="05 — SPECS"
+    class="content-section border-t border-stone-100"
+  >
+    <h2 class="mb-12">{t.pricing.specs.title}</h2>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[1000px]">
+        <thead>
+          <tr class="border-b-2 border-stone-100">
+            <th
+              class="py-4 pl-4 w-1/5 font-mono text-xs uppercase tracking-widest text-stone-400"
+              >{t.pricing.specs.headers.feature}</th
+            >
+            <th class="py-4 w-[16%] font-serif text-lg text-stone-900"
+              >{t.pricing.specs.headers.free}</th
+            >
+            <th class="py-4 w-[16%] font-serif text-lg text-orange-700"
+              >{t.pricing.specs.headers.ind}</th
+            >
+            <th class="py-4 w-[16%] font-serif text-lg text-stone-900"
+              >{t.pricing.specs.headers.team}</th
+            >
+            <th class="py-4 w-[16%] font-serif text-lg text-stone-900"
+              >{t.pricing.specs.headers.biz}</th
+            >
+            <th class="py-4 w-[16%] font-serif text-lg text-stone-900"
+              >{t.pricing.specs.headers.ent}</th
+            >
+          </tr>
+        </thead>
+        <tbody>
+          {
+            t.pricing.specs.rows.map((section: any) => (
+              <>
+                {/* Category Header */}
+                <tr class="bg-stone-50/50">
+                  <td
+                    colspan="6"
+                    class="py-3 pl-4 font-mono text-xs font-bold text-stone-500 uppercase tracking-widest border-b border-stone-100 mt-8"
+                  >
+                    {section.category}
+                  </td>
+                </tr>
+
+                {/* Rows */}
+                {section.items.map((row: any) => (
+                  <tr class="border-b border-stone-100 hover:bg-stone-50 transition-colors group">
+                    <td class="py-4 pl-4 font-medium text-stone-700 group-hover:text-stone-900">
+                      {row.label}
+                    </td>
+                    <td class="py-4 text-stone-500 text-sm">
+                      {row.free === "-" ? (
+                        <span class="opacity-20">—</span>
+                      ) : (
+                        row.free
+                      )}
+                    </td>
+                    <td class="py-4 text-stone-900 text-sm font-medium bg-orange-50/30 border-x border-orange-100/50">
+                      {row.ind === "-" ? (
+                        <span class="opacity-20">—</span>
+                      ) : (
+                        row.ind
+                      )}
+                    </td>
+                    <td class="py-4 text-stone-600 text-sm">
+                      {row.team === "-" ? (
+                        <span class="opacity-20">—</span>
+                      ) : (
+                        row.team
+                      )}
+                    </td>
+                    <td class="py-4 text-stone-900 text-sm">
+                      {row.biz === "-" ? (
+                        <span class="opacity-20">—</span>
+                      ) : (
+                        row.biz
+                      )}
+                    </td>
+                    <td class="py-4 text-stone-900 text-sm">
+                      {row.ent === "-" ? (
+                        <span class="opacity-20">—</span>
+                      ) : (
+                        row.ent
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-12 text-center">
+      <p class="text-stone-500 mb-4">
+        {t.pricing.specs.enterprise.text}
+      </p>
+      <a
+        href="mailto:founders@flixu.ai"
+        class="inline-flex items-center gap-2 bg-stone-900 hover:bg-orange-700 text-white px-8 py-4 rounded-sm transition-colors font-medium cursor-pointer"
+        >{t.pricing.specs.enterprise.link}</a
+      >
+    </div>
+  </Section>
+
+  <Section data-chapter="06 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl mx-auto">
+      <TldrBlock
+        text="We replaced rigid per-language pricing with a Global Resource Pool. Unlike legacy platforms, you aren't penalized for adding new target locales. Purchase a unified baseline of translation capacity, distribute it seamlessly across 50+ languages, and let unused credits automatically roll over to the next month."
+      />
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="07 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+</BaseLayout>

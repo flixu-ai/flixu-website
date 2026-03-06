@@ -1,0 +1,59 @@
+---
+/**
+ * Visible breadcrumb navigation + BreadcrumbList JSON-LD schema.
+ * Usage: <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Topics", url: "/topic" }]} />
+ */
+import SchemaOrg from "./SchemaOrg.astro";
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.name,
+    item: item.url.startsWith("http")
+      ? item.url
+      : `https://flixu.ai${item.url}`,
+  })),
+};
+---
+
+<nav aria-label="Breadcrumb" class="mb-8">
+  <ol
+    class="flex items-center gap-2 font-mono text-xs text-stone-400 uppercase tracking-widest"
+  >
+    {
+      items.map((item, index) => (
+        <>
+          {index > 0 && <span class="text-stone-300">/</span>}
+          {index < items.length - 1 ? (
+            <li>
+              <a
+                href={item.url}
+                class="hover:text-orange-700 transition-colors"
+              >
+                {item.name}
+              </a>
+            </li>
+          ) : (
+            <li class="text-stone-600">{item.name}</li>
+          )}
+        </>
+      ))
+    }
+  </ol>
+</nav>
+
+<SchemaOrg schema={breadcrumbSchema} />

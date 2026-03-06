@@ -1,0 +1,400 @@
+---
+import ProductLayout from "../../../layouts/ProductLayout.astro";
+import HeroContext from "../../../components/visuals/HeroContext.jsx";
+import Section from "../../../components/ui/Section.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import {
+  locales,
+  useTranslations,
+  getLocalizedPath,
+} from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+const t = await useTranslations(lang);
+const content = t.productContext;
+
+const specs = content.specs;
+const dimensions = content.layers.items;
+const pipelineSteps = content.pipeline.steps;
+
+const tNav = t.navigation as any;
+
+const faqs = [
+  {
+    question: "What is the biggest problem in machine translation?",
+    answer:
+      "Polysemy. Words have multiple meanings based on context (e.g. 'Bank' as a river or a financial institution). Legacy MT translates word-by-word leading to errors.",
+  },
+  {
+    question: "How does Flixu solve polysemy?",
+    answer:
+      "Flixu uses Neural Attention Mechanisms and a 7-layer Context Orchestration pipeline (including Glossary, Translation Memory, and Brand Voice) to evaluate the whole document simultaneously, effectively solving polysemy.",
+  },
+  {
+    question: "What formats does Flixu support preserving context for?",
+    answer:
+      "Flixu natively supports software infrastructure (JSON, YAML, strings), multimedia subtitles (SRT, VTT), and complex document layouts (IDML, DOCX).",
+  },
+  {
+    question: "How do you ensure data security during the context analysis?",
+    answer:
+      "Flixu is built for the enterprise. We enforce strict data sovereignty, offer dedicated VPC deployments, and never use your private corporate context to train public AI models.",
+  },
+  {
+    question: "What happens if the source text itself is ambiguous?",
+    answer:
+      "Our engine relies on the 7-layer context pipeline. If a standalone string like 'Home' lacks surrounding words, the engine checks its metadata (e.g., UI component vs marketing page) to correctly output either a navigational element or a residential noun.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Context Awareness",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<ProductLayout
+  title={lang === "de" ? "Kontext-Intelligenz." : "Context Awareness."}
+  subtitle={lang === "de"
+    ? "Sieben Ebenen Kontext. Eine präzise Ausgabe."
+    : "Seven layers of context. One precise output."}
+  specs={specs}
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <HeroContext client:load slot="visual" />
+
+  <!-- PIPELINE SECTION -->
+  <Section
+    data-chapter={`02 — ${t.rail.pipeline.toUpperCase()}`}
+    class="content-section border-t border-stone-100"
+  >
+    <div class="max-w-3xl mb-16">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+      >
+        {content.pipeline.label}
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl text-stone-900 mb-6">
+        {content.pipeline.h2}
+      </h2>
+      <p class="text-xl text-stone-600 leading-relaxed">
+        {content.pipeline.desc}
+      </p>
+    </div>
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-stone-200 rounded-sm overflow-hidden mt-16"
+    >
+      {
+        pipelineSteps.map((item: any, i: number) => (
+          <div
+            class={`p-8 ${i < 2 ? "md:border-b" : ""} ${i % 2 === 0 ? "md:border-r" : ""} border-stone-200`}
+          >
+            <div class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-3">
+              {item.step}
+            </div>
+            <p class="text-stone-600 leading-relaxed">{item.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-6 font-mono text-xs text-stone-400 uppercase tracking-widest">
+      {content.pipeline.disclaimer}
+    </p>
+  </Section>
+
+  <Section data-chapter="03 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Traditional Machine Translation fails because it lacks context, translating sentence by sentence. Flixu orchestrates 7 layers of context—from glossaries to brand voice and geometric layout—to ensure every translation is stylistically consistent, accurate, and completely native to the target audience."
+      />
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`04 — ${t.rail.layers.toUpperCase()}`}
+    class="content-section border-t border-stone-100"
+  >
+    <div class="max-w-3xl mb-16">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+      >
+        {content.layers.label}
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl text-stone-900">
+        {content.layers.h2}
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {
+        dimensions.slice(0, 6).map((dim: any) => (
+          <div class="border-l border-stone-200 pl-6 py-2">
+            <div class="font-mono text-[10px] text-stone-400 uppercase tracking-widest mb-2">
+              {dim.num}
+            </div>
+            <h3 class="font-serif text-lg text-stone-900 mb-2">{dim.label}</h3>
+            <p class="text-stone-500 text-sm leading-relaxed">{dim.body}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- TM Awareness gets its own full-width callout -->
+    <div class="mt-8 border border-orange-100 bg-orange-50/30 rounded-sm p-8">
+      <div
+        class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-2"
+      >
+        {dimensions[6].num} — {content.layers.diffLabel}
+      </div>
+      <h3 class="font-serif text-2xl text-stone-900 mb-3">
+        {dimensions[6].label}
+      </h3>
+      <p class="text-stone-600 leading-relaxed max-w-2xl">
+        {dimensions[6].body}
+      </p>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="05 — DEEP DIVE"
+        class="content-section border-t border-stone-100"
+      >
+        <div class="max-w-3xl prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <h2>The Architecture of Context: Solving the Polysemy Crisis</h2>
+          <p>
+            In the field of computational linguistics and machine translation,
+            the single greatest point of failure is known as{" "}
+            <strong>Polysemy</strong>. Polysemy is the capacity for a single
+            word to possess multiple, completely divergent meanings depending
+            upon the surrounding structural environment.
+          </p>
+          <p>
+            Consider the English word "Bank". If the sentence is "The river
+            overflowed its bank," the word describes a geographical formation.
+            If the sentence is "The bank approved our commercial loan," the word
+            describes a financial institution. For a human reader, resolving
+            this ambiguity is effortless because the human brain instantaneously
+            processes the surrounding contextual clues ("river" vs. "loan"). For
+            algorithmic machine translation, polysemy has historically triggered
+            catastrophic, embarrassing failures.
+          </p>
+          <p>
+            Legacy Machine Translation (MT) systems, operating without robust
+            context parameters, were mathematically blind. They processed input
+            sentence-by-sentence, or worse, word-by-word. This isolated
+            processing led to the exact type of robotic, structurally broken
+            translations that enterprise localization teams have spent two
+            decades attempting to fix via manual MTPE (Machine Translation
+            Post-Editing). To achieve high-fidelity B2B SaaS localization, the
+            fundamental architecture had to change. We had to move from raw
+            translation to Context Orchestration.
+          </p>
+
+          <h3>Neural Attention Mechanisms: The AI Revolution</h3>
+          <p>
+            The revolutionary breakthrough that enabled Flixu's Contextual AI is
+            the <strong>Transformer Architecture</strong> and its foundational
+            "Attention Mechanism." Unlike legacy MT that translated words in a
+            strict linear sequence from left to right, Large Language Models
+            (LLMs) evaluate the entire document simultaneously.
+          </p>
+          <p>
+            The Attention Mechanism allows the neural network to mathematically
+            weigh the associative relevance of distant words. When translating a
+            dense, 50-page technical manual, the AI does not merely look at the
+            current sentence. It looks at the title of the document, the headers
+            of previous chapters, and the overarching paragraph structure. If
+            the manual is titled "Hydraulic Engineering Specifications," the
+            Attention Mechanism mathematically suppresses the financial
+            translation of "Bank" and amplifies the geographical translation.
+            This multi-dimensional awareness fundamentally eradicated the
+            baseline polysemy crisis. However, for elite B2B enterprise
+            translation, baseline awareness is insufficient.
+          </p>
+
+          <h2>How does Flixu inject context into translations?</h2>
+          <p>
+            Generic AI (like consumer ChatGPT) possesses high baseline
+            attention, but it entirely lacks corporate specificity. It does not
+            know your company's proprietary jargon, your exact brand tone, or
+            your preferred formality. Translating enterprise software requires
+            mathematically forcing the AI into a tightly constrained linguistic
+            corridor. At Flixu, we achieve this through a proprietary, 7-layer
+            API Orchestration pipeline known as Context Injection.
+          </p>
+
+          <h3>1. The Master Glossary (Nomenclature Enforcement)</h3>
+          <p>
+            The foundational layer of context is the Glossary. When you upload
+            your corporate terminology to Flixu, the orchestration engine
+            packages those definitions directly into the System Prompt of the
+            LLM. We are not utilizing an archaic "Find and Replace"
+            post-processing script. We are explicitly instructing the neural
+            network:{" "}
+            <em>
+              "You must absolutely utilize the German word 'Leadgenerierung' for
+              the English phrase 'Lead Generation'. Build all surrounding syntax
+              constraints around this locked noun."
+            </em>{" "}
+            The Glossary operates as an unbreakable mathematical anchor.
+          </p>
+
+          <h3>2. Translation Memory (Semantic RAG)</h3>
+          <p>
+            The second layer is historical alignment. Flixu utilizes
+            Retrieval-Augmented Generation (RAG) powered by semantic vector
+            databases. Before the AI begins translating a novel paragraph, it
+            scans your isolated Translation Memory (TM) to retrieve conceptually
+            similar paragraphs you approved three years ago. It injects these
+            historical vectors as structural reference points, ensuring the AI
+            mimics the exact cadence and stylistic history of your specific
+            organization.
+          </p>
+
+          <h3>3. Brand Voice & Emotional Cadence</h3>
+          <p>
+            Tone is mathematically programmable. A luxury fashion brand demands
+            ethereal, emotional adjectives, while a B2B defense contractor
+            demands rigid, sterile active verbs. Flixu allows localization
+            managers to actively dial the "creative temperature" of the target
+            output. Is the target text meant to be incredibly witty, or highly
+            conservative? This parameter is injected as a strict directive,
+            overriding the AI's default corporate monotone.
+          </p>
+
+          <h3>4. Geometric Structural Context</h3>
+          <p>
+            Translation does not exist in a vacuum; it exists inside a physical
+            layout. When translating a button string in a JSON array or a header
+            in an Adobe InDesign (IDML) file, Flixu ingests the spatial
+            constraints. If a German translation expands by 40% and breaks a
+            critical UI button, our formatting context informs the AI to
+            dynamically select a terser, more spatially efficient synonym to
+            strictly preserve the visual geometry of the application.
+          </p>
+
+          <h3>5. Platform-Specific Empathy</h3>
+          <p>
+            A tweet is structured differently than a whitepaper. A mobile push
+            notification requires vastly different pacing than a desktop
+            installation wizard. Flixu's Context Array explicitly registers the
+            ultimate destination platform of the text, instructing the AI to
+            utilize standard iOS nomenclature (e.g., "Tap") versus standard
+            Desktop nomenclature (e.g., "Click").
+          </p>
+
+          <h2>Why does structural context matter?</h2>
+          <p>
+            For decades, "lost in translation" was the acceptable margin of
+            error in global business. It was assumed that a localized French
+            website would inherently sound slightly more robotic, slightly more
+            confused, and dramatically inferior to the original English master
+            copy.
+          </p>
+          <p>
+            Contextual Architecture has irrevocably destroyed that assumption.
+            By fusing the raw linguistic horsepower of modern Transformer
+            networks with the hyper-specific, multi-layered constraints of the
+            Flixu Orchestration Engine, enterprises can now execute translations
+            that are not merely "accurate"—they are culturally native.
+          </p>
+          <p>
+            A French visitor exploring your localized software interface
+            shouldn't feel as though they are interacting with a translation.
+            They should feel as though the software was exclusively built and
+            engineered in Paris. That is the ultimate promise, and the
+            operational reality, of Contextual AI.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="06 — FAQ"
+    class="content-section border-t border-stone-100"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- RELATED SECTION -->
+  <Section
+    data-chapter={`07 — ${t.rail.related.toUpperCase()}`}
+    class="content-section border-t border-stone-100 bg-stone-50/30"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <a
+        href={`/${lang !== "en" ? lang + "/" : ""}product/text`}
+        class="group block p-8 border border-stone-200 rounded-sm hover:border-orange-300 transition-colors bg-white"
+      >
+        <div
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-3"
+        >
+          {content.related.label}
+        </div>
+        <h3
+          class="font-serif text-2xl text-stone-900 group-hover:text-orange-700 transition-colors mb-2"
+        >
+          {content.related.textLink}
+        </h3>
+        <p class="text-stone-500 text-sm">
+          {content.related.textDesc}
+        </p>
+      </a>
+      <a
+        href={`/${lang !== "en" ? lang + "/" : ""}product/documents`}
+        class="group block p-8 border border-stone-200 rounded-sm hover:border-orange-300 transition-colors bg-white"
+      >
+        <div
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-3"
+        >
+          {content.related.label}
+        </div>
+        <h3
+          class="font-serif text-2xl text-stone-900 group-hover:text-orange-700 transition-colors mb-2"
+        >
+          {content.related.docLink}
+        </h3>
+        <p class="text-stone-500 text-sm">
+          {content.related.docDesc}
+        </p>
+      </a>
+    </div>
+  </Section>
+</ProductLayout>

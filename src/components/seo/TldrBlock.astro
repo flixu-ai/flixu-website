@@ -1,0 +1,24 @@
+---
+/**
+ * TL;DR / answer-first block. Visually distinct component placed after H1.
+ * Targets the extraction window where 44% of LLM citations originate.
+ * Usage: <TldrBlock text="One-paragraph summary (60-80 words)" />
+ */
+interface Props {
+  text: string;
+  label?: string;
+}
+
+const { text, label = "TL;DR" } = Astro.props;
+---
+
+<div class="pl-6 border-l-2 border-orange-700">
+  <div
+    class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-3"
+  >
+    {label}
+  </div>
+  <p class="text-stone-700 leading-relaxed text-lg font-sans">
+    {text}
+  </p>
+</div>

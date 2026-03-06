@@ -1,0 +1,34 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import NoteLayout from "../../../layouts/NoteLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes");
+  // We need the locales array here
+  const { locales } = await import("../../../i18n/utils");
+
+  return locales.flatMap((l) => {
+    const langParam = l === "en" ? undefined : l;
+    return notes
+      .filter((n) => n.id.startsWith("en/"))
+      .map((entry) => ({
+        params: {
+          lang: langParam,
+          slug: entry.id.replace("en/", "").replace(/\.mdx?$/, ""),
+        },
+        props: { entry },
+      }));
+  });
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<NoteLayout {...entry.data} id={entry.id}>
+  <Content />
+</NoteLayout>

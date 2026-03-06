@@ -1,0 +1,241 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+import HeroQuickTranslations from "../../../components/visuals/HeroQuickTranslations.jsx";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Quick Translations Workspace | Flixu";
+const description =
+  "Instantly translate text snippets using full AI context without creating a heavy project structure. Perfect for UI strings and emails.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "Quick Translations", url: Astro.url.pathname },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  {/* SEO Schema */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How is Quick Translate better than Google Translate?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Unlike standard web translators, Flixu's Quick Translate allows you to select a specific Client Profile, meaning the output will automatically conform to your private Translation Memories and Brand Voice.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Do Quick Translations get saved to the TM?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. If an authorized user edits and approves a result in Quick Translate, that semantic pairing is permanently embedded into the selected client's Translation Memory dataset.",
+          },
+        },
+      ],
+    })}
+  />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="max-w-3xl !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">Fast. Simple. Contextual.</h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Need to translate a 3-word UI string or an incredibly brief email? Use
+          Quick Translate to bypass complex project creation while keeping all
+          of your AI context.
+        </p>
+        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
+          Try Quick Translate
+        </a>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroQuickTranslations client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Sometimes you don't need a large multi-file project. For short strings, emails, or ad-hoc marketing copy, Flixu's Quick Translate interface acts just like a consumer translation tool—but it sits perfectly on top of your advanced RAG infrastructure. Select your Target Client, type your text, and ensure that even the smallest task respects your hard-earned Glossary and TM."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">Core Capabilities</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><polyline points="4 7 4 4 20 4 20 7"></polyline><line
+                x1="9"
+                x2="15"
+                y1="20"
+                y2="20"></line><line x1="12" x2="12" y1="4" y2="20"></line></svg
+            >
+          </div>
+          <h3 class="text-xl">Frictionless Entry</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Zero setup required. Just paste your text string directly into the
+            browser workspace for instantaneous, enterprise-grade AI translation
+            processing.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Full Context Injection</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Despite its simplified interface, Quick Translate maintains parity
+            with heavy project workflows. You can actively enforce Client Tone,
+            Formal constraints, and TM matching simultaneously.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"
+              ></path><path d="m14.5 4-5 16"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Iterative Testing</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Use the tool as a laboratory. It is the perfect place to experiment
+            with different prompts and Brand Voice adjustments before deploying
+            them globally to a 10,000-word dataset.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 2v20"></path><path d="m17 5-5-3-5 3"></path><path
+                d="m17 19-5 3-5-3"></path><path d="M2 12h20"></path><path
+                d="m5 7-3 5 3 5"></path><path d="m19 7 3 5-3 5"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Bi-Directional Archiving</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Approved answers feed back into the system. If you correctly
+            translate an ambiguous marketing phrase here, the AI will remember
+            that exact phrasing for subsequent automated projects.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <h2 class="mb-10 text-center">Technical FAQ</h2>
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            How is Quick Translate better than Google Translate?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Unlike standard web translators, Flixu's Quick Translate allows you
+            to select a specific Client Profile, meaning the output will
+            automatically conform to your private Translation Memories and Brand
+            Voice.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            Do Quick Translations get saved to the TM?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Yes. If an authorized user edits and approves a result in Quick
+            Translate, that semantic pairing is permanently embedded into the
+            selected client's Translation Memory dataset.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

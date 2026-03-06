@@ -1,0 +1,490 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/ui/Section.astro";
+import OutlineCard from "../../components/ui/OutlineCard.astro";
+import HeroAmbient from "../../components/homepage/HeroAmbient.jsx";
+import TranslationWidget from "../../components/widget/TranslationWidget.jsx";
+import WorkspaceVisual from "../../components/widget/WorkspaceVisual.jsx";
+import SchemaOrg from "../../components/seo/SchemaOrg.astro";
+import {
+  Cpu,
+  BookMarked,
+  ArrowRight,
+  Globe,
+  FileText,
+  Layers,
+  Image,
+  Mic,
+} from "lucide-react";
+import { useTranslations, locales, getLocalizedPath } from "../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Root (English default)
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+
+const iconMap = {
+  Cpu,
+  Globe,
+  BookMarked,
+  FileText,
+  Layers,
+  Image,
+  Mic,
+  ArrowRight,
+};
+
+const LogicIcon1 = iconMap[t.logic.c1.icon as keyof typeof iconMap];
+const LogicIcon2 = iconMap[t.logic.c2.icon as keyof typeof iconMap];
+const LogicIcon3 = iconMap[t.logic.c3.icon as keyof typeof iconMap];
+
+const isDev = import.meta.env.DEV;
+const appUrl = isDev ? "http://localhost:3000" : "https://app.flixu.ai";
+
+// Organization + SoftwareApplication schema
+const homepageSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Flixu",
+    url: "https://flixu.ai",
+    logo: "https://flixu.ai/flixu-favicon.svg",
+    description:
+      "Context-aware AI translation platform. Orchestrates LLMs with glossaries, translation memory, and brand voice to deliver precise multilingual content.",
+    founder: {
+      "@type": "Person",
+      name: "Deniz Wozniak",
+    },
+    sameAs: ["https://www.linkedin.com/company/flixu"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Flixu",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: "https://flixu.ai",
+    description:
+      "AI translation workspace with context awareness, glossary enforcement, translation memory, and brand voice consistency.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      description: "Free tier available",
+    },
+  },
+];
+---
+
+<BaseLayout title={t.hero.metaTitle}>
+  <Fragment slot="schema">
+    {homepageSchema.map((schema) => <SchemaOrg schema={schema} />)}
+  </Fragment>
+
+  <!-- HERO SECTION -->
+  <Section
+    id="start"
+    data-chapter={`01 — ${t.rail.intro.toUpperCase()}`}
+    class="min-h-screen flex flex-col justify-center border-b border-stone-200 relative overflow-hidden"
+  >
+    <HeroAmbient client:idle />
+    <div class="relative z-10 max-w-3xl pt-0">
+      <div
+        class="inline-block px-3 py-1 mb-8 rounded-full border border-stone-200 bg-stone-50 text-[10px] font-mono tracking-widest uppercase text-stone-500"
+      >
+        {t.hero.badgeLabel}
+      </div>
+
+      <h1 set:html={t.hero.h1} />
+
+      <p class="max-w-xl mb-12">
+        {t.hero.sub}
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <a
+          href={`${appUrl}/sign-up?plan=individual&intent=individual&interval=month`}
+          class="hidden"
+        >
+          <span class="font-medium">{t.hero.btnPrimary}</span>
+          <ArrowRight
+            size={18}
+            className="group-hover:translate-x-1 transition-transform"
+          />
+        </a>
+        <a
+          href="#demo"
+          class="px-8 py-4 rounded-sm border border-stone-200 text-stone-600 hover:border-stone-400 hover:text-stone-900 transition-colors"
+        >
+          {t.hero.btnSecondary}
+        </a>
+      </div>
+
+      <p
+        class="mt-6 text-xs text-stone-400 font-mono flex items-center gap-2 mb-12"
+      >
+        <span class="block w-1.5 h-1.5 rounded-full bg-green-500"></span>
+        {t.hero.badge}
+      </p>
+
+      <div
+        class="pt-8 border-t border-stone-200 w-full flex flex-col md:flex-row items-center gap-6 md:gap-12 opacity-60 grayscale mix-blend-multiply"
+      >
+        <span
+          class="text-[10px] font-mono uppercase tracking-widest text-stone-400 shrink-0 mb-4 md:mb-0"
+        >
+          {t.home?.accelerated || "Accelerated by & Member of"}
+        </span>
+        <div class="flex items-center gap-8 md:gap-12">
+          <span
+            class="font-sans font-bold text-lg tracking-tight text-stone-800"
+            >NVIDIA INCEPTION</span
+          >
+          <span
+            class="font-sans font-bold text-lg tracking-tight text-stone-800"
+            >Google for Startups</span
+          >
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- TRUST SECTION -->
+
+  <!-- WIDGET SECTION -->
+  <Section
+    id="demo"
+    data-chapter={`02 — ${t.rail.preview.toUpperCase()}`}
+    class="py-32 border-b border-stone-200 bg-stone-50/30"
+  >
+    <div class="mb-16 max-w-5xl mx-auto w-full">
+      <div class="max-w-2xl">
+        <span
+          class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block"
+          >{t.widget.label}</span
+        >
+        <h2>
+          {t.widget.h2}
+        </h2>
+        <p>
+          {t.widget.sub}
+        </p>
+      </div>
+    </div>
+
+    <div class="w-full">
+      <TranslationWidget client:visible t={t.widget} />
+    </div>
+  </Section>
+
+  <!-- WORKSPACE SECTION -->
+  <Section
+    data-chapter={`03 — ${t.rail.interface.toUpperCase()}`}
+    class="py-32 border-b border-stone-100"
+  >
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <h2>Control your language assets.</h2>
+        <p>
+          Stop using spreadsheets. Manage terminology and tone in one unified
+          interface.
+        </p>
+      </div>
+      <div class="h-full min-h-[400px] w-full">
+        <WorkspaceVisual client:visible />
+      </div>
+    </div>
+  </Section>
+
+  <!-- FEATURES SECTION -->
+  <Section
+    id="features"
+    data-chapter={`04 — ${t.rail.capabilities.toUpperCase()}`}
+    class="py-32 border-b border-stone-200"
+  >
+    <div class="mb-16">
+      <h2>
+        {t.features.h2}
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {
+        t.features.items.map((item) => (
+          // @ts-ignore
+          <OutlineCard
+            title={item.title}
+            icon={item.icon}
+            visualVariant={item.visualVariant}
+          >
+            {item.body}
+          </OutlineCard>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- LOGIC SECTION -->
+  <Section
+    id="logic"
+    data-chapter={`05 — ${t.rail.logic.toUpperCase()}`}
+    class="py-32 border-b border-stone-200 bg-paper"
+  >
+    <div class="mb-16">
+      <h2>
+        {t.logic.h2}
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="p-8 border-l border-stone-200">
+        <LogicIcon1
+          size={28}
+          className="text-orange-700 mb-6"
+          strokeWidth={1.5}
+        />
+        <h3>{t.logic.c1.title}</h3>
+        <p>
+          {t.logic.c1.body}
+        </p>
+      </div>
+      <div class="p-8 border-l border-stone-200">
+        <LogicIcon2
+          size={28}
+          className="text-orange-700 mb-6"
+          strokeWidth={1.5}
+        />
+        <h3>{t.logic.c2.title}</h3>
+        <p>
+          {t.logic.c2.body}
+        </p>
+      </div>
+      <div class="p-8 border-l border-stone-200">
+        <LogicIcon3
+          size={28}
+          className="text-orange-700 mb-6"
+          strokeWidth={1.5}
+        />
+        <h3>{t.logic.c3.title}</h3>
+        <p>
+          {t.logic.c3.body}
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- CTA SECTION -->
+  <Section
+    id="cta"
+    data-chapter={`06 — ${t.rail.action.toUpperCase()}`}
+    class="py-32 flex flex-col items-center justify-center text-center"
+  >
+    <div class="max-w-2xl mx-auto">
+      <h2>
+        {t.cta.h2}
+      </h2>
+      <p class="mb-12">
+        {t.cta.sub}
+      </p>
+
+      <a
+        href={`${appUrl}/sign-up?plan=individual&intent=individual&interval=month`}
+        class="hidden"
+      >
+        <span class="font-medium text-lg">{t.cta.btn}</span>
+        <ArrowRight size={20} />
+      </a>
+    </div>
+  </Section>
+  <!-- DISCOVER YOUR WORKFLOW SECTION -->
+  <Section
+    data-chapter={`07 — ${t.rail.ecosystem.toUpperCase()}`}
+    class="py-32 border-t border-stone-100"
+  >
+    <div class="max-w-3xl mb-16">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+      >
+        Who it's for
+      </span>
+      <h2>{t.home.discover}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <a
+        href={getLocalizedPath("/for/freelancers", lang)}
+        class="group flex flex-col h-full p-8 border border-stone-200 rounded-sm hover:border-orange-300 transition-all duration-300 hover:shadow-sm"
+      >
+        <div
+          class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-4"
+        >
+          Freelancer
+        </div>
+        <h3 class="group-hover:text-orange-700 transition-colors mb-3">
+          {t.home.freelancerTitle}
+        </h3>
+        <div class="mt-auto flex flex-col">
+          <p class="mb-6">{t.home.freelancerDesc}</p>
+          <span class="text-orange-700 text-sm group-hover:underline">
+            {t.home.freelancerLink}
+          </span>
+        </div>
+      </a>
+      <a
+        href={getLocalizedPath("/for/agencies", lang)}
+        class="group flex flex-col h-full p-8 border border-stone-200 rounded-sm hover:border-orange-300 transition-all duration-300 hover:shadow-sm"
+      >
+        <div
+          class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-4"
+        >
+          Agency
+        </div>
+        <h3 class="group-hover:text-orange-700 transition-colors mb-3">
+          {t.home.agencyTitle}
+        </h3>
+        <div class="mt-auto flex flex-col">
+          <p class="mb-6">{t.home.agencyDesc}</p>
+          <span class="text-orange-700 text-sm group-hover:underline">
+            {t.home.agencyLink}
+          </span>
+        </div>
+      </a>
+      <a
+        href={getLocalizedPath("/for/enterprise", lang)}
+        class="group flex flex-col h-full p-8 border border-stone-200 rounded-sm hover:border-orange-300 transition-all duration-300 hover:shadow-sm"
+      >
+        <div
+          class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-4"
+        >
+          SaaS & Tech
+        </div>
+        <h3 class="group-hover:text-orange-700 transition-colors mb-3">
+          {t.home.enterpriseTitle}
+        </h3>
+        <div class="mt-auto flex flex-col">
+          <p class="mb-6">{t.home.enterpriseDesc}</p>
+          <span class="text-orange-700 text-sm group-hover:underline">
+            {t.home.enterpriseLink}
+          </span>
+        </div>
+      </a>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="08 — THE MISSING MIDDLE"
+    class="py-32 border-t border-stone-100"
+  >
+    <div
+      class="max-w-3xl mx-auto prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light"
+    >
+      <h2>Serving the Missing Middle of B2B Localization</h2>
+      <p>
+        For a decade, the translation industry has been fractured into two
+        extremes. The market forces growing SaaS companies into a difficult
+        choice between generic, unguided automation or slow, highly complex
+        human workflows.
+      </p>
+
+      <h3>The Chaos of the Low End</h3>
+      <p>
+        At the bottom of the market sit the generic API providers—Google Cloud
+        Translation, Amazon Translate, and DeepL. These platforms provide
+        instantaneous, high-volume linguistic generation at fractions of a penny
+        per word. However, they are fundamentally devoid of contextual
+        architecture.
+      </p>
+      <p>
+        When an agile frontend team executes a continuous deployment loop
+        utilizing a generic API, the consequences to the corporate brand are
+        immediate. Because generic APIs do not respect mathematically enforced
+        glossaries, highly specific B2B terminology fractures across languages.
+        Because they lack Role-Based Access Control (RBAC), security and
+        auditing become impossible. Most crucially, because they lack
+        proprietary Brand Voice injection, the localized product sounds like a
+        robotic, homogenous machine rather than your distinct, carefully crafted
+        brand persona. You save money, but you actively erode premium user trust
+        in foreign markets.
+      </p>
+
+      <h3>The Friction of the High End</h3>
+      <p>
+        At the opposite extreme sit the legacy Translation Management Systems
+        (TMS)—monoliths like Smartling, Phrase, and Trados. These platforms
+        provide extraordinary control, strict terminology enforcement, and
+        complex human review cycles.
+      </p>
+      <p>
+        But this control often comes at a significant cost to velocity.
+        Traditional TMS platforms were designed for an earlier era of software
+        development. Implementing a heavy TMS can require an extensive 9-to-12
+        month internal engineering project simply to wire the data funnels. Once
+        integrated, they can deeply slow down your CI/CD pipeline, often
+        requiring engineers to wait weeks for external agencies to process
+        thousands of micro-strings. Quality is achieved, but the ability to
+        deploy globally at the speed of software is compromised.
+      </p>
+
+      <h2>Flixu Occupies the Missing Middle</h2>
+      <p>
+        Flixu was engineered specifically to bridge this gap. We provide the
+        instantaneous, highly scalable speed of a raw API, combined inextricably
+        with the rigorous, strict brand compliance mechanics of an enterprise
+        TMS platform.
+      </p>
+      <p>
+        We achieve this through Context Orchestration. Built natively for agile
+        software teams, our REST APIs and Developer SDKs slot directly into your
+        existing CI/CD automation logic. When you trigger a translation
+        pipeline, Flixu dynamically injects your highly guarded Translation
+        Memories, your specific Glossary arrays, and your programmable Brand
+        Voice tone directly into the context payload of the Large Language Model
+        inference.
+      </p>
+      <p>
+        You get perfect consistency, zero human friction, and global product
+        releases in milliseconds, not months. The wait is over. The missing
+        middle has arrived.
+      </p>
+    </div>
+  </Section>
+
+  <!-- FOUNDER NOTE SECTION -->
+  <Section
+    data-chapter={`09 — ${t.rail.manifesto.toUpperCase()}`}
+    class="py-32 bg-[#FDFCF8]"
+  >
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="font-serif italic text-stone-400 text-xl mb-8 block"
+        >A note on craft.</span
+      >
+      <h2
+        class="font-handwriting text-xl md:text-2xl text-stone-800 leading-relaxed mb-10"
+      >
+        "Flixu wasn’t created in a boardroom. It was born on the road—somewhere
+        between client calls and spotty signal. I spent months translating for
+        clients, switching between AI tools that were fast but blind to context,
+        and human workflows that were precise but unscalable.<br /><br />
+        The frustration was clear: If translation doesn’t feel human, it doesn’t work.<br
+        /><br />
+        We built Flixu to close that gap. To build a quiet, precise workspace that
+        respects language in all its complexity."
+      </h2>
+      <div class="flex justify-center items-center gap-4">
+        <div class="h-px w-12 bg-stone-300"></div>
+        <span class="font-mono text-xs uppercase tracking-widest text-stone-500"
+          >The Founder</span
+        >
+        <div class="h-px w-12 bg-stone-300"></div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

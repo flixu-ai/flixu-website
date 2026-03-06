@@ -1,0 +1,27 @@
+---
+const { class: className, id, "data-chapter": dataChapter } = Astro.props;
+---
+
+<section
+    id={id}
+    data-chapter={dataChapter}
+    class={`w-full relative group/section ${className}`}
+>
+    <!-- Architectural Crosshairs (Visible from XL) -->
+    <div
+        class="absolute top-0 left-6 w-3 h-3 border-t border-l border-stone-300 hidden xl:block opacity-40"
+    >
+    </div>
+    <div
+        class="absolute top-0 right-6 w-3 h-3 border-t border-r border-stone-300 hidden xl:block opacity-40"
+    >
+    </div>
+
+    <!-- Container: Max 1400px, Symmetrical Padding -->
+    <!-- XL Breakpoint: px-24 for ample room with rails -->
+    <div
+        class="mx-auto w-full max-w-[1400px] px-6 md:px-12 xl:px-24 h-full relative transition-[padding] duration-300"
+    >
+        <slot />
+    </div>
+</section>

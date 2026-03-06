@@ -1,0 +1,83 @@
+---
+/**
+ * Author bio block with E-E-A-T credentials + Person JSON-LD schema.
+ * Positioned at the bottom of articles for trust signals.
+ */
+import { Image } from "astro:assets";
+import SchemaOrg from "./SchemaOrg.astro";
+
+interface Props {
+  name?: string;
+  role?: string;
+  bio?: string;
+  url?: string;
+  imageUrl?: string;
+}
+
+const {
+  name = "Deniz Wozniak",
+  role = "Founder & CEO, Flixu",
+  bio = "Deniz spent 10+ years in B2B SaaS translation technology — including roles at Phrase (Memsource) — before founding Flixu. He builds context-aware AI systems that respect the craft of language. Flixu is a member of NVIDIA Inception and Google for Startups.",
+  url = "https://flixu.ai/about",
+  imageUrl,
+} = Astro.props;
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name,
+  jobTitle: role,
+  url,
+  description: bio,
+  worksFor: {
+    "@type": "Organization",
+    name: "Flixu",
+    url: "https://flixu.ai",
+  },
+};
+---
+
+<aside class="mt-16 pt-8 border-t border-stone-200">
+  <div class="flex items-start gap-6">
+    <!-- Author Avatar -->
+    <div class="w-14 h-14 bg-stone-100 rounded-full overflow-hidden shrink-0">
+      {
+        imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={name}
+            class="w-full h-full object-cover"
+            width={56}
+            height={56}
+          />
+        ) : (
+          <span class="flex items-center justify-center w-full h-full font-serif italic text-stone-400 text-xl">
+            {name.charAt(0)}
+          </span>
+        )
+      }
+    </div>
+
+    <!-- Author Info -->
+    <div>
+      <div class="flex items-center gap-3 mb-1">
+        <a
+          href={url}
+          class="font-serif text-lg text-stone-900 hover:text-orange-700 transition-colors"
+        >
+          {name}
+        </a>
+      </div>
+      <div
+        class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-3"
+      >
+        {role}
+      </div>
+      <p class="text-sm text-stone-500 leading-relaxed max-w-xl">
+        {bio}
+      </p>
+    </div>
+  </div>
+</aside>
+
+<SchemaOrg schema={personSchema} />

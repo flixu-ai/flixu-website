@@ -1,0 +1,250 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+import HeroTeamCollaboration from "../../../components/visuals/HeroTeamCollaboration.jsx";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Team Collaboration & Translation Management | Flixu";
+const description =
+  "Scale your localization output effortlessly. Share translation memories, glossaries, and project access with built-in role management.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "Team Collaboration", url: Astro.url.pathname },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  {/* SEO Schema */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How does shared Translation Memory work?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "When multiple team members work in the same client workspace, all confirmed translations instantly update the shared Translation Memory algorithm. The next translator benefits from those matches in real-time.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can I restrict what my freelance translators can see?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, Flixu utilizes Role-Based Access Control (RBAC). You can invite external vendors or team members as Viewers or Editors, restricting their access to specific projects or configuration settings.",
+          },
+        },
+      ],
+    })}
+  />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="max-w-3xl !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">
+          Built for teams.<br /><span class="text-orange-700 italic"
+            >Not just individuals.</span
+          >
+        </h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Achieve absolute consistency across your entire translation roster.
+          Shared memories, terminology, and project workflows without the
+          onboarding friction.
+        </p>
+        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
+          Start Your Free Team Trial
+        </a>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroTeamCollaboration client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Flixu Team and Business plans transform solitary translation into a networked operation. Instantly share specific Translation Memories, Glossaries, and Brand Voices. Utilize a continuous activity feed to track translation progress, and assign strict Owner/Admin/Editor roles to maintain security when inviting external contractors to your workspace."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">Core Capabilities</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+              ></path><circle cx="9" cy="7" r="4"></circle><path
+                d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path
+                d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Networked Intelligence</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Structural consistency built-in. An agency deploying 5 translators
+            automatically builds a unified intelligence layer. Translator A's
+            edits instantly provide context for Translator B.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Role-Based Access (RBAC)</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Prevent unintended modifications. Assign roles from Owner down to
+            Viewer. Freelancers can be restricted to specific projects without
+            exposing global client settings.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect width="18" height="18" x="3" y="4" rx="2" ry="2"
+              ></rect><line x1="16" x2="16" y1="2" y2="6"></line><line
+                x1="8"
+                x2="8"
+                y1="2"
+                y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line><path
+                d="M8 14h.01"></path><path d="M12 14h.01"></path><path
+                d="M16 14h.01"></path><path d="M8 18h.01"></path><path
+                d="M12 18h.01"></path><path d="M16 18h.01"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Activity Feed</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Eliminate project management ping-pong. See precisely when segments
+            are verified or modified across your entire organization in
+            real-time.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"
+              ></path><path d="M12 8h.01"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Unified Billing</h3>
+          <p class="text-stone-600 leading-relaxed">
+            One invoice, shared resource pools. Your Team or Business credit
+            pool is distributed automatically across your organization,
+            drastically simplifying procurement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <h2 class="mb-10 text-center">Technical FAQ</h2>
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            How does shared Translation Memory work?
+          </h4>
+          <p class="text-sm text-stone-600">
+            When multiple team members work in the same client workspace, all
+            confirmed translations instantly update the shared Translation
+            Memory algorithm. The next translator benefits from those matches in
+            real-time.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            Can I restrict what my freelance translators can see?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Yes, Flixu utilizes Role-Based Access Control (RBAC). You can invite
+            external vendors or team members as Viewers or Editors, restricting
+            their access to specific projects or configuration settings.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

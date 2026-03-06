@@ -1,0 +1,206 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "DeepL Alternative for Teams | Flixu";
+const description =
+  "DeepL translates words. Flixu understands context. Discover why professional teams are switching to context-aware translation.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Compare", url: Astro.url.pathname }, // No compare hub yet
+  { name: "Flixu vs DeepL", url: Astro.url.pathname },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  {/* SEO Schema */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Is Flixu better than DeepL?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "DeepL is excellent for casual translations. However, for professional teams, Flixu is superior because it includes Translation Memories (TM), Brand Voice constraints, and Quality Scoring—features DeepL lacks.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does Flixu cost more than DeepL Pro?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Flixu uses output-based billing per organization, unlike DeepL which charges high per-user monthly seats. For larger teams, Flixu is often significantly cheaper.",
+          },
+        },
+      ],
+    })}
+  />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div class="max-w-3xl">
+      <Breadcrumbs items={breadcrumbItems} />
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+        >Competitor Comparison</span
+      >
+      <h1 class="mb-6">
+        DeepL translates words.<br /><span class="text-orange-700 italic"
+          >Flixu understands context.</span
+        >
+      </h1>
+      <p class="max-w-2xl text-xl text-stone-600 mb-8">
+        DeepL is like a brilliant simultaneous interpreter who has never read
+        your brand's style guide. It's time to graduate to context-aware
+        translation.
+      </p>
+      <a
+        href="/sign-up?plan=individual&intent=individual&interval=month"
+        class="hidden"
+      >
+        Try Flixu Free
+      </a>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div
+      class="max-w-4xl mx-auto p-8 bg-white border border-stone-200 shadow-sm rounded-sm"
+    >
+      <h3
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4"
+      >
+        Flixu vs. DeepL: When to use which
+      </h3>
+      <p class="text-stone-700 leading-relaxed font-medium">
+        Use <strong>DeepL</strong> if you need to quickly translate an email from
+        a colleague or read a foreign news article. Use <strong>Flixu</strong> if
+        you are translating professional software, marketing campaigns, or legal documents
+        where terminology consistency, Translation Memory (TM), and specific Brand
+        Voice constraints are absolute requirements.
+      </p>
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — COMPARISON" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">Feature Comparison</h2>
+
+      <div class="overflow-x-auto border border-stone-200 rounded-sm">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-stone-50 border-b border-stone-200">
+              <th
+                class="py-4 pl-6 w-1/3 font-mono text-xs uppercase tracking-widest text-stone-500"
+                >Feature</th
+              >
+              <th class="py-4 w-1/3 font-serif text-lg text-stone-500"
+                >DeepL Pro</th
+              >
+              <th
+                class="py-4 w-1/3 font-serif text-lg text-orange-700 bg-orange-50/30"
+                >Flixu AI</th
+              >
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Underlying Models</td
+              >
+              <td class="py-4 text-stone-600">1 Proprietary Model</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >6 Dynamically Routed LLMs</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Translation Memory</td
+              >
+              <td class="py-4 text-stone-600">None</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >5-Tier Semantic Precision TM</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Brand Voice Engine</td
+              >
+              <td class="py-4 text-stone-600">None</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >Natively Integrated</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Quality Scoring</td
+              >
+              <td class="py-4 text-stone-600">None</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >Automated Segment Scoring</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700">Billing Model</td
+              >
+              <td class="py-4 text-stone-600">Seat-Based (High Per-User)</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >Output-Only (Volume Based)</td
+              >
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <h2 class="mb-10 text-center">Frequently Asked Questions</h2>
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            Is Flixu better than DeepL?
+          </h4>
+          <p class="text-sm text-stone-600">
+            DeepL is excellent for casual translations. However, for
+            professional teams, Flixu is superior because it includes
+            Translation Memories (TM), Brand Voice constraints, and Quality
+            Scoring—features DeepL lacks.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            Does Flixu cost more than DeepL Pro?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Flixu uses output-based billing per organization, unlike DeepL which
+            charges high per-user monthly seats. For larger teams, Flixu is
+            often significantly cheaper.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

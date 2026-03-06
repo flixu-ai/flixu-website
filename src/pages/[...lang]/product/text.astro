@@ -1,0 +1,381 @@
+---
+import ProductLayout from "../../../layouts/ProductLayout.astro";
+import HeroText from "../../../components/visuals/HeroText.jsx";
+import DetailText from "../../../components/visuals/DetailText.jsx";
+import Section from "../../../components/ui/Section.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import { useTranslations, getLocalizedPath } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "de" } }];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const content = t.productText;
+const specs = content.specs;
+
+const tNav = t.navigation as any;
+
+const faqs = [
+  {
+    question: "Why does translation neutrality hurt conversions?",
+    answer:
+      "A completely neutral tone erases a brand's unique identity. If a casual, witty English brand is translated into a sterile, formal German tone, it creates an emotional disconnect that reduces user trust and conversions.",
+  },
+  {
+    question: "How do you control the AI's tone of voice?",
+    answer:
+      "Flixu uses Digital Brand Voice Profiles where you define exact instructions regarding formality (tu vs. vous), emotional temperature, and pacing rules. This forces the AI out of its default corporate tone.",
+  },
+  {
+    question:
+      "What is the difference between literal translation and transcreation?",
+    answer:
+      "Literal translation exchanges grammar identically. Transcreation exchanges emotional intent. Flixu uses Semantic RAG to identify idioms (like sports analogies) and replaces them with culturally native metaphors for the target audience.",
+  },
+  {
+    question: "Do you support real-time API translation for chat apps?",
+    answer:
+      "Yes, our low-latency infrastructure delivers translations in milliseconds. This makes it ideal for real-time applications like customer support widgets and chat interfaces while strictly maintaining your Brand Voice.",
+  },
+  {
+    question: "Can I manage different tones for different regions?",
+    answer:
+      "Absolutely. You can set up regional Brand Voice profiles. For example, French for France might be formal, while French for Canada might be more casual, and Flixu handles this routing automatically based on metadata.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Nuanced Text",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<ProductLayout
+  title={lang === "de" ? "Nuancierter Text" : "Nuanced Text"}
+  subtitle={lang === "de"
+    ? "Kontextsensitive Übersetzung für anspruchsvolle Marken."
+    : "Context-aware translation for brands that care about voice."}
+  specs={specs}
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <!-- Hero Visual Slot -->
+  <HeroText client:load slot="visual" />
+
+  <!-- SECTION 1: THE PROBLEM -->
+  <Section
+    data-chapter={`02 — ${t.rail.challenge.toUpperCase()}`}
+    class="content-section"
+  >
+    <div class="max-w-3xl">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.challenge.label}</span
+      >
+      <h2 class="font-serif text-4xl md:text-5xl text-stone-900 mb-8">
+        {content.challenge.h2}
+      </h2>
+      <p class="text-xl text-stone-600 leading-relaxed mb-6">
+        {content.challenge.p1}
+      </p>
+      <p class="text-xl text-stone-600 leading-relaxed">
+        {content.challenge.p2}
+      </p>
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Generic AI and old MT engines sound like robots. They translate words, not emotion. Flixu solves the 'Missing Middle' by injecting customizable Brand Voices into the translation engine, allowing you to scale localization at software speed while maintaining the emotional resonance of an expensive transcreation agency."
+      />
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`04 — ${t.rail.mechanic.toUpperCase()}`}
+    class="content-section border-t border-stone-100"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div>
+        <h3 class="font-serif text-3xl text-stone-900 mb-6">
+          {content.mechanic.h3}
+        </h3>
+        <p class="text-lg text-stone-600 mb-6">
+          {content.mechanic.p}
+        </p>
+        <ul class="space-y-4 font-mono text-sm text-stone-500">
+          <li class="flex items-center gap-3">
+            <div class="w-1.5 h-1.5 bg-orange-700 rounded-full"></div>
+            {content.mechanic.list[0]}
+          </li>
+          <li class="flex items-center gap-3">
+            <div class="w-1.5 h-1.5 bg-orange-700 rounded-full"></div>
+            {content.mechanic.list[1]}
+          </li>
+          <li class="flex items-center gap-3">
+            <div class="w-1.5 h-1.5 bg-orange-700 rounded-full"></div>
+            {content.mechanic.list[2]}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Secondary Visual -->
+      <div
+        class="aspect-square bg-stone-50 border border-stone-200 rounded-sm flex items-center justify-center p-8 overflow-hidden"
+      >
+        <DetailText client:load />
+      </div>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="05 — DEEP DIVE"
+        class="content-section border-t border-stone-100"
+      >
+        <div class="max-w-3xl prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <h2>The Missing Middle: Discarding the Fallacy of Neutral Tone</h2>
+          <p>
+            In traditional B2B translation, organizations historically fall into
+            a challenging binary trap. At one extreme, they utilize high-volume,
+            generic Machine Translation (like Google Cloud Translation API)
+            which processes text for pennies but outputs a staggeringly robotic,
+            soulless corporate monotone. At the opposite extreme, organizations
+            hire elite boutique transcreation agencies who spend four weeks
+            agonizing over a single 500-word marketing brochure, charging high
+            fees to achieve emotional resonance.
+          </p>
+          <p>
+            This binary forces enterprise SaaS companies to make an agonizing
+            operational compromise: they either sacrifice scaling velocity by
+            paying the transcreation tax, or they sacrifice conversion rates by
+            settling for generic, robotic MT output.
+          </p>
+          <p>
+            Flixu operates entirely within the <strong>Missing Middle</strong>.
+            We engineered our Contextual AI explicitly to bridge this gap. By
+            programmatically injecting deep Brand Voice profiles directly into
+            the architectural translation layer, Flixu delivers the emotional
+            resonance of a boutique agency at the algorithmic velocity and cost
+            structure of raw software.
+          </p>
+
+          <h3>Why "Neutral" Translation Limits Conversion</h3>
+          <p>
+            A common mistake made by early-stage global expansion teams is
+            requesting a "neutral, highly professional" translation from their
+            vendors. However, there is no such thing as a neutral B2B sale.
+          </p>
+          <p>
+            If a vibrant, Gen-Z focused fashion supply chain startup (utilizing
+            heavy slang, emojis, and casual phrasing in their original English
+            copy) translates their website into a "neutral" German monotone, the
+            site loses its entire competitive differentiation. The target
+            audience immediately registers an emotional disconnect between the
+            vibrant visual design and the deeply conservative textual phrasing.
+          </p>
+          <p>
+            When emotional resonance breaks, trust evaporates. When trust
+            evaporates, conversion rates plummet. Text translation is not merely
+            the mechanics of exchanging grammar; it is the strategic
+            transference of trust.
+          </p>
+
+          <h2>How do we program emotional cadence?</h2>
+          <p>
+            Flixu discards the concept of manual emotional guessing. We allow
+            Localization Managers to mathematically program their specific
+            corporate identity through{" "}
+            <strong>Digital Brand Voice Profiles</strong>.
+          </p>
+          <p>
+            Instead of writing a 40-page PDF style guide that a freelance
+            translator will inevitably ignore, you construct a live
+            architectural parameter within the Flixu Workspace. You explicitly
+            instruct the Large Language Model (LLM) utilizing distinct
+            psychological markers:
+          </p>
+          <ul>
+            <li>
+              <strong>Formality Designation:</strong> Hardcoding the strict
+              utilization of formal pronouns (e.g., German <em>Sie</em>, French{" "}
+              <em>vous</em>) versus casual pronouns (e.g., German <em>du</em>,
+              French <em>tu</em>).
+            </li>
+            <li>
+              <strong>Emotional Temperature:</strong> Dictating whether the AI
+              should output "witty and energetic" syntax or "clinical and highly
+              analytical" syntax.
+            </li>
+            <li>
+              <strong>Pacing and Clause Structure:</strong> Instructing the AI
+              to prefer short, punchy, active verbs for a marketing landing
+              page, versus long, flowing, complex clauses for a legal Terms of
+              Service agreement.
+            </li>
+          </ul>
+
+          <h3>Dynamic Routing by Department</h3>
+          <p>
+            Because Flixu operates intelligently via Context Injection, Brand
+            Voice is not monolithic. The platform understands that your company
+            possesses distinct internal voices based upon the originating
+            department.
+          </p>
+          <p>
+            When a Product Manager pushes a JSON string containing an error
+            state warning (e.g., "Oops! Something went wrong!"), Flixu routes it
+            through the <em>Marketing Casual</em> profile. The resulting
+            translation is highly empathetic and apologetic. Conversely, when
+            the General Counsel pushes an update to the Privacy Policy, the
+            platform routes it through the <em>Legal Strict</em> profile. The AI
+            instantaneously strips away any colloquialisms and translates the
+            text with absolute, brutal statutory precision. One central
+            platform, multiple mathematically enforced personalities.
+          </p>
+
+          <h2>Why choose transcreation over literal translation?</h2>
+          <p>
+            Standard translation asks: <em>"How do I say X in Spanish?"</em>{" "}
+            Transcreation asks:{" "}
+            <em>
+              "What emotional reaction does X trigger in English, and how do I
+              trigger that exact same emotional reaction in Spanish?"
+            </em>
+          </p>
+          <p>
+            Certain English marketing idioms are culturally untranslatable. If a
+            US-based sales software application utilizes the slogan "Knock your
+            Q4 quotas out of the park," a literal translation into French will
+            confuse a Parisian audience that possesses zero cultural context
+            regarding American baseball.
+          </p>
+          <p>
+            Flixu's Semantic RAG (Retrieval-Augmented Generation) architecture
+            is explicitly trained to execute sophisticated transcreation. When
+            the Orchestrator detects an English colloquialism or sports idiom,
+            it does not execute a literal matching algorithm. It queries its
+            neural vector database to identify the underlying emotional intent
+            (e.g., "Extremely high commercial success"), and dynamically
+            generates a culturally native equivalent metaphor that resonates
+            flawlessly within the target European or Asian market.
+          </p>
+
+          <h2>Why is tone control critical for global business?</h2>
+          <p>
+            The era of tolerating disjointed, robotic software translations is
+            over. In a crowded B2B SaaS landscape, international buyers will not
+            purchase enterprise licenses from a platform that sounds confusing,
+            outdated, or emotionally vacant.
+          </p>
+          <p>
+            By utilizing Flixu's Contextual Orchestration, your international
+            text is no longer an afterthought delegated to a slow, manual
+            agency. It becomes a hyper-scalable, heavily guarded brand asset.
+            You guarantee that a CFO running your software in Tokyo experiences
+            the exact same premium, highly engineered linguistic cadence as a
+            CFO running your software in New York. Ultimately, precision text
+            localization is your strongest defensive moat against regional
+            competitors.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="06 — FAQ"
+    class="content-section border-t border-stone-100 pb-0"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- SECTION 3: BRAND VOICE FOR TRANSLATORS -->
+  <Section
+    data-chapter={`07 — ${t.rail.agencies.toUpperCase()}`}
+    class="content-section border-t border-stone-100 bg-stone-50"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div>
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >
+          {content.agencies.label}
+        </span>
+        <h3 class="font-serif text-3xl text-stone-900 mb-6">
+          {content.agencies.h3}
+        </h3>
+        <p class="text-lg text-stone-600 leading-relaxed mb-8">
+          {content.agencies.p}
+        </p>
+        <a
+          href="/for/freelancers"
+          class="text-orange-700 font-sans text-sm hover:text-orange-600 transition-colors"
+        >
+          {content.agencies.link}
+        </a>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-white p-5 rounded-sm border border-stone-200 shadow-sm">
+          <div
+            class="font-mono text-[10px] text-stone-400 uppercase tracking-widest mb-3"
+          >
+            {content.agencies.card.header}
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between border-b border-stone-100 pb-2">
+              <span class="text-stone-500">{content.agencies.card.f}</span>
+              <span class="text-stone-900">{content.agencies.card.f_val}</span>
+            </div>
+            <div class="flex justify-between border-b border-stone-100 pb-2">
+              <span class="text-stone-500">{content.agencies.card.d}</span>
+              <span class="text-stone-900">{content.agencies.card.d_val}</span>
+            </div>
+            <div class="flex justify-between border-b border-stone-100 pb-2">
+              <span class="text-stone-500">{content.agencies.card.t}</span>
+              <span class="text-stone-900">{content.agencies.card.t_val}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-stone-500">{content.agencies.card.g}</span>
+              <span class="text-emerald-600 font-medium"
+                >{content.agencies.card.g_val}</span
+              >
+            </div>
+          </div>
+        </div>
+        <p class="font-mono text-[10px] text-stone-400 text-center">
+          {content.agencies.card.footer}
+        </p>
+      </div>
+    </div>
+  </Section>
+</ProductLayout>

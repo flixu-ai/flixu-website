@@ -1,0 +1,360 @@
+@config "../../tailwind.config.mjs";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ═══════════════════════════════════════════════════════════════════
+   FLIXU DESIGN SYSTEM — Single Source of Truth
+   All visual patterns are defined here. No inline CSS in templates.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────── BASE TYPOGRAPHY ───────────────────── */
+@layer base {
+  h1 {
+    @apply font-serif font-normal text-5xl md:text-6xl lg:text-7xl leading-[1.1] text-stone-900 mb-8 tracking-tight;
+  }
+  h2 {
+    @apply font-serif font-normal text-3xl sm:text-4xl md:text-5xl leading-tight text-stone-900 mb-8 tracking-tight;
+  }
+  h3 {
+    @apply font-serif font-normal text-2xl md:text-3xl leading-snug text-stone-900 mb-4;
+  }
+  p {
+    @apply font-light text-stone-600 leading-relaxed text-lg;
+  }
+}
+
+/* ───────────────────────────── HERO SECTIONS ─────────────────────── */
+@layer components {
+  .hero-section {
+    @apply pt-32 pb-16 border-b border-stone-100;
+  }
+  .hero-section--paper {
+    @apply pt-32 pb-16 border-b border-stone-100 bg-paper;
+  }
+  .hero-container {
+    @apply max-w-3xl;
+  }
+  .badge {
+    @apply font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block;
+  }
+  .hero-title {
+    @apply font-serif font-normal text-5xl md:text-7xl text-stone-900 mb-8 leading-[1.1];
+  }
+  .hero-desc {
+    @apply font-sans text-xl md:text-2xl text-stone-500 leading-relaxed;
+  }
+
+  /* ───────────────────────── CONTENT SECTIONS ─────────────────────── */
+
+  .tldr-section {
+    @apply py-8 bg-paper;
+  }
+
+  .content-section {
+    @apply py-20;
+  }
+  .content-section--paper {
+    @apply py-20 bg-paper;
+  }
+  .content-section--alt {
+    @apply py-20 bg-paper border-y border-stone-200;
+  }
+  .content-section--border-top {
+    @apply py-20 border-t border-stone-200;
+  }
+
+  /* ─────────────────────────── ARTICLE PROSE ──────────────────────── */
+
+  .prose-primary {
+    @apply max-w-3xl prose prose-stone prose-lg md:prose-xl
+      prose-headings:font-serif prose-headings:font-normal prose-headings:text-stone-900
+      prose-p:text-stone-600 prose-p:leading-loose prose-p:mb-6
+      prose-a:text-orange-700 prose-a:no-underline;
+  }
+  .prose-primary:hover a {
+    text-decoration: underline;
+  }
+  .prose-primary li::marker {
+    @apply text-orange-700;
+  }
+
+  .prose-secondary {
+    @apply prose prose-stone prose-lg max-w-none
+      prose-headings:font-serif prose-headings:font-normal prose-headings:text-stone-900
+      prose-p:text-stone-700 prose-p:leading-relaxed
+      prose-a:text-orange-700
+      prose-strong:text-stone-900;
+  }
+  .prose-secondary a:hover {
+    @apply text-orange-800;
+  }
+  .prose-secondary img {
+    @apply rounded-sm border border-stone-200;
+  }
+
+  .prose-inline {
+    @apply prose prose-stone prose-lg prose-headings:font-normal prose-a:text-orange-700;
+  }
+
+  /* ──────────────────────────── CARD SYSTEM ───────────────────────── */
+
+  /* Base card — apply on <a> or <div> with class="group" */
+  .card {
+    @apply relative flex flex-col p-8 border border-stone-200 bg-paper
+      transition-all duration-300;
+  }
+  .card:hover {
+    @apply shadow-sm border-orange-700/30;
+  }
+
+  /* Card decorative top-line — requires parent .group */
+  .card-glow {
+    @apply absolute top-0 left-0 w-full h-[1px]
+      bg-gradient-to-r from-orange-700/0 via-orange-700/0 to-orange-700/0
+      transition-all duration-500;
+  }
+  .group:hover .card-glow {
+    --tw-gradient-via: rgb(194 65 12 / 0.5);
+  }
+
+  /* Card category label — requires parent .group */
+  .card-label {
+    @apply font-mono text-[10px] uppercase tracking-widest text-stone-400
+      transition-colors;
+  }
+  .group:hover .card-label {
+    @apply text-orange-700;
+  }
+
+  /* Card title */
+  .card-title {
+    @apply font-serif font-normal text-2xl text-stone-900 mb-3 transition-colors;
+  }
+  .group:hover .card-title {
+    @apply text-orange-900;
+  }
+  .card-title--lg {
+    @apply font-serif font-normal text-3xl md:text-4xl text-stone-900 mb-3 transition-colors;
+  }
+  .group:hover .card-title--lg {
+    @apply text-orange-900;
+  }
+
+  /* Card description */
+  .card-desc {
+    @apply font-sans text-sm text-stone-500 leading-relaxed;
+  }
+
+  /* Feature card — smaller card for feature grids */
+  .feature-card {
+    @apply p-6 border border-stone-200 bg-paper rounded-sm;
+  }
+  .feature-card--white {
+    @apply p-6 border border-stone-200 bg-white rounded-sm;
+  }
+  .feature-card-title {
+    @apply font-serif font-normal text-lg text-stone-900 mb-2;
+  }
+  .feature-card-desc {
+    @apply text-sm text-stone-500 leading-relaxed;
+  }
+
+  /* ──────────────────────────── CTA SYSTEM ────────────────────────── */
+
+  .cta-box {
+    @apply max-w-3xl mt-16 p-8 border border-stone-200 bg-stone-50 rounded-sm
+      flex flex-col md:flex-row items-start md:items-center justify-between gap-6;
+  }
+  .cta-box-title {
+    @apply font-serif font-normal text-2xl text-stone-900 mb-2;
+  }
+  .cta-box-desc {
+    @apply text-stone-500 text-sm;
+  }
+  .cta-footer {
+    @apply max-w-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6;
+  }
+  .cta-footer-title {
+    @apply font-serif font-normal text-3xl text-stone-900 mb-2;
+  }
+  .cta-footer-desc {
+    @apply text-stone-500;
+  }
+
+  /* ──────────────────────────── BUTTONS ───────────────────────────── */
+
+  .btn-primary {
+    @apply px-6 py-3 font-medium text-sm rounded-sm transition-colors shrink-0
+      bg-stone-900 text-white;
+  }
+  .btn-primary:hover {
+    @apply bg-orange-700;
+  }
+  .btn-brand {
+    @apply px-6 py-3 font-medium text-sm rounded-sm transition-colors shrink-0
+      bg-orange-700 text-white;
+  }
+  .btn-brand:hover {
+    @apply bg-orange-800;
+  }
+
+  /* Link card — sidebar, glossary related topics */
+  .link-card {
+    @apply flex items-center justify-between w-full p-4 border border-stone-200
+      transition-colors bg-white;
+  }
+  .link-card:hover {
+    @apply border-orange-700/30;
+  }
+  .link-card-label {
+    @apply font-medium text-stone-900;
+  }
+
+  /* ──────────────────────────── TAG PILLS ─────────────────────────── */
+
+  .tag-pill {
+    @apply px-4 py-2 border border-stone-200 bg-white text-stone-700 text-sm
+      transition-all rounded-sm;
+  }
+  .tag-pill:hover {
+    @apply border-orange-700/30 text-orange-700;
+  }
+
+  /* ──────────────────────────── HUB PAGES ─────────────────────────── */
+
+  .hub-hero {
+    @apply pt-32 pb-32 relative overflow-hidden bg-paper;
+  }
+  .hub-header {
+    @apply mb-16 max-w-2xl;
+  }
+  .hub-title {
+    @apply font-serif font-normal text-5xl md:text-7xl text-stone-900 mb-6 tracking-tight;
+  }
+  .hub-desc {
+    @apply text-xl text-stone-500 max-w-2xl leading-relaxed font-sans;
+  }
+
+  .hub-grid-bg {
+    @apply absolute inset-0 z-0 pointer-events-none opacity-[0.4];
+    background-image:
+      linear-gradient(to right, #80808012 1px, transparent 1px),
+      linear-gradient(to bottom, #80808012 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+  }
+
+  /* ──────────────────────────── STEP LIST ─────────────────────────── */
+
+  .step-number {
+    @apply font-mono text-xs text-orange-700 mt-1 shrink-0;
+  }
+  .step-title {
+    @apply font-serif font-normal text-xl text-stone-900 mb-2;
+  }
+  .step-desc {
+    @apply text-stone-600 leading-relaxed;
+  }
+
+  /* ───────────────────── DATA TABLE ───────────────────────────────── */
+
+  .data-table {
+    @apply w-full text-sm;
+  }
+  .data-table-header--muted {
+    @apply text-left font-mono text-xs uppercase tracking-widest py-3 text-stone-500;
+  }
+  .data-table-header--brand {
+    @apply text-left font-mono text-xs uppercase tracking-widest py-3 text-orange-700;
+  }
+
+  /* ─────────────────────── ALPHABET NAV ───────────────────────────── */
+
+  .alpha-link {
+    @apply w-10 h-10 flex items-center justify-center border border-stone-200
+      text-stone-600 font-mono text-sm transition-colors rounded-sm;
+  }
+  .alpha-link:hover {
+    @apply border-orange-700 text-orange-700;
+  }
+
+  /* ─────────────────────────── SECTION HELPERS ────────────────────── */
+
+  .section-divider {
+    @apply mt-16 pt-8 border-t border-stone-200;
+  }
+  .section-heading {
+    @apply font-serif font-normal text-2xl text-stone-900 mb-6;
+  }
+  .section-heading--lg {
+    @apply font-serif font-normal text-3xl md:text-4xl text-stone-900 mb-8;
+  }
+  .section-heading--centered {
+    @apply font-serif font-normal text-2xl md:text-3xl text-stone-900 mb-12 text-center;
+  }
+}
+
+/* ─────────────────────── UTILITY EXTENSIONS ──────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    scroll-margin-top: 8rem;
+  }
+}
+
+/* ─────────── PROSE HEADING WEIGHT OVERRIDE (TW v4 fix) ──────────── */
+/* Use highly specific native CSS with !important to overpower the Plugin */
+
+/* 1. Force light font weight on all headings inside any prose container */
+[class*="prose-"] h1,
+[class*="prose-"] h2,
+[class*="prose-"] h3,
+[class*="prose-"] h4,
+[class*="prose-"] h5,
+[class*="prose-"] h6 {
+  font-weight: 400 !important;
+  font-family: "Instrument Serif", serif !important;
+}
+
+/* 2. Harmonize HTML heading sizes to match the @layer base exactly */
+[class*="prose-"] h2 {
+  font-size: clamp(
+    1.875rem,
+    3vw + 0.5rem,
+    2.25rem
+  ) !important; /* text-4xl equivalent */
+  line-height: 1.1 !important;
+  letter-spacing: -0.025em !important; /* tracking-tight */
+  color: var(--color-stone-900) !important;
+  margin-top: 2.5rem !important;
+  margin-bottom: 2rem !important;
+}
+
+[class*="prose-"] h3 {
+  font-size: clamp(
+    1.5rem,
+    2vw + 0.5rem,
+    1.875rem
+  ) !important; /* text-3xl equivalent */
+  line-height: 1.3 !important;
+  letter-spacing: -0.025em !important; /* tracking-tight */
+  color: var(--color-stone-900) !important;
+  margin-top: 2rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* 3. Keep <strong> noticeable but not as heavy as default 700 */
+[class*="prose-"] strong {
+  font-weight: 500 !important;
+}
+
+/* 4. Enforce font-light on lists and blockquotes to match paragraphs */
+[class*="prose-"] li,
+[class*="prose-"] blockquote {
+  font-weight: 300 !important;
+}

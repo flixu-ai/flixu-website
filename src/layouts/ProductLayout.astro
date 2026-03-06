@@ -1,0 +1,99 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Section from "../components/ui/Section.astro";
+import Breadcrumbs from "../components/seo/Breadcrumbs.astro";
+import { ArrowRight, Cpu, Globe, Zap } from "lucide-react";
+import { getLocalizedPath, useTranslations } from "../i18n/utils";
+
+interface Spec {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  title: string;
+  subtitle: string;
+  specs?: Spec[];
+}
+
+const { title, subtitle, specs = [] } = Astro.props;
+const lang = Astro.currentLocale || "en";
+const t = await useTranslations(lang);
+const tNav = t.navigation as any;
+
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  { name: tNav?.solutions?.title || "Product", url: "#" },
+  { name: title, url: Astro.url.pathname },
+];
+---
+
+<BaseLayout title={title}>
+  <!-- HERO SECTION (Slot for Hero Visual) -->
+  <Section
+    data-chapter={`01 — ${t.rail.intro.toUpperCase()}`}
+    class="hero-section"
+  >
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div class="max-w-xl">
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 class="font-serif text-5xl md:text-6xl text-stone-900 mb-6">
+          {title}
+        </h1>
+        <p class="font-sans text-xl text-stone-600 mb-8 leading-relaxed">
+          {subtitle}
+        </p>
+        <div class="flex gap-4">
+          <a
+            href="/signup"
+            class="px-6 py-3 bg-orange-700 text-white rounded-sm hover:bg-orange-800 transition-colors hidden"
+            >{t.product.ctaTrial}</a
+          >
+          <a
+            href="#details"
+            class="px-6 py-3 border border-stone-200 text-stone-600 rounded-sm hover:border-stone-400 transition-colors"
+            >{t.product.ctaHow}</a
+          >
+        </div>
+      </div>
+      <div
+        class="relative w-full min-h-[400px] flex items-center justify-center bg-stone-50/30 border border-stone-100 rounded-sm overflow-hidden"
+      >
+        <slot name="visual" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- DEEP DIVE CONTENT (Slot for content) -->
+  <div id="details">
+    <slot />
+  </div>
+
+  <!-- DYNAMIC SPECS SECTION (At the bottom) -->
+  {
+    specs.length > 0 && (
+      <Section
+        data-chapter="06 — START"
+        class="content-section border-t border-stone-100 bg-stone-50/30"
+      >
+        <div class="max-w-4xl mx-auto">
+          <h3 class="font-serif text-3xl text-stone-900 mb-12">
+            {t.product.specsTitle}
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+            {specs.map((spec) => (
+              <div class="flex justify-between items-end border-b border-stone-200 pb-2">
+                <span class="font-mono text-xs uppercase tracking-widest text-stone-400">
+                  {spec.label}
+                </span>
+                <span class="font-sans text-sm font-medium text-stone-900 text-right">
+                  {spec.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+    )
+  }
+</BaseLayout>

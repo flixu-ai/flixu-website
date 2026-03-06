@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import TopicLayout from "../../../layouts/TopicLayout.astro";
+import { locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const topics = await getCollection("topics");
+
+  return ["en", ...locales.filter((l) => l !== "en")].flatMap((l) => {
+    const paths = topics
+      .filter((t) => t.id.startsWith(`${l}/`))
+      .map((entry) => ({
+        params: {
+          lang: l,
+          slug: entry.id.replace(`${l}/`, "").replace(/\.mdx?$/, ""),
+        },
+        props: { entry },
+      }));
+
+    if (l === "en") {
+      const undefinedPaths = topics
+        .filter((t) => t.id.startsWith(`${l}/`))
+        .map((entry) => ({
+          params: {
+            lang: undefined,
+            slug: entry.id.replace(`${l}/`, "").replace(/\.mdx?$/, ""),
+          },
+          props: { entry },
+        }));
+      return [...paths, ...undefinedPaths];
+    }
+    return paths;
+  });
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<!-- WICHTIG: Wir übergeben entry.data als 'frontmatter' Prop -->
+<TopicLayout frontmatter={entry.data}>
+  <Content />
+</TopicLayout>

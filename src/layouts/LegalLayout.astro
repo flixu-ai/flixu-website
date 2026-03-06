@@ -1,0 +1,57 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Section from "../components/core/Section.astro";
+
+const { frontmatter, lang } = Astro.props;
+
+const formattedDate = new Date(frontmatter.lastUpdated).toLocaleDateString(
+  lang === "de" ? "de-DE" : "en-US",
+  {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  },
+);
+---
+
+<BaseLayout
+  title={`${frontmatter.title} | Flixu`}
+  description={frontmatter.description}
+  lang={lang}
+>
+  <article>
+    {/* Header */}
+    <Section data-chapter="01 — INTRO" class="hero-section">
+      <div class="max-w-2xl mx-auto">
+        <p
+          class="font-mono text-sm uppercase tracking-widest text-stone-400 mb-6"
+        >
+          {lang === "de" ? "Rechtliches" : "Legal"} • {formattedDate}
+        </p>
+        <h1
+          class="font-serif text-5xl md:text-6xl text-stone-900 leading-tight"
+        >
+          {frontmatter.title}
+        </h1>
+      </div>
+    </Section>
+
+    {/* Content */}
+    <Section data-chapter="02 — DOCUMENT" class="content-section">
+      <div
+        class="max-w-2xl mx-auto prose prose-stone prose-lg prose-headings:font-serif prose-headings:font-normal prose-a:text-orange-700 hover:prose-a:text-orange-800 prose-p:text-stone-600 prose-li:text-stone-600"
+      >
+        <slot />
+
+        {/* Legal Contact Footer */}
+        <div class="mt-16 pt-8 border-t border-stone-200">
+          <p class="text-sm text-stone-500 mb-1">Legal Contact:</p>
+          <a
+            href="mailto:legal@flixu.ai"
+            class="hover:text-orange-700 transition-colors">legal@flixu.ai</a
+          >
+        </div>
+      </div>
+    </Section>
+  </article>
+</BaseLayout>

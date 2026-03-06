@@ -1,0 +1,249 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroBrandVoice from "../../../components/visuals/HeroBrandVoice.jsx";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Brand Voice Translation Rules | Flixu";
+const description =
+  "Control the stylistic output of AI translations. Apply specific tone of voice, formality rules, and audience contexts automatically.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "Brand Voice", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "How does Brand Voice work in Flixu translation?",
+    answer:
+      "A Brand Voice is a set of natural language instructions (like 'use an enthusiastic tone' or 'avoid passive voice') that is injected directly into the LLM context before translation occurs. This forces the translation to adhere to your stylistic rules.",
+  },
+  {
+    question: "Can I have multiple brand voices?",
+    answer:
+      "Yes, Flixu supports multiple Brand Voices per account. You can assign different voices to different clients, or even different projects (e.g., 'Marketing' vs. 'Legal').",
+  },
+  {
+    question: "Does the AI understand different levels of formality?",
+    answer:
+      "Absolutely. You can specifically instruct the Brand Voice to utilize formal pronouns (such as the German 'Sie' or French 'vous') versus informal pronouns ('du' or 'tu'). The Engine will lock this grammar across all translations.",
+  },
+  {
+    question: "How do I apply a Brand Voice to a translation?",
+    answer:
+      "You simply attach the designated Brand Voice profile to your specific Client or Project within the Flixu Workspace. All documents translated under that project will automatically inherit those rules.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Brand Voice",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="max-w-3xl !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">Stop sounding like a robot.</h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Raw AI sounds sterile. Flixu applies your specific brand personality,
+          tone, and stylistic constraints to every single sentence.
+        </p>
+        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
+          Define Your Voice
+        </a>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroBrandVoice client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="DeepL and traditional machine translation ignore style. Flixu allows you to define custom 'Brand Voices'—detailed stylistic instructions that govern formality (tu vs. Sie), sentence length, and emotional resonance. Apply these voices to your clients or projects to ensure that French marketing copy sounds just as punchy and human as the English original."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">How does Brand Voice control the AI?</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 20h9"></path><path
+                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Instructional Prompts</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Write guidelines precisely as you would for a human translator.
+            "Write in short, punchy sentences. Use active voice." The AI honors
+            these rules during token generation.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M17 6.1H3"></path><path d="M21 12.1H3"></path><path
+                d="M15.1 18H3"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Formality Control</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Eliminate awkward tone shifts. Formally lock translations to 'Sie'
+            (Formal German) or 'tu' (Informal French) to prevent the AI from
+            guessing based on the source text.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect width="18" height="18" x="3" y="3" rx="2" ry="2"
+              ></rect><line x1="3" x2="21" y1="9" y2="9"></line><line
+                x1="9"
+                x2="9"
+                y1="21"
+                y2="9"></line></svg
+            >
+          </div>
+          <h3 class="text-xl">Context Inheritance</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Map Brand Voices directly to Client Profiles. When a team member
+            starts a project for that client, the voice is automatically
+            enforced without manual configuration.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+              ></path><polyline points="14 2 14 8 20 8"></polyline><line
+                x1="16"
+                x2="8"
+                y1="13"
+                y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line
+                x1="10"
+                x2="8"
+                y1="9"
+                y2="9"></line></svg
+            >
+          </div>
+          <h3 class="text-xl">Voice Testing</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Use the built-in Quick Translate widget to test different voices
+            against the same source string and tweak your instructions before
+            applying them to large documents.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+</BaseLayout>

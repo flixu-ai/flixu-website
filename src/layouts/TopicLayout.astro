@@ -1,0 +1,146 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Section from "../components/ui/Section.astro";
+import Breadcrumbs from "../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../components/seo/TldrBlock.astro";
+import KeyTakeaways from "../components/seo/KeyTakeaways.astro";
+import FAQSection from "../components/seo/FAQSection.astro";
+import AuthorBio from "../components/seo/AuthorBio.astro";
+import LastUpdated from "../components/seo/LastUpdated.astro";
+import SchemaOrg from "../components/seo/SchemaOrg.astro";
+import { useTranslations, getLocalizedPath } from "../i18n/utils";
+
+const { frontmatter } = Astro.props;
+const currentLang = Astro.currentLocale || "en";
+
+const productLink = frontmatter.relatedProduct
+  ? `/${currentLang}/product/${frontmatter.relatedProduct}`
+  : `/${currentLang}/product/text`;
+
+const t = await useTranslations(currentLang);
+
+const baseArticle = {
+  "@type": "Article",
+  headline: frontmatter.title,
+  description: frontmatter.description,
+  author: {
+    "@type": "Person",
+    name: "Deniz Wozniak",
+    url: "https://flixu.ai/about",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Flixu",
+    url: "https://flixu.ai",
+  },
+  ...(frontmatter.dateModified && {
+    dateModified: new Date(frontmatter.dateModified).toISOString(),
+  }),
+};
+
+// Create a combined @graph schema to allow multiple root objects
+const articleSchema: Record<string, any> = {
+  "@context": "https://schema.org",
+  "@graph": [baseArticle],
+};
+
+// Inject FAQPage if FAQs exist
+if (frontmatter.faqs && frontmatter.faqs.length > 0) {
+  articleSchema["@graph"].push({
+    "@type": "FAQPage",
+    mainEntity: frontmatter.faqs.map(
+      (faq: { question: string; answer: string }) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      }),
+    ),
+  });
+}
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", currentLang) },
+  {
+    name: t.topic?.badge || "Knowledge Base",
+    url: getLocalizedPath("/topic", currentLang),
+  },
+  { name: frontmatter.title, url: Astro.url.pathname },
+];
+---
+
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  ogType="article"
+>
+  <SchemaOrg schema={articleSchema} slot="schema" />
+
+  <Section data-chapter="01 — INTRO" class="hero-section--paper">
+    <div class="hero-container">
+      <Breadcrumbs items={breadcrumbItems} />
+      <span class="badge">{t.topic.badge}</span>
+      <h1 class="hero-title">{frontmatter.title}</h1>
+      <p class="hero-desc">{frontmatter.description}</p>
+
+      {
+        frontmatter.dateModified && (
+          <div class="mt-6">
+            <LastUpdated
+              date={new Date(frontmatter.dateModified)}
+              lang={currentLang}
+            />
+          </div>
+        )
+      }
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — GUIDE" class="content-section--paper">
+    <article class="prose-primary">
+      {frontmatter.tldr && <TldrBlock text={frontmatter.tldr} />}
+
+      {
+        frontmatter.keyTakeaways && frontmatter.keyTakeaways.length > 0 && (
+          <KeyTakeaways items={frontmatter.keyTakeaways} />
+        )
+      }
+
+      <slot />
+    </article>
+
+    {
+      frontmatter.faqs && frontmatter.faqs.length > 0 && (
+        <div class="max-w-3xl">
+          <FAQSection items={frontmatter.faqs} />
+        </div>
+      )
+    }
+
+    <div class="max-w-3xl">
+      <AuthorBio />
+    </div>
+
+    {
+      frontmatter.relatedProduct && (
+        <div class="cta-box">
+          <div>
+            <h3 class="cta-box-title">{t.topic.ctaTitle}</h3>
+            <p class="cta-box-desc">
+              {t.topic.ctaDesc.replace("{title}", frontmatter.title)}
+            </p>
+          </div>
+          <a href={productLink} class="btn-primary">
+            {t.topic.ctaButton.replace(
+              "{product}",
+              frontmatter.relatedProduct.charAt(0).toUpperCase() +
+                frontmatter.relatedProduct.slice(1),
+            )}
+          </a>
+        </div>
+      )
+    }
+  </Section>
+</BaseLayout>

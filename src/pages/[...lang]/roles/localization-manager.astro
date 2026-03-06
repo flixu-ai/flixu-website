@@ -1,0 +1,190 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroLocalizationManager from "../../../components/visuals/HeroLocalizationManager.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const tNav = t.navigation as any;
+const isDE = lang === "de";
+
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.whofor?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  },
+  { name: "Localization Manager", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Can Flixu replace our TMS?",
+    answer:
+      "For many teams, yes. Flixu handles project management, TM, glossary, brand voice, and multi-language delivery. If you need complex routing to dozens of vendors, a traditional TMS may still have a role — but Flixu eliminates most of its overhead.",
+  },
+  {
+    question: "How do I maintain quality control?",
+    answer:
+      "Glossary enforcement catches terminology issues at translation time. TM ensures consistency. QA checks verify formatting and completeness. Your role shifts from managing vendors to curating context.",
+  },
+  {
+    question: "Does Flixu support reviewer workflows?",
+    answer:
+      "Translations can be reviewed in-app before approval. Approved translations automatically feed the TM for future consistency.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Tools for Localization Managers",
+      description:
+        "Stop managing spreadsheets and vendor emails. Flixu gives localization managers a single workspace with glossary enforcement, TM, and brand voice control.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Tools for Localization Managers — Your Workflow, Simplified"
+  description="Stop managing spreadsheets and vendor emails. Flixu gives localization managers a single workspace with glossary enforcement, TM, and brand voice control."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Role</span>
+        <h1 class="hero-title">Localization Manager.</h1>
+        <p class="hero-desc">
+          Less project management. More quality control. That's the shift.
+        </p>
+      </div>
+      <div
+        class="relative w-full aspect-[4/3] hidden lg:block"
+      >
+        <HeroLocalizationManager client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — CURATING" class="content-section">
+    <div class="hero-container prose-inline">
+      <KeyTakeaways
+        items={[
+          "Ditch the heavy 12-month implementation project required by legacy TMS.",
+          "Centralize terminology rules using mathematically enforced Brand Voice profiles.",
+          "Eliminate vendor management friction by curating AI context instead of emailing spreadsheets.",
+          "Review, approve, and build automated Translation Memory natively in the workspace.",
+        ]}
+      />
+      <h2>How do you evolve from managing logistics to curating quality?</h2>
+      <p>
+        The localization manager's job has traditionally been logistics: assign
+        work, track progress, chase deadlines, reconcile spreadsheets. With
+        AI-native workflows, the role shifts to what it should have always been
+        — curating linguistic quality and managing context.
+      </p>
+      <p>
+        Instead of emailing spreadsheets to vendors, you configure glossaries
+        and brand voice settings. Instead of tracking 15 vendor timelines, you
+        review AI output and approve translations in a single workspace.
+      </p>
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — COMPARISON" class="content-section--alt">
+    <div class="hero-container">
+      <h2 class="section-heading--lg">Before vs. After</h2>
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr class="border-b border-stone-200">
+              <th class="data-table-header--muted">Before</th>
+              <th class="data-table-header--brand">With Flixu</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            <tr
+              ><td class="py-3 text-stone-600">Email spreadsheets to vendors</td
+              ><td class="py-3 text-stone-900"
+                >Upload files, translate in-app</td
+              ></tr
+            >
+            <tr
+              ><td class="py-3 text-stone-600">Track 15 vendor timelines</td><td
+                class="py-3 text-stone-900"
+                >All languages processed simultaneously</td
+              ></tr
+            >
+            <tr
+              ><td class="py-3 text-stone-600">Manually check terminology</td
+              ><td class="py-3 text-stone-900"
+                >Glossary enforced automatically</td
+              ></tr
+            >
+            <tr
+              ><td class="py-3 text-stone-600"
+                >Brand voice drift across languages</td
+              ><td class="py-3 text-stone-900"
+                >Voice configured once, applied everywhere</td
+              ></tr
+            >
+            <tr
+              ><td class="py-3 text-stone-600">TM scattered across tools</td><td
+                class="py-3 text-stone-900"
+                >Shared team memory, always active</td
+              ></tr
+            >
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container"><FAQSection items={faqs} /></div>
+  </Section>
+
+  <Section data-chapter="05 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Simplify your workflow.</h2>
+        <p class="cta-footer-desc">
+          One workspace. All languages. Full control.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand"
+        >View Pricing</a
+      >
+    </div>
+  </Section>
+</BaseLayout>

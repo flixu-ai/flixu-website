@@ -1,0 +1,165 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { ArrowRight, BarChart2, Zap } from "lucide-react";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+// Fetch and Filter
+const entries = await getCollection("comparisons");
+const filteredEntries = entries.filter((entry) => entry.id.startsWith("en/"));
+
+type ComparisonEntry = CollectionEntry<"comparisons">;
+const sortedEntries = filteredEntries.sort(
+  (a, b) =>
+    new Date(b.data.publishDate).valueOf() -
+    new Date(a.data.publishDate).valueOf(),
+);
+
+const t = {
+  en: {
+    title: "Translation Software Buyer's Guides.",
+    sub: "Independent, technical comparisons of the leading localization platforms. 2026 Edition.",
+    readMore: "Read Analysis",
+  },
+  de: {
+    title: "Software Buyer's Guides.",
+    sub: "Unabhängige, technische Vergleiche der führenden Lokalisierungsplattformen. Edition 2026.",
+    readMore: "Analyse lesen",
+  },
+}[lang as "en" | "de"] || {
+  title: "Translation Software Buyer's Guides.",
+  sub: "Independent, technical comparisons of the leading localization platforms. 2026 Edition.",
+  readMore: "Read Analysis",
+};
+
+const tGlobal = await useTranslations(lang);
+const tNav = tGlobal.navigation as any;
+
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.resources?.items?.compare?.title || "Compare Tools",
+    url: Astro.url.pathname,
+  },
+];
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: sortedEntries.map((entry, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: `https://flixu.ai${getLocalizedPath(`/compare/${entry.slug.split("/").pop()}`, lang)}`,
+    name: entry.data.title,
+    description: entry.data.description,
+  })),
+};
+---
+
+<BaseLayout title={t.title} chapter="Compare">
+  <SchemaOrg schema={itemListSchema} slot="schema" />
+
+  <Section
+    data-chapter={`01 — ${tGlobal.rail.comparison.toUpperCase()}`}
+    class="hero-section bg-stone-50/30"
+  >
+    <div class="max-w-3xl">
+      <div class="mb-8">
+        <Breadcrumbs items={breadcrumbItems} />
+      </div>
+      <span
+        class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-6 block"
+      >
+        Market Intelligence
+      </span>
+      <h1
+        class="font-serif text-5xl md:text-7xl text-stone-900 leading-tight mb-8"
+      >
+        {t.title}
+      </h1>
+      <p class="font-sans text-xl text-stone-600 leading-relaxed">
+        {t.sub}
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`02 — TL;DR`}
+    class="content-section bg-stone-50 border-y border-stone-100"
+  >
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Choosing a localization platform is a foundational architectural decision. Legacy tools charge high monthly fees while relying on disjointed integrations with DeepL. Contextual AI tools focus on high-speed glossary enforcement. Use these market intelligence guides to understand technical limits, pricing architecture, and long-term consequences of your integration choice."
+      />
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`03 — ${tGlobal.rail.notes.toUpperCase()}`}
+    class="content-section"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {
+        sortedEntries.map((entry: ComparisonEntry) => (
+          <a
+            href={getLocalizedPath(
+              `/compare/${entry.slug.split("/").pop()}`,
+              lang,
+            )}
+            class="group relative p-10 bg-[#FDFCF8] border border-stone-200 hover:border-orange-700/30 transition-all duration-500 rounded-sm flex flex-col h-full"
+          >
+            <div class="mb-8 flex items-center justify-between">
+              <div class="p-3 bg-stone-100 text-stone-500 group-hover:bg-orange-50 group-hover:text-orange-700 transition-colors">
+                {entry.data.type === "versus" ? (
+                  <BarChart2 size={24} />
+                ) : (
+                  <Zap size={24} />
+                )}
+              </div>
+              <span class="font-mono text-[10px] uppercase tracking-widest text-stone-400 group-hover:text-orange-700 transition-colors">
+                {entry.data.type === "versus" ? "Versus" : "Comparison List"}
+              </span>
+            </div>
+
+            <h2 class="font-serif text-3xl text-stone-900 mb-4 group-hover:text-orange-900 transition-colors">
+              {entry.data.title}
+            </h2>
+
+            <p class="text-stone-600 mb-12 flex-grow line-clamp-3 leading-relaxed">
+              {entry.data.description}
+            </p>
+
+            <div class="flex items-center justify-between pt-8 border-t border-stone-100 group-hover:border-orange-100 transition-colors">
+              <span class="font-medium text-stone-900 group-hover:text-orange-700 transition-colors">
+                {t.readMore}
+              </span>
+              <ArrowRight
+                size={20}
+                className="text-stone-300 group-hover:text-orange-700 group-hover:translate-x-2 transition-all"
+              />
+            </div>
+          </a>
+        ))
+      }
+
+      {
+        sortedEntries.length === 0 && (
+          <div class="col-span-full py-24 text-center border-2 border-dashed border-stone-200">
+            <p class="text-stone-400 italic">
+              Fresh market analysis coming daily. Check back soon.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </Section>
+</BaseLayout>

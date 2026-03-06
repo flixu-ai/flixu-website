@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/ui/Section.astro";
+import { useTranslations } from "../../i18n/utils";
+import { neon } from "@neondatabase/serverless";
+import RoadmapBoard from "../../components/roadmap/RoadmapBoard.tsx";
+
+const lang = Astro.currentLocale || "en";
+const t = await useTranslations(lang);
+
+// Server-side fetching
+let features: any[] = [];
+try {
+  const sql = neon(import.meta.env.DATABASE_URL);
+  features =
+    await sql`SELECT * FROM roadmap_features ORDER BY upvotes DESC, created_at DESC`;
+} catch (e) {
+  console.error("Failed to fetch roadmap features", e);
+}
+
+const roadmapDict = (t as any).roadmap;
+---
+
+<BaseLayout title={`Flixu | ${roadmapDict?.h1 || "Roadmap"}`} lang={lang}>
+  <Section
+    data-chapter="01 — INTRO"
+    class="hero-section min-h-screen border-none"
+  >
+    <div class="max-w-3xl">
+      <h1 class="font-serif text-5xl md:text-7xl text-stone-900 mb-6">
+        {roadmapDict?.h1 || "Roadmap"}
+      </h1>
+
+      <RoadmapBoard
+        client:load
+        initialFeatures={features}
+        dict={roadmapDict || {}}
+      />
+    </div>
+  </Section>
+</BaseLayout>

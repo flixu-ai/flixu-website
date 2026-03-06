@@ -1,0 +1,130 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroContentMarketer from "../../../components/visuals/HeroContentMarketer.jsx";
+import { getLocalizedPath } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Roles", url: "#" },
+  { name: "Content Marketer", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Can I translate a blog post and keep the formatting?",
+    answer:
+      "Yes. Paste your blog post and Flixu preserves headers, lists, links, and emphasis while translating the content with your brand voice settings active.",
+  },
+  {
+    question: "How do I ensure brand voice consistency?",
+    answer:
+      "Configure tone, formality, and vocabulary preferences per language. Every translation follows these rules — no briefing documents needed.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Translation for Content Marketers",
+      description:
+        "Translate blog posts, landing pages, and campaigns in your brand voice. Context-aware AI that knows your terminology and tone.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Translation for Content Marketers — Scale Your Content Globally"
+  description="Translate blog posts, landing pages, and campaigns in your brand voice. Context-aware AI that knows your terminology and tone."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Role</span>
+        <h1 class="hero-title">Content Marketer.</h1>
+        <p class="hero-desc">
+          You write content that converts. Now make it convert in every
+          language.
+        </p>
+      </div>
+      <div
+        class="relative w-full aspect-[4/3] hidden lg:block"
+      >
+        <HeroContentMarketer client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — PROBLEM" class="content-section">
+    <div class="hero-container prose-inline">
+      <KeyTakeaways
+        items={[
+          "Preserve all your markdown and HTML formatting during translation.",
+          "Ensure your brand voice remains consistent across all target languages.",
+          "Publish localized campaigns faster without relying on slow agency timelines.",
+        ]}
+      />
+      <h2>How do you translate high-converting content quickly?</h2>
+      <p>
+        You write a great blog post. It performs. You want it in German, French,
+        Spanish. Options: hire freelancers (slow, expensive, inconsistent) or
+        use Google Translate (fast, free, unusable for branded content).
+      </p>
+      <p>
+        Context-aware AI translation sits in the sweet spot: fast enough for
+        your content calendar, good enough for your brand standards, and
+        configurable enough to sound like you — not like a robot.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="03 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <Section data-chapter="04 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Try it with your next blog post.</h2>
+        <p class="cta-footer-desc">
+          Paste, configure, translate — free tier available.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand"
+        >View Pricing</a
+      >
+    </div>
+  </Section>
+</BaseLayout>

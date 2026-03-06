@@ -1,0 +1,217 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Phrase Alternative | Modern AI Translation Manager | Flixu";
+const description =
+  "Enterprise localization quality without the legacy TMS complexity. Switch from Phrase to Flixu and save up to 80%.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Compare", url: Astro.url.pathname },
+  { name: "Flixu vs Phrase", url: Astro.url.pathname },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  {/* SEO Schema */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How does Flixu compare to Phrase TMS?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Flixu offers similar enterprise-grade Translation Memories and project management but replaces the manual legacy workflow with native AI generation, saving teams immense overhead.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the cost difference between Flixu and Phrase?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Phrase Team starts around $1,100 per month and charges extra for machine translation plugins. Flixu Team provides built-in LLMs, TM, and Brand Voice for $149/month.",
+          },
+        },
+      ],
+    })}
+  />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div class="max-w-3xl">
+      <Breadcrumbs items={breadcrumbItems} />
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+        >Competitor Comparison</span
+      >
+      <h1 class="mb-6">
+        Enterprise Quality.<br /><span class="text-orange-700 italic"
+          >Without Enterprise Complexity.</span
+        >
+      </h1>
+      <p class="max-w-2xl text-xl text-stone-600 mb-8">
+        Stop paying $1,100/month for a legacy TMS that still requires you to buy
+        third-party machine translation plugins.
+      </p>
+      <a
+        href="/sign-up?plan=individual&intent=individual&interval=month"
+        class="hidden"
+      >
+        Switch to Flixu
+      </a>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div
+      class="max-w-4xl mx-auto p-8 bg-white border border-stone-200 shadow-sm rounded-sm"
+    >
+      <h3
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4"
+      >
+        Flixu vs. Phrase TMS: When to use which
+      </h3>
+      <p class="text-stone-700 leading-relaxed font-medium">
+        Use <strong>Phrase</strong> if you are a large Fortune 500 company managing
+        1,000+ vendors in a highly complex, multi-tiered supply chain. Use <strong
+          >Flixu</strong
+        > if you are a modern SaaS, Marketing, or Localization team that wants identical
+        (if not better) AI translation quality and TM performance, set up in 5 minutes,
+        at 15% of the total cost.
+      </p>
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — COMPARISON" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">Feature Comparison</h2>
+
+      <div class="overflow-x-auto border border-stone-200 rounded-sm">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-stone-50 border-b border-stone-200">
+              <th
+                class="py-4 pl-6 w-1/3 font-mono text-xs uppercase tracking-widest text-stone-500"
+                >Feature</th
+              >
+              <th class="py-4 w-1/3 font-serif text-lg text-stone-500"
+                >Phrase Team</th
+              >
+              <th
+                class="py-4 w-1/3 font-serif text-lg text-orange-700 bg-orange-50/30"
+                >Flixu Team</th
+              >
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Estimated Monthly Rate</td
+              >
+              <td class="py-4 text-stone-600">~$1,100+</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >$149</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Machine Translation Engine</td
+              >
+              <td class="py-4 text-stone-600">External Plugin (Extra Cost)</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >6 Built-In LLMs Included</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Translation Memory</td
+              >
+              <td class="py-4 text-stone-600">Legacy Fuzzy Matching</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >AI Vector Embeddings + Reranker</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Brand Voice Engine</td
+              >
+              <td class="py-4 text-stone-600">Basic "MT Profiles"</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >Native Algorithmic Tone Control</td
+              >
+            </tr>
+            <tr class="hover:bg-stone-50/50">
+              <td class="py-4 pl-6 font-medium text-stone-700"
+                >Implementation Time</td
+              >
+              <td class="py-4 text-stone-600">2-6 Weeks</td>
+              <td class="py-4 text-orange-900 bg-orange-50/30 font-medium"
+                >5 Minutes (Self-Serve)</td
+              >
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="mt-12 p-8 bg-stone-50 border border-stone-200 rounded-sm text-center"
+      >
+        <h3 class="font-serif text-xl mb-3">Built from the inside.</h3>
+        <p class="text-stone-600 max-w-2xl mx-auto">
+          Flixu was engineered by developers who spent years building inside the
+          legacy TMS industry. We built the platform that we wished we had:
+          fast, AI-native, and unburdened by outdated supply-chain features.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <h2 class="mb-10 text-center">Frequently Asked Questions</h2>
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            How does Flixu compare to Phrase TMS?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Flixu offers similar enterprise-grade Translation Memories and
+            project management but replaces the manual legacy workflow with
+            native AI generation, saving teams immense overhead.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            What is the cost difference between Flixu and Phrase?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Phrase Team starts around $1,100 per month and charges extra for
+            machine translation plugins. Flixu Team provides built-in LLMs, TM,
+            and Brand Voice for $149/month.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

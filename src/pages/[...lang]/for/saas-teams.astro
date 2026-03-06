@@ -1,0 +1,249 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroSaasTeams from "../../../components/visuals/HeroSaasTeams.jsx";
+import {
+  getLocalizedPath,
+  locales,
+  useTranslations,
+} from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Localization Tool for SaaS Teams | Flixu";
+const description =
+  "Ship your app in 15 languages without 15 different tools. Flixu combines developer APIs with context-aware TM and Quality Scoring.";
+
+const t = (await useTranslations(lang)) as any;
+
+const breadcrumbItems = [
+  { name: t?.breadcrumbs?.home || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: t?.navigation?.whofor?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  },
+  { name: "SaaS Teams", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Does Flixu have a localization API for developers?",
+    answer:
+      "Yes, our API-first approach allows you to seamlessly push and pull translation strings right from your CI/CD pipeline, fully equipped with contextual Brand Voice constraints.",
+  },
+  {
+    question: "How does Flixu compare to Lokalise or Crowdin?",
+    answer:
+      "Legacy platforms charge high monthly fees and require disjointed integrations with DeepL. Flixu bundles the Translation Memory, LLM context, and API into one platform for a fraction of the cost.",
+  },
+  {
+    question:
+      "Can I protect code variables and placeholders during translation?",
+    answer:
+      "Absolutely. Flixu utilizes Structural Parsers to identify and mathematically protect variables (e.g. {{user_name}}), ensuring developers never encounter syntax errors from mistranslated code.",
+  },
+  {
+    question: "How does the Quality Scoring work?",
+    answer:
+      "Flixu's algorithm mathematically scores the AI draft against the source text to ensure semantic, technical, and Brand Voice alignment. Only segments that fall below the confidence threshold require human PM review.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu SaaS Localization Platform",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">For Product & Engineering</span>
+        <h1 class="hero-title">
+          Your app in 15 languages. Without 15 fragmented tools.
+        </h1>
+        <p class="hero-desc">
+          Consolidate your localization stack. Get Precision TM, APIs, and AI
+          Quality Scoring in one unified platform.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroSaasTeams client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="SaaS product teams suffer from fragmented workflows—separating developers managing JSON files from Product Managers wrangling external translators. Flixu unifies this by providing an API for developers and a visual Quality Scoring dashboard for PMs. By baking Brand Voice strictly into our algorithm, your software sounds like your software everywhere in the world, directly from a Git push."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">Core Capabilities for SaaS</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect width="18" height="18" x="3" y="3" rx="2" ry="2"
+              ></rect><line x1="8" x2="8" y1="12" y2="12"></line><line
+                x1="16"
+                x2="16"
+                y1="12"
+                y2="12"></line><path d="M12 8v8"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">API-First Translation</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Integrate directly. A single API call returns not only the
+            translation, but also the TM Match percentage and the AI Quality
+            Score, completely replacing the Lokalise + DeepL stack.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">UX Terminology Protection</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Words matter in software. Force the LLM to translate "Settings"
+            consistently as "Einstellungen" (not "Konfiguration"). Protect
+            placeholders like <code>&#123;&#123; user_name &#125;&#125;</code> from
+            compile-breaking errors.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+              ></path><circle cx="9" cy="7" r="4"></circle><path
+                d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path
+                d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Seats for the Whole Squad</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Bring your PMs, Devs, and Technical Writers together. Team and
+            Business plans include built-in multi-seat access with strict
+            Role-Based Access Control (RBAC).
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline
+                points="22 4 12 14.01 9 11.01"></polyline></svg
+            >
+          </div>
+          <h3 class="text-xl">Visual Quality Scoring</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Your PM shouldn't need to speak Japanese to ship Japanese. Flixu's
+            Quality Score algorithm grades translations instantly, highlighting
+            the rare instances where human review is actually required.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+import LegalLayout from "../../../layouts/LegalLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const legal = await getCollection("legal");
+  const { locales } = await import("../../../i18n/utils");
+
+  return locales.flatMap((l) => {
+    const langParam = l === "en" ? undefined : l;
+    return legal
+      .filter((n) => n.id.startsWith("en/"))
+      .map((entry) => ({
+        params: {
+          lang: langParam,
+          slug: entry.id.replace("en/", "").replace(/\.mdx?$/, ""),
+        },
+        props: { entry },
+      }));
+  });
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<LegalLayout frontmatter={entry.data} lang={lang}>
+  <Content />
+</LegalLayout>

@@ -1,0 +1,135 @@
+---
+import "../styles/global.css";
+import ChapterRail from "../components/ui/ChapterRail.astro";
+import Header from "../components/core/Header.astro";
+import Footer from "../components/core/Footer.astro";
+
+// Font imports from @fontsource
+import "@fontsource/instrument-serif";
+import instrumentSerifUrl from "@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url";
+import "@fontsource-variable/inter";
+import "@fontsource/geist-mono";
+import "@fontsource/la-belle-aurore";
+
+import { ClientRouter } from "astro:transitions";
+
+import {
+  useTranslations,
+  locales,
+  defaultLang,
+  getLocalizedPath,
+} from "../i18n/utils";
+
+interface Props {
+  title: string;
+  description?: string;
+  chapter?: string;
+  lang?: string;
+  ogImage?: string;
+  ogType?: string;
+}
+
+const {
+  title,
+  description = "Flixu — Context-Aware AI Translation for teams that care about voice, terminology, and precision.",
+  chapter,
+  lang = "en",
+  ogImage = "/og-default.png",
+  ogType = "website",
+} = Astro.props;
+
+const t = await useTranslations(lang);
+const isRtl = ["ar", "he"].includes(lang);
+const dir = isRtl ? "rtl" : "ltr";
+
+const SITE = "https://flixu.ai";
+const currentPath = Astro.url.pathname;
+
+// Build canonical URL — strip trailing slash except for root
+const pathWithoutLang =
+  lang === defaultLang
+    ? currentPath
+    : currentPath.replace(`/${lang}`, "") || "/";
+const canonicalUrl = `${SITE}${currentPath}`.replace(/\/+$/, "") || SITE;
+
+// Build hreflang alternate URLs
+const hreflangs = locales.map((locale) => {
+  const localePath =
+    locale === defaultLang
+      ? pathWithoutLang
+      : `/${locale}${pathWithoutLang === "/" ? "" : pathWithoutLang}`;
+  return {
+    lang: locale,
+    href: `${SITE}${localePath}`.replace(/\/+$/, "") || SITE,
+  };
+});
+
+const fullTitle = `${title} | Flixu`;
+const ogImageUrl = ogImage.startsWith("http") ? ogImage : `${SITE}${ogImage}`;
+---
+
+<!doctype html>
+<html lang={lang} dir={dir} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/flixu-favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Core -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <ClientRouter />
+    <link
+      rel="preload"
+      href={instrumentSerifUrl}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <!-- hreflang — all 34 locales -->
+    {
+      hreflangs.map(({ lang: hLang, href }) => (
+        <link rel="alternate" hreflang={hLang} href={href} />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={`${SITE}${pathWithoutLang}`}
+    />
+
+    <!-- OpenGraph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={lang === "en" ? "en_US" : lang} />
+    <meta property="og:site_name" content="Flixu" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Page-specific JSON-LD schema (injected by child pages) -->
+    <slot name="schema" />
+  </head>
+  <body
+    class="bg-paper text-stone-900 font-sans selection:bg-orange-100 selection:text-orange-900 overflow-x-hidden pt-20"
+  >
+    <ChapterRail staticLabel={chapter} introLabel={t.rail?.intro} />
+
+    <Header />
+
+    <main class="min-h-screen">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

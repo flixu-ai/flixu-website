@@ -1,0 +1,119 @@
+---
+import Navigation from "./Navigation";
+import Logo from "./Logo";
+import { navConfig } from "../../config/navigation";
+import { useTranslations, getLocalizedPath } from "../../i18n/utils";
+
+const lang = Astro.currentLocale || "en";
+const t = await useTranslations(lang);
+const baseNav = navConfig.en;
+
+function getKeyFromHref(href: string) {
+  const parts = href.split("/").filter(Boolean);
+  return parts[parts.length - 1] || "home";
+}
+
+const isDev = import.meta.env.DEV;
+const appUrl = isDev ? "http://localhost:3000" : "https://app.flixu.ai";
+
+const localizedNav = {
+  main: baseNav.main.map((section) => {
+    // @ts-ignore
+    const sectionKey = (section.key ||
+      section.title.toLowerCase()) as keyof typeof t.navigation;
+    // @ts-ignore
+    const transSection = t.navigation[sectionKey];
+
+    // Guard: If translation doesn't exist or doesn't have items (e.g. FooterNav accidentally matched)
+    if (!transSection || !("items" in transSection)) {
+      if (section.type === "link" && section.href) {
+        return {
+          ...section,
+          // @ts-ignore
+          title: transSection?.title || section.title,
+          href: getLocalizedPath(section.href, lang),
+        };
+      }
+      return section;
+    }
+
+    let items;
+    let groups;
+
+    if (section.groups) {
+      groups = section.groups.map((group) => {
+        // @ts-ignore
+        const transGroup = transSection.groups?.[group.title.toLowerCase()];
+        return {
+          ...group,
+          title: transGroup?.title || group.title,
+          items: group.items.map((item) => {
+            const itemKey = getKeyFromHref(item.href);
+            // @ts-ignore
+            const transItem = transSection.items?.[itemKey];
+            return {
+              ...item,
+              title: transItem?.title || item.title,
+              desc: transItem?.desc || item.desc,
+              href: getLocalizedPath(item.href, lang),
+            };
+          }),
+        };
+      });
+    } else {
+      items = section.items?.map((item) => {
+        const itemKey = getKeyFromHref(item.href);
+        // @ts-ignore
+        const transItem = transSection.items?.[itemKey];
+        return {
+          ...item,
+          title: transItem?.title || item.title,
+          desc: transItem?.desc || item.desc,
+          href: getLocalizedPath(item.href, lang),
+        };
+      });
+    }
+
+    return {
+      ...section,
+      title: transSection.title || section.title,
+      items,
+      groups,
+    };
+  }),
+  common: t.navigation.common,
+};
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-50 w-full bg-paper/90 backdrop-blur-sm border-b border-stone-200 transition-all duration-300"
+>
+  <div
+    class="mx-auto w-full max-w-[1400px] px-6 md:px-12 xl:px-24 h-20 flex items-center justify-between relative"
+  >
+    {/* Logo */}
+    <Logo />
+
+    {/* Navigation & Actions */}
+    <div class="flex items-center gap-8 h-full">
+      <Navigation data={localizedNav} client:idle />
+
+      <div class="hidden md:flex items-center gap-6">
+        <a
+          href={`${appUrl}/sign-in`}
+          class="text-stone-600 hover:text-stone-900 font-sans text-sm transition-colors hidden"
+        >
+          {t.navigation.actions.signIn}
+        </a>
+        <a
+          href={`${appUrl}/sign-up?plan=individual&intent=individual&interval=month`}
+          class="bg-orange-700 hover:bg-orange-800 text-white px-5 py-2.5 rounded-sm font-medium transition-colors hidden"
+          style={{ viewTransitionName: "cta-btn" }}
+        >
+          {t.hero.btnPrimary}
+        </a>
+        {/* Open Beta button hidden */}
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import { getLocalizedPath } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Use Cases", url: getLocalizedPath("/use-cases", lang) },
+];
+
+const useCases = [
+  {
+    title: "SaaS Localization",
+    href: "/use-cases/saas-localization",
+    desc: "Ship your product in 50+ languages with consistent UI strings, help docs, and marketing copy.",
+    label: "Product Teams",
+  },
+  {
+    title: "Document Translation",
+    href: "/use-cases/document-translation",
+    desc: "Translate PDFs, DOCX, and PPTX while preserving layout, formatting, and visual fidelity.",
+    label: "Operations",
+  },
+  {
+    title: "Marketing Translation",
+    href: "/use-cases/marketing-translation",
+    desc: "Translate campaigns, landing pages, and brand content without losing voice or cultural nuance.",
+    label: "Marketing",
+  },
+];
+---
+
+<BaseLayout
+  title="Use Cases — AI Translation for Real Workflows"
+  description="See how teams use Flixu's context-aware AI translation for SaaS localization, document translation, and marketing copy."
+>
+  <Section data-chapter="01 — INTRO" class="hub-hero">
+    <div class="hub-grid-bg"></div>
+
+    <div class="relative z-10">
+      <Breadcrumbs items={breadcrumbItems} />
+
+      <header class="hub-header">
+        <span class="badge">Use Cases</span>
+        <h1 class="hub-title">Built for real workflows.</h1>
+        <p class="hub-desc">
+          Context-aware translation that fits how your team already works — not
+          the other way around.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          useCases.map((uc) => (
+            <a href={getLocalizedPath(uc.href, lang)} class="group card">
+              <div class="card-glow" />
+              <span class="card-label mb-6">{uc.label}</span>
+              <h2 class="card-title">{uc.title}</h2>
+              <p class="card-desc">{uc.desc}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

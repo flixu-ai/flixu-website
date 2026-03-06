@@ -1,0 +1,136 @@
+---
+import { locales, useTranslations } from "../../i18n/utils";
+import { Globe, ChevronUp } from "lucide-react";
+
+// Get current language and path
+const currentLang = Astro.currentLocale || "en";
+const currentPath = Astro.url.pathname;
+const t = await useTranslations(currentLang);
+
+// Group languages by region
+const regions = {
+  [t.languageSwitch.regions.global]: [
+    "en",
+    "de",
+    "fr",
+    "es",
+    "it",
+    "nl",
+    "pt",
+    "pl",
+    "tr",
+    "ru",
+  ],
+  [t.languageSwitch.regions.nordics]: ["da", "sv", "no", "fi"],
+  [t.languageSwitch.regions.asia]: ["ja", "ko", "zh", "id", "vi", "th"],
+  [t.languageSwitch.regions.middleEast]: ["ar", "he"],
+  [t.languageSwitch.regions.restOfWorld]: [
+    "hi",
+    "cs",
+    "hu",
+    "ro",
+    "el",
+    "ca",
+    "ms",
+    "tl",
+    "sk",
+    "hr",
+    "bg",
+    "et",
+  ],
+};
+
+// Map codes to names
+const languageNames: Record<string, string> = {
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+  es: "Español",
+  it: "Italiano",
+  nl: "Nederlands",
+  pt: "Português",
+  pl: "Polski",
+  tr: "Türkçe",
+  ru: "Русский",
+  da: "Dansk",
+  sv: "Svenska",
+  no: "Norsk",
+  fi: "Suomi",
+  ja: "日本語",
+  ko: "한국어",
+  zh: "中文",
+  id: "Bahasa Indonesia",
+  vi: "Tiếng Việt",
+  th: "ไทย",
+  ar: "العربية",
+  he: "עברית",
+  hi: "हिन्दी",
+  cs: "Čeština",
+  hu: "Magyar",
+  ro: "Română",
+  el: "Ελληνικά",
+  ca: "Català",
+  ms: "Bahasa Melayu",
+  tl: "Tagalog",
+  sk: "Slovenčina",
+  hr: "Hrvatski",
+  bg: "Български",
+  et: "Eesti",
+};
+
+function getPathForLocale(locale: string) {
+  // Basic prefix replacement logic
+  const pathWithoutLocale = currentPath.replace(/^\/[a-z]{2}/, "");
+  const cleanPath = pathWithoutLocale.startsWith("/")
+    ? pathWithoutLocale
+    : "/" + pathWithoutLocale;
+
+  if (locale === "en") {
+    return cleanPath === "/" ? "/" : cleanPath; // Assuming prefixDefaultLocale: false
+  }
+  return `/${locale}${cleanPath === "/" ? "" : cleanPath}`;
+}
+---
+
+<div class="relative group">
+  <!-- Trigger Button -->
+  <button
+    class="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-900 transition-colors"
+  >
+    <Globe size={16} />
+    <span>{languageNames[currentLang] || currentLang.toUpperCase()}</span>
+    <ChevronUp size={14} className="opacity-50" />
+  </button>
+
+  <!-- Menu -->
+  <div
+    class="absolute bottom-full left-0 mb-4 w-[600px] -ml-[20%] p-6 bg-white border border-stone-200 shadow-xl rounded-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 grid grid-cols-3 gap-8 pointer-events-none group-hover:pointer-events-auto origin-bottom-left transform translate-y-2 group-hover:translate-y-0"
+  >
+    {
+      Object.entries(regions).map(([region, codes]) => (
+        <div class={codes.length > 5 ? "col-span-1 row-span-2" : "col-span-1"}>
+          <h4 class="text-xs font-mono uppercase tracking-widest text-stone-400 mb-3">
+            {region}
+          </h4>
+          <ul class="space-y-2">
+            {codes.map((code) => (
+              <li>
+                <a
+                  href={getPathForLocale(code)}
+                  class:list={[
+                    "block text-sm hover:text-orange-700 transition-colors",
+                    currentLang === code
+                      ? "text-stone-900 font-medium"
+                      : "text-stone-500",
+                  ]}
+                >
+                  {languageNames[code] || code}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</div>

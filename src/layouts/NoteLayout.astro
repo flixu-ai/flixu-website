@@ -1,0 +1,170 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Section from "../components/ui/Section.astro";
+import OutlineCard from "../components/ui/OutlineCard.astro";
+import FeatureVisual from "../components/widget/FeatureVisual";
+import AuthorBio from "../components/seo/AuthorBio.astro";
+import LastUpdated from "../components/seo/LastUpdated.astro";
+import SchemaOrg from "../components/seo/SchemaOrg.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getLocalizedPath } from "../i18n/utils";
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+  dateModified?: Date;
+  author?: string;
+  id?: string;
+  visualVariant?: string;
+}
+
+const {
+  title,
+  description,
+  publishDate,
+  dateModified,
+  author = "Deniz Wozniak",
+  id,
+  visualVariant,
+} = Astro.props;
+const lang = Astro.currentLocale || "en";
+
+const allNotes = await getCollection("notes");
+type NoteEntry = CollectionEntry<"notes">;
+
+const relatedNotes = allNotes
+  .filter((note: NoteEntry) => note.id.startsWith(`${lang}/`) && note.id !== id)
+  .sort(
+    (a: NoteEntry, b: NoteEntry) =>
+      new Date(b.data.publishDate).valueOf() -
+      new Date(a.data.publishDate).valueOf(),
+  )
+  .slice(0, 2);
+
+const formattedDate = publishDate.toLocaleDateString(
+  lang === "de" ? "de-DE" : "en-US",
+  {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  },
+);
+
+const baseArticle = {
+  "@type": "Article",
+  headline: title,
+  description,
+  author: {
+    "@type": "Person",
+    name: author,
+    url: "https://flixu.ai/about",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Flixu",
+    url: "https://flixu.ai",
+  },
+  datePublished: publishDate.toISOString(),
+  ...(dateModified && {
+    dateModified: new Date(dateModified).toISOString(),
+  }),
+};
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@graph": [baseArticle],
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  chapter="Journal"
+  ogType="article"
+>
+  <SchemaOrg schema={articleSchema} slot="schema" />
+
+  <!-- HEADER SECTION -->
+  <Section data-chapter="01 — DATE" class="hero-section">
+    <div class="max-w-3xl mx-auto">
+      <div
+        class="flex items-center gap-4 text-xs font-mono uppercase tracking-widest text-stone-500 mb-8"
+      >
+        <span>{formattedDate}</span>
+        <span class="w-px h-3 bg-stone-300"></span>
+        <span>{author}</span>
+      </div>
+
+      <h1>{title}</h1>
+
+      <p class="hero-desc font-medium text-stone-800 mb-6">
+        {description}
+      </p>
+
+      {
+        dateModified && (
+          <LastUpdated date={new Date(dateModified)} lang={lang} />
+        )
+      }
+
+      {
+        visualVariant && (
+          <div class="w-full border border-stone-200 rounded-sm overflow-hidden mb-16 mt-8">
+            <FeatureVisual client:visible variant={visualVariant} />
+          </div>
+        )
+      }
+    </div>
+  </Section>
+
+  <!-- BODY SECTION -->
+  <Section data-chapter="02 — ARTICLE" class="content-section">
+    <article class="max-w-3xl mx-auto prose-secondary">
+      <slot />
+    </article>
+
+    <div class="max-w-3xl mx-auto">
+      <AuthorBio name={author} />
+    </div>
+  </Section>
+
+  <!-- FOOTER / READ NEXT -->
+  <Section
+    data-chapter="03 — NEXT"
+    class="content-section--border-top bg-stone-50"
+  >
+    <div class="max-w-5xl mx-auto">
+      <h3 class="section-heading--centered">Read next</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {
+          relatedNotes.map((note: NoteEntry) => (
+            <OutlineCard
+              title={note.data.title}
+              icon="BookOpen"
+              visualVariant={note.data.visualVariant}
+            >
+              <p>{note.data.description}</p>
+              <a
+                href={getLocalizedPath(
+                  `/notes/${note.slug.split("/").pop()}`,
+                  lang,
+                )}
+                class="block mt-4 text-sm font-medium text-orange-700 hover:underline"
+              >
+                Read Article &rarr;
+              </a>
+            </OutlineCard>
+          ))
+        }
+        {
+          relatedNotes.length === 0 && (
+            <p class="text-stone-500 text-center col-span-2">
+              More articles coming soon.
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,236 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroClientManagement from "../../../components/visuals/HeroClientManagement.jsx";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Client Management Hub | Flixu Translation";
+const description =
+  "Manage all your clients, brand voices, and terminology in one centralized agency workspace.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "Client Management", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "How does Flixu separate client translation memories?",
+    answer:
+      "Flixu uses isolated workspaces for each client, ensuring translation memories and glossaries are strictly partitioned to guarantee data privacy and contextual precision.",
+  },
+  {
+    question: "Can I apply different brand voices to different clients?",
+    answer:
+      "Yes, you can define unlimited distinct brand voices and assign them to specific clients. When translating for a client, Flixu automatically applies their unique tone of voice.",
+  },
+  {
+    question: "How do API tokens work with multiple clients?",
+    answer:
+      "In the Business plan, you can generate specific API tokens that are securely bound to individual Client Profiles. This ensures their specific Glossary and Brand Voice are automatically triggered by your backend calls.",
+  },
+  {
+    question: "Is there a limit to how many clients I can manage?",
+    answer:
+      "There are no limits on the number of clients you can create and manage within your Flixu agency workspace, regardless of your subscription tier.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Client Management",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="max-w-3xl !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">Client Management, Simplified.</h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Organize Translation Memories, Glossaries, and Brand Voices by client.
+          Never mix terminology again.
+        </p>
+        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
+          Start Organizing Clients
+        </a>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroClientManagement client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Flixu replaces messy folder structures and scattered spreadsheets with dedicated Client Profiles. Each profile encapsulates the specific Translation Memory (TM), Glossary terms, and Brand Voice rules for that client. When you start a translation project, Flixu automatically retrieves the correct client context, ensuring zero cross-contamination of terminology."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">How does Flixu organize client terminology?</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+              ></path><circle cx="9" cy="7" r="4"></circle><path
+                d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path
+                d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Isolated Memories</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Legal terminology from Client A will never infect marketing copy for
+            Client B. Flixu strictly partitions TM vector databases per client
+            for absolute semantic integrity.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 20h9"></path><path
+                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Brand Voice Assignment</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Attach a specific tone of voice instruction to a client profile.
+            Every text you translate for them will automatically be forced into
+            that precise style and register.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Centralized Glossary</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Manage terms, forbidden words, and required capitalizations
+            logically mapped to the client level rather than the document level.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Activity & Quota Tracking</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Track translation volumes per client. In the Business plan, utilize
+            API tokens restricted to specific client datasets.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,272 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+import HeroTranslationMemory from "../../../components/visuals/HeroTranslationMemory.jsx";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "AI Translation Memory | Flixu";
+const description =
+  "Next-generation Translation Memory powered by contextual embeddings and high-dimensional AI reranking models.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "Translation Memory", url: Astro.url.pathname },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  {/* SEO Schema */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How does Flixu's AI Translation Memory differ from legacy TMS?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Legacy TMS translate segment-by-segment in isolation. Flixu treats the entire document as unified context, feeding Exact and Fuzzy matches to the LLM as linguistic reference material to improve the tone and accuracy of the whole translation.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is AI Reranking for Translation Memory?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Flixu employs a secondary AI model (Reranker) to evaluate up to 20 candidate TM matches simultaneously. It scores matches based on exact domain context and terminology compliance, ensuring near-human hit accuracy.",
+          },
+        },
+      ],
+    })}
+  />
+
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="max-w-3xl !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">Translation Memory, Rewired for AI.</h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Stop relying on primitive fuzzy text matches. Flixu retrieves context
+          through highly granular semantic vectors and dual-layer reranking.
+        </p>
+        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
+          Try Semantic TM Free
+        </a>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroTranslationMemory client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Legacy CAT tools retrieve TM matches based purely on character similarity, translating segment-by-segment in total isolation. Flixu's Precision TM rethinks this from the ground up by treating the entire document as a single, cohesive context. Instead of just substituting words, Flixu injects both Exact and Fuzzy Matches into the LLM as Linguistic Reference Material. This means a 70% fuzzy match in paragraph two doesn't just help translate paragraph two—it actively teaches the AI your preferred tone, style, and terminology for the entire document."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">Technical Architecture</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M12 2v20"></path><path d="m17 5-5-3-5 3"></path><path
+                d="m17 19-5 3-5-3"></path><path d="M2 12h20"></path><path
+                d="m5 7-3 5 3 5"></path><path d="m19 7 3 5-3 5"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">High-Dimensional Embeddings</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Ranging from 256 to 4096 dimensions, our semantic vectors capture
+            nuances like formal vs. informal registers and subtle industry
+            jargon.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"
+              ></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Instruction-Based Retrieval</h3>
+          <p class="text-stone-600 leading-relaxed">
+            The TM engine knows <em>why</em> you are translating. It actively searches
+            for matches that fit the requested industry context—whether that's medical,
+            technical, or legal.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"
+              ></path><polyline points="14 2 14 8 20 8"></polyline><path
+                d="M2 15h10"></path><path d="m9 18 3-3-3-3"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">Holistic Context Injection</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Legacy tools translate sentence-by-sentence. Flixu treats the whole
+            text as context. Matches aren't just substituted; they are fed to
+            the LLM as reference, meaning a fuzzy match improves the entire
+            surrounding translation.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"
+              ></path><path d="M12 8h.01"></path></svg
+            >
+          </div>
+          <h3 class="text-xl">AI Candidate Reranking</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Included in Team and Business plans. A dedicated LLM evaluates
+            multiple potential TM hits in milliseonds to suppress false
+            positives and elevate the perfect match.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+              ></path><polyline points="17 8 12 3 7 8"></polyline><line
+                x1="12"
+                x2="12"
+                y1="3"
+                y2="15"></line></svg
+            >
+          </div>
+          <h3 class="text-xl">Legacy Import / Export</h3>
+          <p class="text-stone-600 leading-relaxed">
+            No vendor lock-in. Migrate seamlessly from Trados, Phrase, or MemoQ
+            by importing your standard TMX or CSV files directly into a new
+            Flixu vault.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <h2 class="mb-10 text-center">Technical FAQ</h2>
+      <div class="space-y-6">
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            How does Flixu handle Fuzzy Matches differently?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Traditional tools just use Machine Translation to fill in the blanks
+            of a fuzzy match. We don't translate segment-by-segment. We
+            translate the whole text contextually, using your fuzzy matches as
+            an active prompt for the LLM. A match anywhere in the text improves
+            the quality of the translation everywhere.
+          </p>
+        </div>
+        <div class="bg-white p-6 rounded-sm border border-stone-200 shadow-sm">
+          <h4 class="font-serif text-lg mb-2 text-stone-900">
+            What is AI Reranking for Translation Memory?
+          </h4>
+          <p class="text-sm text-stone-600">
+            Flixu employs a secondary AI model (Reranker) to evaluate up to 20
+            candidate TM matches simultaneously. It scores matches based on
+            exact domain context and terminology compliance, ensuring near-human
+            hit accuracy.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

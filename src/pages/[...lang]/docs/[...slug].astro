@@ -1,0 +1,37 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import DocsLayout from "../../../layouts/DocsLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const docs = await getCollection("docs");
+  const { locales } = await import("../../../i18n/utils");
+
+  return locales.flatMap((l) => {
+    const langParam = l === "en" ? undefined : l;
+    return docs
+      .filter((n) => n.id.startsWith("en/"))
+      .map((entry) => ({
+        params: {
+          lang: langParam,
+          slug: entry.id.replace("en/", "").replace(/\.mdx?$/, ""),
+        },
+        props: { entry },
+      }));
+  });
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+---
+
+<DocsLayout
+  title={entry.data.title}
+  headings={headings}
+  rawContent={entry.body}
+>
+  <Content />
+</DocsLayout>

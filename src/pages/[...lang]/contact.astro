@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/ui/Section.astro";
+import ConversationalInterface from "../../components/support/ConversationalInterface.jsx";
+import { useTranslations, locales } from "../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Root (English default)
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+---
+
+<BaseLayout title={t.contact.title} chapter="Support">
+  <Section
+    data-chapter={`01 — ${t.rail.contact.toUpperCase()}`}
+    class="hero-section min-h-screen bg-[#FDFCF8] border-none"
+  >
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="mb-20 text-center">
+        <h1
+          class="font-serif text-6xl md:text-7xl text-stone-900 mb-6 tracking-tight italic"
+        >
+          {t.contact.title}
+        </h1>
+        <p
+          class="font-sans text-xl text-stone-500 max-w-xl mx-auto leading-relaxed"
+        >
+          {t.contact.sub}
+        </p>
+      </div>
+
+      <!-- Intelligent Conversational Interface -->
+      <ConversationalInterface client:load lang={lang} />
+    </div>
+  </Section>
+</BaseLayout>

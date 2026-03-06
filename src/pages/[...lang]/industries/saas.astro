@@ -1,0 +1,213 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroSaas from "../../../components/visuals/HeroSaas.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = (await useTranslations(lang)) as any;
+
+const breadcrumbItems = [
+  {
+    name: t.navigation?.home?.title || "Home",
+    url: getLocalizedPath("/", lang),
+  },
+  {
+    name: t.navigation?.whofor?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  },
+  {
+    name:
+      t.navigation?.solutions_bofu?.items?.saas?.title || "For SaaS Companies",
+    url: Astro.url.pathname,
+  },
+];
+
+const faqs = [
+  {
+    question: "How is Flixu different from Phrase or Lokalise for SaaS?",
+    answer:
+      "Flixu is AI-native, not AI-bolted. Instead of adding MT to a legacy TMS workflow, Flixu designs the workflow around the AI — with context injection, glossary enforcement, and LLM routing built into the core.",
+  },
+  {
+    question: "Can teams collaborate on translations?",
+    answer:
+      "Yes. Shared glossaries, shared TM, and shared brand voice configs mean every team member works with the same context, whether they're in Berlin or Tokyo.",
+  },
+  {
+    question: "Do I need a localization manager?",
+    answer:
+      "Not necessarily. Flixu is designed for product teams and developers who want to own their localization pipeline without the overhead of a dedicated localization team.",
+  },
+  {
+    question: "Can Flixu handle code variables like {{user_name}}?",
+    answer:
+      "Yes. Our structural parser mathematically masks your placeholders, HTML tags, and variables before translation, ensuring the technical syntax is never broken by the AI.",
+  },
+  {
+    question: "How does pricing work for SaaS companies?",
+    answer:
+      "We price purely on word translation volume without per-seat limits. Your entire engineering and product team can collaborate on the localization pipeline under a single, unified workspace.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Translation for SaaS Companies",
+      description:
+        "AI translation built for SaaS: glossary enforcement, brand voice consistency, and API-first workflows. Ship multilingual products without the TMS overhead.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Translation for SaaS Companies — Built for Product Teams"
+  description="AI translation built for SaaS: glossary enforcement, brand voice consistency, and API-first workflows. Ship multilingual products without the TMS overhead."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Industry</span>
+        <h1 class="hero-title">SaaS & Technology.</h1>
+        <p class="hero-desc">
+          Your users expect a native experience. Your release cycle doesn't wait
+          for translations.
+        </p>
+      </div>
+      <div
+        class="relative w-full aspect-[4/3] hidden lg:block"
+      >
+        <HeroSaas client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — METRICS" class="content-section">
+    <div class="hero-container">
+      <KeyTakeaways
+        items={[
+          "API-first integration enables translation triggers directly from your CI/CD pipelines.",
+          "Context injection guarantees UI variables and HTML interpolation remain unbroken.",
+          "Ship daily deploys instantly in 40+ languages without waiting on legacy agency workflows.",
+        ]}
+      />
+      <h2 class="section-heading--lg mt-8">
+        Why is agile SaaS translation completely different?
+      </h2>
+      <div class="prose-inline">
+        <p>
+          SaaS products ship continuously. Weekly sprints, daily deploys,
+          constant content updates. Traditional translation workflows — brief,
+          assign, translate, review, deliver — take days. By the time
+          translations arrive, the source has changed.
+        </p>
+        <p>
+          SaaS localization needs to be as fast as your development cycle. That
+          means API-first, automated, and context-aware from the start.
+        </p>
+        <p>
+          Furthermore, legacy TMS workflows treat localization as an
+          afterthought, forcing developers into tedious JSON extraction and
+          re-integration cycles. Flixu treats language as a native deployment
+          layer. By leveraging our robust structural parsers, your complex UI
+          constructs—including nested interpolation, pluralization logic, and
+          rich text formatting—are entirely shielded from the translation
+          engine. This guarantees that your team never experiences a broken
+          frontend build or a malformed React component due to a rogue
+          translation error.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — SOLUTION" class="content-section--alt">
+    <div class="hero-container">
+      <h2 class="section-heading--lg">What SaaS Teams Need</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {
+          [
+            {
+              title: "API Integration",
+              desc: "Trigger translations from CI/CD. Receive translated files programmatically.",
+            },
+            {
+              title: "Terminology Lock",
+              desc: "Product terms translated the same way, everywhere, forever.",
+            },
+            {
+              title: "Variable Safety",
+              desc: "Placeholders, HTML tags, and interpolation preserved automatically.",
+            },
+            {
+              title: "Speed",
+              desc: "50 pages translated in minutes, not days.",
+            },
+            {
+              title: "Brand Voice Control",
+              desc: "Formality and tone configured per market.",
+            },
+            {
+              title: "No Vendor Lock-in",
+              desc: "Export everything. TMX, XLIFF, JSON. Your data is yours.",
+            },
+          ].map(({ title, desc }) => (
+            <div class="feature-card--white">
+              <h3 class="feature-card-title">{title}</h3>
+              <p class="feature-card-desc">{desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="04 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <Section data-chapter="05 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Ship in every language.</h2>
+        <p class="cta-footer-desc">
+          Start with the free tier. Scale when ready.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand">
+        View Pricing
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

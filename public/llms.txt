@@ -1,0 +1,24 @@
+# Flixu Translate
+> Context-Aware AI Translation for teams that care about voice, terminology, and precision.
+
+Flixu is an AI-native translation infrastructure. It merges the capabilities of a modern Translation Management System (TMS) with a dynamic LLM pipeline.
+
+## Features
+- Semantic Translation Memory (Precision TM with 4096-dimensional vectors and 8B-parameter reranking)
+- Algorithmic Brand Voice Constraints
+- Output-Only Billing
+- Multi-LLM Routing (6 distinct LLMs)
+- Visual Quality Scoring
+- Document Parsing (DOCX, SRT, PO, XLIFF)
+
+## Quick Links
+- [Sign Up](https://app.flixu.ai/sign-up)
+- [Pricing](https://flixu.ai/pricing)
+- [API Documentation](https://flixu.ai/api)
+
+## Pricing
+- **Free**: $0 (30k characters/mo)
+- **Individual**: $39/mo (300k characters/mo, Semantic TM)
+- **Team**: $149/mo (1M characters/mo, Shared Resources, 5 Seats)
+- **Business**: $449/mo (3M characters/mo, API, 10 Seats)
+- **Enterprise**: Custom (Unlimited)

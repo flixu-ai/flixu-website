@@ -1,0 +1,31 @@
+---
+/**
+ * Key Takeaways — 4-6 bullet summary for AI Overview extraction.
+ * Each bullet should be a concrete fact or number.
+ * Usage: <KeyTakeaways items={["Bullet 1", "Bullet 2", ...]} />
+ */
+interface Props {
+  items: string[];
+  label?: string;
+}
+
+const { items, label = "Key Takeaways" } = Astro.props;
+---
+
+<div class="my-8 p-6 bg-[#FDFCF8] border border-stone-200 rounded-sm">
+  <div
+    class="font-mono text-[10px] text-stone-500 uppercase tracking-widest mb-4"
+  >
+    {label}
+  </div>
+  <ul class="space-y-3">
+    {
+      items.map((item) => (
+        <li class="flex items-start gap-3 text-stone-700">
+          <span class="w-1.5 h-1.5 bg-orange-700 rounded-full mt-2 shrink-0" />
+          <span class="leading-relaxed">{item}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>

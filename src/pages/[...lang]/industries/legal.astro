@@ -1,0 +1,174 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroLegal from "../../../components/visuals/HeroLegal.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = (await useTranslations(lang)) as any;
+
+const breadcrumbItems = [
+  { name: t?.breadcrumbs?.home || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: t?.navigation?.whofor?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  },
+  { name: t?.navigation?.industries?.title || "Industries", url: "#" },
+  { name: "Legal", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Is Flixu suitable for certified legal translations?",
+    answer:
+      "Flixu is designed for first-draft legal translations that are reviewed by qualified legal translators. For certified translations, we recommend using Flixu as an MTPE base with human legal review.",
+  },
+  {
+    question: "How does domain-aware routing help legal translation?",
+    answer:
+      "Legal domain routing activates legal-specific terminology databases and model configurations. Terms like 'consideration', 'party', and 'execution' are translated in their legal context, not their everyday meaning.",
+  },
+  {
+    question: "Can Flixu handle scanned PDF contracts?",
+    answer:
+      "Currently, Flixu excels at structural text-based document formats (DOCX, text-based PDF, XML) to ensure absolute layout integrity. For scanned documents, we recommend running OCR before processing.",
+  },
+  {
+    question: "Is our confidential legal data safe with Flixu?",
+    answer:
+      "Absolutely. We enforce zero-retention policies with our enterprise AI partners via API. Your sensitive legal documents are never stored or used for any form of model training.",
+  },
+  {
+    question: "Can I enforce a specific legal framework or jurisdiction?",
+    answer:
+      "Yes. Through our precise Context Engine prompting, you can specify target jurisdictions, ensuring that the AI maps complex terminology accurately to the local legal system.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Legal Translation",
+      description:
+        "Translate contracts, compliance documents, and legal communications with domain-aware AI that understands legal terminology and context.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Legal Translation — Precision Where It Matters Most"
+  description="Translate contracts, compliance documents, and legal communications with domain-aware AI that understands legal terminology and context."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Industry</span>
+        <h1 class="hero-title">Legal.</h1>
+        <p class="hero-desc">
+          In legal, a wrong translation isn't an inconvenience — it's a
+          liability.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroLegal client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Legal terminology requires absolute precision where mere semantic proximity is a liability. General-purpose machine translation engines homogenize terminology and can lead to misinterpretations of contractual obligations. Flixu's Domain-Aware translation routes legal content through robust LLM environments specifically fine-tuned for legal verbiage. Enforced glossaries ensure technical terms like 'consideration' or 'liability' are mapped rigidly to their exact local equivalents, providing an airtight foundation for final review by certified human counsel."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — COMPLIANCE" class="content-section">
+    <div class="hero-container prose-inline">
+      <KeyTakeaways
+        items={[
+          "Domain-aware routing utilizes LLM settings optimized strictly for legal documentation.",
+          "Strict glossary enforcement prevents critical mistranslations of complex contractual terms.",
+          "Designed to generate flawless foundational drafts for final review by qualified human legal counsel.",
+        ]}
+      />
+      <h2>Why is domain awareness critical for legal translations?</h2>
+      <p>
+        Legal language is precise by design. The word "shall" has a
+        fundamentally different legal weight than "will." "Consideration" means
+        compensation in contract law, not thoughtfulness. Domain-aware
+        translation mathematically routes legal content to models explicitly
+        configured for legal terminology, avoiding the probabilistic guessing
+        games played by standard MT engines.
+      </p>
+      <p>
+        Combined with glossary enforcement, Flixu ensures your contractual terms
+        are translated with the exact, strict precision your legal team
+        requires. This drastically accelerates the review cycle for your
+        external legal counsel, preventing significant translation-induced
+        liabilities before they arise.
+      </p>
+      <p>
+        Beyond basic terminology, legal localization requires an understanding
+        of cross-jurisdictional nuances. Adapting a contract from US Common Law
+        to the German Civil Code (BGB) implies more than just swapping words—it
+        requires structural mapping of liability clauses and indemnification
+        constructs. Flixu's LLM instruction parameters allow you to explicitly
+        declare the target legal framework. This contextual constraint prevents
+        the engine from generating direct, literal translations that hold no
+        binding authority in the target country's legal system, ensuring
+        absolute foundational accuracy.
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter="03 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <Section data-chapter="04 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Translate with precision.</h2>
+        <p class="cta-footer-desc">
+          Context-aware legal translation — try it free.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand"
+        >View Pricing</a
+      >
+    </div>
+  </Section>
+</BaseLayout>

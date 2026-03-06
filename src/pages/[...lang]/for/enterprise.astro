@@ -1,0 +1,407 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroEnterprise from "../../../components/visuals/HeroEnterprise.jsx";
+import {
+  useTranslations,
+  locales,
+  getLocalizedPath,
+} from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const content = t.forEnterprise;
+const isDE = lang === "de";
+
+// Breadcrumbs Setup
+const tNav = t.navigation as any;
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.who?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  },
+  { name: content.hero.label, url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "How does Flixu integrate with enterprise CI/CD pipelines?",
+    answer:
+      "Flixu is a developer-first linguistic API. Instead of sending files manually, your engineers can push UI strings directly via API or GitHub action, translate them instantly, and pull them back into the build—fully automating continuous localization.",
+  },
+  {
+    question: "How does Flixu separate translations by department?",
+    answer:
+      "Flixu uses Digital Brand Voice Profiles. You can enforce a 'casual' tone for the marketing department's API calls and a 'strict' tone for the legal department, ensuring contextual consistency across the entire company.",
+  },
+  {
+    question: "Is Flixu secure for enterprise intellectual property?",
+    answer:
+      "Yes, Flixu features military-grade Role-Based Access Control (RBAC) and utilizes an Ephemeral API Architecture. Your proprietary data is never used to train public LLMs and is securely wiped from inference servers immediately after translation.",
+  },
+  {
+    question: "Does Flixu require a lengthy 12-month implementation project?",
+    answer:
+      "No. Legacy Translation Management Systems rely on fragmented, heavy human workflows that require months to map. Flixu is an API-first orchestration platform. Most engineering teams can implement continuous localization within a single sprint.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu for SaaS & Enterprise",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={isDE ? "Für Enterprise | Flixu" : "For Enterprise | Flixu"}
+  description={isDE
+    ? "Flixu für Localization Manager: API, TM, Brand Voice und RBAC — ohne 12-Monats-Implementierungsprojekt."
+    : "Flixu for Localization Managers: API, TM, Brand Voice, and RBAC — without the 12-month implementation project."}
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <!-- HERO -->
+  <Section
+    data-chapter={`01 — ${t.rail.intro.toUpperCase()}`}
+    class="hero-section"
+  >
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">{content.hero.label}</span>
+        <h1 class="hero-title">
+          {content.hero.h1}
+        </h1>
+        <p class="hero-desc">
+          {content.hero.sub}
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroEnterprise client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Enterprise localization is routinely bottlenecked by 12-month TMS implementation projects and fragmented language agency deliverables. Flixu functions as a direct, Developer-First Linguistic API that slots natively into your CI/CD pipeline. By programmatically injecting strict Brand Voices and Glossaries, you enable Continuous Localization for your engineering teams while maintaining military-grade Ephemeral Security for your intellectual property."
+      />
+    </div>
+  </Section>
+
+  <!-- PROBLEM: THREE-WAY COMPARISON -->
+  <Section
+    data-chapter={`03 — ${t.rail.problem.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.problem.label}</span
+      >
+      <h2 class="font-serif text-4xl text-stone-900 mb-6">
+        {content.problem.h2}
+      </h2>
+      <p class="text-xl text-stone-600 leading-relaxed">
+        {content.problem.body}
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {
+        content.problem.comparison.map((item) => (
+          <div
+            class={`p-8 rounded-sm border ${item.dim ? "border-stone-200 bg-stone-50/30" : "border-orange-200 bg-orange-50/30"}`}
+          >
+            <div class="font-mono text-[10px] uppercase tracking-widest mb-2 text-stone-400">
+              {item.tool}
+            </div>
+            <div
+              class={`font-serif text-xl mb-3 ${item.dim ? "text-stone-400" : "text-orange-700"}`}
+            >
+              {item.verdict}
+            </div>
+            <p
+              class={`text-sm leading-relaxed ${item.dim ? "text-stone-400" : "text-stone-600"}`}
+            >
+              {item.issue}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- USE CASES GRID -->
+  <Section
+    data-chapter={`04 — ${t.rail.usecases.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.usecases.label}</span
+      >
+      <h2 class="font-serif text-4xl text-stone-900">{content.usecases.h2}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {
+        content.usecases.items.map((item) => (
+          <div class="border-l border-stone-200 pl-6 py-1">
+            <h3 class="font-serif text-lg text-stone-900 mb-2">{item.title}</h3>
+            <p class="text-stone-500 text-sm leading-relaxed">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- THREE PILLARS -->
+  <Section
+    data-chapter={`05 — ${t.rail.pillars.toUpperCase()}`}
+    class="content-section border-b border-stone-100 bg-stone-50/50"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.pillars.label}</span
+      >
+      <h2 class="font-serif text-4xl text-stone-900">{content.pillars.h2}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {
+        content.pillars.items.map((item) => (
+          <div class="border-l border-stone-200 pl-6">
+            <h3 class="font-serif text-xl text-stone-900 mb-3">{item.title}</h3>
+            <p class="text-stone-600 text-sm leading-relaxed">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="06 — DEEP DIVE"
+        class="content-section border-b border-stone-100"
+      >
+        <div class="max-w-3xl prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <KeyTakeaways
+            items={[
+              "Legacy TMS platforms block CI/CD agility and require 12-month implementation projects.",
+              "Flixu's API injects Context automatically, allowing continuous localization in milliseconds.",
+              "Military-grade RBAC and Ephemeral API architecture guarantee data sovereignty.",
+              "Digital Brand Voice Profiles dynamically adapt translation tones per department (e.g. Legal vs. Marketing).",
+            ]}
+          />
+          <h2>
+            Why are legacy Translation Management Systems blocking your agility?
+          </h2>
+          <p>
+            For over two decades, the standard playbook for enterprise
+            localization was to procure a monolithic, legacy Translation
+            Management System (TMS) like Smartling, Phrase, or Trados. These
+            platforms were built for a vastly different era of software
+            development—an era of waterfall releases, manual handoffs, and
+            highly linear communication between product managers and external
+            translation agencies.
+          </p>
+          <p>
+            In 2026, high-velocity SaaS and engineering teams operate on
+            two-week agile sprints. They deploy code multiple times a day. When
+            an enterprise attempts to force a Continuous Integration /
+            Continuous Deployment (CI/CD) pipeline through a legacy TMS,
+            friction is often introduced. Engineering velocity can decrease if
+            developers are forced to wait weeks for human translators to return
+            Excel files or XLIFF documents containing localized UI strings. High
+            enterprise licensing fees often accompany software that can slow
+            down your organization's ability to ship global features quickly.
+          </p>
+
+          <h3>The Hidden Costs of the 12-Month Implementation Project</h3>
+          <p>
+            Beyond the structural friction, traditional TMS vendors often
+            operate on a business model that relies on multi-year contracts.
+            When an organization signs a contract with a legacy provider, they
+            are not simply purchasing API access; they are often signing up for
+            a complex 9-to-12 month implementation project.
+          </p>
+          <p>
+            These implementation phases require significant amounts of internal
+            developer hours to manually configure webhooks, map custom XML
+            parsers, and train agency linguists on the clunky UI. The Total Cost
+            of Ownership (TCO) skyrockets before a single word is successfully
+            translated. By the time the TMS is finally integrated into the
+            codebase, the software architecture has likely already evolved,
+            requiring yet another expensive consulting engagement from the TMS
+            provider.
+          </p>
+
+          <h2>How does Flixu enable Continuous Localization?</h2>
+          <p>
+            Flixu was engineered from the ground up to solve the friction of
+            enterprise B2B localization. We completely eradicated the 12-month
+            implementation project by replacing heavy, human-centric vendor
+            workflows with lightweight, instantaneous AI Context Orchestration.
+          </p>
+          <p>
+            Flixu is not merely a translation portal; it is a developer-first
+            linguistic API designed to slot natively into your existing CI/CD
+            pipelines. When a frontend developer pushes a new JSON array of UI
+            strings to a GitHub repository, the Flixu API intercepts the commit,
+            instantly translates the strings into 40 languages using your exact
+            corporate brand voice and terminology glossaries, and pushes the
+            localized JSON back into the deployment build. The entire process
+            takes milliseconds, not weeks. Your development team never leaves
+            their command line, and your localization manager never has to send
+            an email. This is true Continuous Localization.
+          </p>
+
+          <h3>Role-Based Access Control (RBAC) and Enterprise Security</h3>
+          <p>
+            In heavily regulated enterprise environments—finance, healthcare,
+            legal tech, and defense—data sovereignty and access control are
+            paramount. You cannot blindly grant a freelance translation agency
+            full access to unreleased feature documentation or highly sensitive,
+            pre-launch marketing collateral.
+          </p>
+          <p>
+            Flixu provides granular, military-grade Role-Based Access Control
+            (RBAC). A Director of Localization can assign strict permissions,
+            ensuring that specific linguistic reviewers only have access to
+            their designated target languages, while external agencies are
+            restricted to localized glossary views. Furthermore, because Flixu
+            operates on Ephemeral API Architecture, your proprietary
+            intellectual property is never utilized to train public Large
+            Language Models (LLMs). The data passes through the orchestration
+            engine, generates the localized output, and is immediately and
+            securely wiped from the inference servers.
+          </p>
+
+          <h2>How do you democratize terminology across departments?</h2>
+          <p>
+            One of the most complex challenges in enterprise localization is
+            consistently managing Brand Voice across completely disjointed
+            departments. Your marketing team in Berlin might utilize a highly
+            energetic, informal German brand voice ("du"), while your legal team
+            in Frankfurt requires a significantly more conservative, formal tone
+            ("Sie").
+          </p>
+          <p>
+            If your organization relies on disparate human translation agencies,
+            brand voice inevitably fragments. Customers experience jarring tonal
+            whiplash as they move from a fun, engaging marketing landing page
+            into a stiff, robotic, and outdated software checkout process.
+          </p>
+          <p>
+            Flixu solves this fragmentation through programmable Digital Brand
+            Voice Profiles. Localization managers establish baseline emotional
+            tones, formality hierarchies, and strict Domain Rules for specific
+            departments. When the marketing pipeline triggers a translation
+            call, it appends the `marketing_casual` profile to the API payload.
+            When the legal department triggers a translation call, it appends
+            the `corporate_strict` profile. The AI Orchestrator strictly obeys
+            these mathematical parameters, ensuring that the target language
+            perfectly matches the contextual intent of the originating
+            department.
+          </p>
+
+          <h2>What is the ROI of Contextual AI for Global Expansion?</h2>
+          <p>
+            For decades, enterprise localization was treated as a painful,
+            inescapable operational tax. The objective was simply to minimize
+            the financial damage. In the era of AI Context Orchestration, the
+            fundamental economics of translation invert. Localization is no
+            longer a cost center; it is your most powerful, highly scalable
+            engine for international revenue growth.
+          </p>
+          <p>
+            By removing the high manual overhead of traditional agencies,
+            automating the manual layout fixes of Desktop Publishing (DTP), and
+            physically integrating translation into the rapid deployment cycles
+            of your engineering team, Flixu allows you to launch native
+            experiences in Tier 2 and Tier 3 global markets that were previously
+            deemed too expensive to support.
+          </p>
+          <p>
+            Your Total Addressable Market (TAM) is no longer restricted by the
+            size of your human translation budget. With Flixu, your language
+            infrastructure effortlessly scales alongside your ambition. Welcome
+            to the era of zero-friction global expansion.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="07 — FAQ"
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section
+    data-chapter={`08 — ${t.rail.action.toUpperCase()}`}
+    class="content-section"
+  >
+    <div class="max-w-2xl">
+      <h2 class="font-serif text-5xl text-stone-900 mb-6">{content.cta.h2}</h2>
+      <p class="text-xl text-stone-600 mb-10">{content.cta.sub}</p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href="/contact"
+          class="px-8 py-4 bg-orange-700 text-white rounded-sm hover:bg-orange-800 transition-colors"
+        >
+          {content.cta.primary}
+        </a>
+        <a
+          href={`/${lang !== "en" ? lang + "/" : ""}pricing`}
+          class="px-8 py-4 border border-stone-200 text-stone-600 rounded-sm hover:border-stone-400 transition-colors"
+        >
+          {content.cta.secondary}
+        </a>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

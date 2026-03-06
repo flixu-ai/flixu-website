@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/core/Section.astro";
+import StatusDashboard from "../../components/widget/StatusDashboard.jsx";
+import { useTranslations, locales } from "../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Root (English default)
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+---
+
+<BaseLayout title={t.status.title} description={t.status.sub}>
+  <Section
+    data-chapter={`01 — ${t.rail.trust.toUpperCase()}`}
+    class="hero-section border-none"
+  >
+    <div class="max-w-4xl mx-auto text-center md:text-left">
+      <h1 class="font-serif text-5xl md:text-7xl text-stone-900 mb-6">
+        {t.status.title}
+      </h1>
+      <p class="font-sans text-xl text-stone-500 max-w-2xl">
+        {t.status.sub}
+      </p>
+    </div>
+  </Section>
+
+  <Section
+    data-chapter={`02 — ${t.rail.pipeline.toUpperCase()}`}
+    class="content-section"
+  >
+    <StatusDashboard client:load />
+  </Section>
+</BaseLayout>

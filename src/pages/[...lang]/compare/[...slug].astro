@@ -1,0 +1,26 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import ComparisonLayout from "../../../layouts/ComparisonLayout.astro";
+
+export const prerender = false;
+
+const { lang, slug } = Astro.params;
+const effectiveLang = lang || "en";
+
+const allEntries = await getCollection("comparisons");
+const entry = allEntries.find((e) => {
+  const [eLang, ...eSlugParts] = e.slug.split("/");
+  const eSlug = eSlugParts.join("/");
+  return eLang === "en" && eSlug === slug;
+});
+
+if (!entry) {
+  return Astro.redirect("/404");
+}
+
+const { Content } = await entry.render();
+---
+
+<ComparisonLayout frontmatter={entry.data} lang={lang || "en"}>
+  <Content />
+</ComparisonLayout>

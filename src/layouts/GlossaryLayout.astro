@@ -1,0 +1,179 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Section from "../components/ui/Section.astro";
+import Breadcrumbs from "../components/seo/Breadcrumbs.astro";
+import LastUpdated from "../components/seo/LastUpdated.astro";
+import SchemaOrg from "../components/seo/SchemaOrg.astro";
+import { getLocalizedPath, useTranslations } from "../i18n/utils";
+import { getCollection } from "astro:content";
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    relatedTerms?: string[];
+    relatedTopics?: string[];
+    dateModified?: Date;
+  };
+  lang: string;
+}
+
+const { frontmatter, lang } = Astro.props;
+const t = await useTranslations(lang);
+
+const allGlossary = await getCollection("glossary");
+const relatedTermEntries = frontmatter.relatedTerms
+  ? allGlossary.filter((g) => {
+      const slug = g.id.replace(`${lang}/`, "").replace(/\.mdx?$/, "");
+      return (
+        frontmatter.relatedTerms!.includes(slug) && g.id.startsWith(`${lang}/`)
+      );
+    })
+  : [];
+
+const allTopics = await getCollection("topics");
+const relatedTopicEntries = frontmatter.relatedTopics
+  ? allTopics.filter((t) => {
+      const slug = t.id.replace(`${lang}/`, "").replace(/\.mdx?$/, "");
+      return (
+        frontmatter.relatedTopics!.includes(slug) && t.id.startsWith(`${lang}/`)
+      );
+    })
+  : [];
+
+const definitionSchema = {
+  "@context": "https://schema.org",
+  "@type": "DefinedTerm",
+  name: frontmatter.title,
+  description: frontmatter.description,
+  url: `https://flixu.ai${Astro.url.pathname}`,
+  inDefinedTermSet: {
+    "@type": "DefinedTermSet",
+    name: "Translation & Localization Glossary",
+    url: "https://flixu.ai/topic/glossary",
+  },
+};
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Knowledge Base", url: getLocalizedPath("/topic", lang) },
+  { name: "Glossary", url: getLocalizedPath("/topic/glossary", lang) },
+  { name: frontmatter.title, url: Astro.url.pathname },
+];
+---
+
+<BaseLayout
+  title={`${frontmatter.title} — Glossary`}
+  description={frontmatter.description}
+  ogType="article"
+>
+  <SchemaOrg schema={definitionSchema} slot="schema" />
+
+  <Section data-chapter="01 — INTRO" class="hero-section--paper">
+    <div class="hero-container">
+      <Breadcrumbs items={breadcrumbItems} />
+      <span class="badge">Glossary</span>
+      <h1 class="hero-title">{frontmatter.title}</h1>
+
+      <!-- Definition box -->
+      <div class="p-6 bg-stone-50 border-l-2 border-orange-700 rounded-r-sm">
+        <div
+          class="font-mono text-[10px] text-orange-700 uppercase tracking-widest mb-3"
+        >
+          Definition
+        </div>
+        <p class="text-stone-700 leading-relaxed text-lg font-sans">
+          {frontmatter.description}
+        </p>
+      </div>
+
+      {
+        frontmatter.dateModified && (
+          <div class="mt-6">
+            <LastUpdated
+              date={new Date(frontmatter.dateModified)}
+              lang={lang}
+            />
+          </div>
+        )
+      }
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — GLOSSARY" class="content-section--paper">
+    <article class="prose-primary">
+      <slot />
+    </article>
+
+    <!-- Related Terms -->
+    {
+      relatedTermEntries.length > 0 && (
+        <div class="max-w-3xl section-divider">
+          <h3 class="section-heading">Related Terms</h3>
+          <div class="flex flex-wrap gap-3">
+            {relatedTermEntries.map((term) => {
+              const slug = term.id
+                .replace(`${lang}/`, "")
+                .replace(/\.mdx?$/, "");
+              return (
+                <a
+                  href={getLocalizedPath(`/topic/glossary/${slug}`, lang)}
+                  class="tag-pill"
+                >
+                  {term.data.title}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Related Topics -->
+    {
+      relatedTopicEntries.length > 0 && (
+        <div class="max-w-3xl mt-12 pt-8 border-t border-stone-200">
+          <h3 class="section-heading">Deep Dive Articles</h3>
+          <div class="space-y-4">
+            {relatedTopicEntries.map((topic) => {
+              const slug = topic.id
+                .replace(`${lang}/`, "")
+                .replace(/\.mdx?$/, "");
+              return (
+                <a
+                  href={getLocalizedPath(`/topic/${slug}`, lang)}
+                  class="link-card rounded-sm"
+                >
+                  <div>
+                    <span class="font-serif text-lg text-stone-900 group-hover:text-orange-700 transition-colors">
+                      {topic.data.title}
+                    </span>
+                    <p class="text-sm text-stone-500 mt-1">
+                      {topic.data.description}
+                    </p>
+                  </div>
+                  <span class="text-stone-300 group-hover:text-orange-700 transition-colors shrink-0 ml-4">
+                    →
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )
+    }
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <div>
+        <h3 class="cta-box-title">See it in action.</h3>
+        <p class="cta-box-desc">
+          Try Flixu's context-aware translation — free.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-primary">
+        View Pricing
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,122 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const { locales } = await import("../../../i18n/utils");
+  return locales.map((l) => ({ params: { lang: l === "en" ? undefined : l } }));
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+// Fetch Notes
+const allNotes = await getCollection("notes");
+
+// Filter and Sort
+const filteredNotes = allNotes.filter((note) => {
+  // Astro v5 uses note.id like "en/from-the-van.md"
+  return note.id.startsWith("en/");
+});
+
+type NoteEntry = CollectionEntry<"notes">;
+const sortedNotes = filteredNotes.sort(
+  (a: NoteEntry, b: NoteEntry) =>
+    new Date(b.data.publishDate).valueOf() -
+    new Date(a.data.publishDate).valueOf(),
+);
+
+const tGlobal = await useTranslations(lang);
+const tNav = tGlobal.navigation as any;
+
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.resources?.items?.notes?.title || "The Journal",
+    url: Astro.url.pathname,
+  },
+];
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: sortedNotes.map((note, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: `https://flixu.ai${getLocalizedPath(`/notes/${note.id.split("/").pop()?.replace(".md", "")}`, lang)}`,
+    name: note.data.title,
+    description: note.data.description,
+  })),
+};
+---
+
+<BaseLayout title="Journal" chapter="Journal">
+  <SchemaOrg schema={itemListSchema} slot="schema" />
+  <Section
+    data-chapter={`01 — ${tGlobal.rail.notes.toUpperCase()}`}
+    class="hero-section border-none pb-24"
+  >
+    <Breadcrumbs items={breadcrumbItems} />
+    <header class="mb-16 max-w-2xl">
+      <h1 class="mb-6">The Journal.</h1>
+      <p class="text-xl">
+        Found {filteredNotes.length} articles for {lang}.
+      </p>
+    </header>
+
+    <div class="mb-16 max-w-4xl">
+      <TldrBlock
+        text="The Journal is where we share deep, technical explorations on applied Contextual AI, localization engineering, and B2B SaaS architecture. Expect unfiltered developer perspectives on why Legacy Translation Memories fail, how to parse complex geometric structures, and the mathematical reality behind Brand Voice alignment."
+      />
+    </div>
+
+    <div class="flex flex-col border-t border-stone-200">
+      {
+        sortedNotes.map((note: NoteEntry) => (
+          <a
+            href={getLocalizedPath(
+              `/notes/${note.id.split("/").pop()?.replace(".md", "")}`,
+              lang,
+            )}
+            class="group py-8 border-b border-stone-200 flex flex-col md:flex-row md:items-baseline gap-6 hover:bg-stone-50 transition-colors px-2 -mx-2 rounded-sm"
+          >
+            <span class="font-mono text-xs text-stone-400 w-32 shrink-0">
+              {new Date(note.data.publishDate).toISOString().split("T")[0]}
+            </span>
+            <div class="flex-1">
+              <h2 class="mb-2 group-hover:text-orange-900 transition-colors text-2xl">
+                {note.data.title}
+              </h2>
+              <p class="text-stone-500 line-clamp-2 max-w-xl">
+                {note.data.description}
+              </p>
+            </div>
+            <span class="text-stone-400 text-sm group-hover:text-orange-700 transition-colors">
+              Read &rarr;
+            </span>
+          </a>
+        ))
+      }
+      {
+        filteredNotes.length === 0 && (
+          <div class="py-24 text-center">
+            <p class="text-stone-500 italic">
+              No articles found in this language yet.
+            </p>
+            <p class="text-xs text-stone-400 mt-4 font-mono">
+              Debug: Total Notes {allNotes.length} | Current Lang: {lang}
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </Section>
+</BaseLayout>

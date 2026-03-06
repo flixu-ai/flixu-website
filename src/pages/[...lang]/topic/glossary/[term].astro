@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import GlossaryLayout from "../../../../layouts/GlossaryLayout.astro";
+
+export const prerender = false;
+
+const { lang, term } = Astro.params;
+const effectiveLang = lang || "en";
+
+const allEntries = await getCollection("glossary");
+const entry = allEntries.find((e) => {
+  const parts = e.id.split("/");
+  const eLang = parts[0];
+  const eSlug = parts
+    .slice(1)
+    .join("/")
+    .replace(/\.mdx?$/, "");
+  return eLang === "en" && eSlug === term;
+});
+
+if (!entry) {
+  return Astro.redirect("/404");
+}
+
+const { Content } = await entry.render();
+---
+
+<GlossaryLayout frontmatter={entry.data} lang={effectiveLang}>
+  <Content />
+</GlossaryLayout>

@@ -1,0 +1,354 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroSaasLocalization from "../../../components/visuals/HeroSaasLocalization.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const tNav = t.navigation as any;
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.solutions_bofu?.title || "Use Cases",
+    url: getLocalizedPath("/use-cases/saas-localization", lang),
+  },
+  { name: "SaaS Localization", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "How does Flixu handle UI string translation?",
+    answer:
+      "Flixu accepts JSON, YAML, PO, XLIFF, and other structured formats. It preserves keys, variables, and placeholders while translating values with your glossary and brand voice constraints active.",
+  },
+  {
+    question: "Can I integrate Flixu into my CI/CD pipeline?",
+    answer:
+      "Yes. Flixu provides a REST API that accepts source files and returns translated files. You can trigger translations on every deployment or on content changes.",
+  },
+  {
+    question: "How does glossary enforcement work?",
+    answer:
+      "Upload your product terminology as a glossary. When Flixu encounters these terms during translation, the AI model is constrained to use your approved translations — they're not suggestions, they're rules.",
+  },
+  {
+    question: "What languages does Flixu support?",
+    answer:
+      "Flixu supports 50+ languages through its LLM orchestration layer, including CJK languages, RTL languages (Arabic, Hebrew), and European languages with formal/informal register support.",
+  },
+  {
+    question: "How is pricing structured for SaaS teams?",
+    answer:
+      "Flixu uses a pool-based pricing model. You purchase translation capacity (pools) and use them across any language pair. Unused capacity rolls over. No per-language surcharges.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "SaaS Localization",
+      description:
+        "Localize your SaaS product with context-aware AI. Consistent UI strings, help docs, and marketing copy — with glossary enforcement and brand voice across every language.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="SaaS Localization — Ship Your Product in 50+ Languages"
+  description="Localize your SaaS product with context-aware AI. Consistent UI strings, help docs, and marketing copy — with glossary enforcement and brand voice across every language."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Use Case</span>
+        <h1 class="hero-title">SaaS Localization.</h1>
+        <p class="hero-desc">
+          Your product speaks one language. Your users speak fifty. Bridge the
+          gap without breaking your terminology, tone, or deployment speed.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroSaasLocalization client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Traditional SaaS localization can slow engineering teams down with asynchronous agency cycles. Flixu accelerates this by functioning as a headless Context Orchestrator; deploy JSON or YAML UI files directly via GitHub Actions. We preserve your HTML variables, enforce Glossary terminology, and deliver a fully branded international experience rapidly, integrating with your agile sprints."
+      />
+    </div>
+  </Section>
+
+  <!-- The Problem -->
+  <Section data-chapter="03 — PROBLEM" class="content-section">
+    <div class="hero-container">
+      <h2 class="section-heading--lg">The Problem</h2>
+      <div class="prose-inline">
+        <p>
+          SaaS localization isn't just translation — it's consistency at scale.
+          Your product has hundreds of UI strings, release notes, help articles,
+          and marketing pages. Each needs to use the same terminology, the same
+          tone, in every language, on every release.
+        </p>
+        <p>
+          Most teams cobble together spreadsheets, Google Translate, and
+          freelancers. The result: inconsistent terminology, broken variables,
+          and a brand that sounds different in every language.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- How Flixu Solves This -->
+  <Section data-chapter="04 — SOLUTION" class="content-section--alt">
+    <div class="hero-container">
+      <h2 class="section-heading--lg mb-10">How Flixu Solves This</h2>
+      <div class="space-y-8">
+        {
+          [
+            {
+              step: "01",
+              title: "Upload your strings",
+              desc: "JSON, YAML, PO, XLIFF, or plain text. Flixu parses structure, preserves variables, and identifies translatable content.",
+            },
+            {
+              step: "02",
+              title: "Configure context",
+              desc: "Set your glossary, brand voice, formality levels, and domain. These constraints travel with every translation.",
+            },
+            {
+              step: "03",
+              title: "Translate with context",
+              desc: "Flixu routes to the best LLM for your language pair and content type, with all context injected into the prompt.",
+            },
+            {
+              step: "04",
+              title: "Review and ship",
+              desc: "Review in the app or export translated files. Approved translations feed your TM for future consistency.",
+            },
+          ].map(({ step, title, desc }) => (
+            <div class="flex gap-6">
+              <span class="step-number">{step}</span>
+              <div>
+                <h3 class="step-title">{title}</h3>
+                <p class="step-desc">{desc}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <!-- Why It Works -->
+  <Section data-chapter="05 — FEATURES" class="content-section">
+    <div class="hero-container">
+      <h2 class="section-heading--lg">Why It Works for SaaS Teams</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {
+          [
+            {
+              title: "Glossary Enforcement",
+              desc: "Your product terms are translated consistently — every time, every language.",
+            },
+            {
+              title: "Variable Safety",
+              desc: "Placeholders like {user_name} and HTML tags are preserved automatically.",
+            },
+            {
+              title: "Brand Voice",
+              desc: "Set formality and tone per language. Du in German, vous in French — configured once.",
+            },
+            {
+              title: "Pool Pricing",
+              desc: "No per-language surcharges. One pool, all languages.",
+            },
+          ].map(({ title, desc }) => (
+            <div class="feature-card">
+              <h3 class="feature-card-title">{title}</h3>
+              <p class="feature-card-desc">{desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="06 — DEEP DIVE"
+        class="py-24 border-b border-stone-100"
+      >
+        <div class="hero-container prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <KeyTakeaways
+            items={[
+              "Legacy localization penalizes agile SaaS teams by forcing weeks of delay into a daily CI/CD deploy cycle.",
+              "Flixu is a headless Context Orchestrator; translations trigger automatically on git push without humans.",
+              "Proprietary parsers protect your code geometry (HTML tags, span variables) from AI hallucinations.",
+              "Terminology Drift is eradicated through strict glossary enforcement at the LLM inference level.",
+            ]}
+          />
+          <h2>Why does legacy localization break continuous deployment?</h2>
+          <p>
+            In the modern era of B2B SaaS architecture, engineering velocity is
+            the ultimate competitive advantage. Elite product squads operate on
+            two-week agile sprints, utilizing robust Continuous Integration and
+            Continuous Deployment (CI/CD) pipelines to push code to production
+            multiple times a day. However, when a SaaS enterprise attempts to
+            support an international user base, this rapid development velocity
+            hits a significant architectural hurdle: the legacy localization
+            process.
+          </p>
+          <p>
+            For decades, the standard procedure for translating software was a
+            highly manual, asynchronous challenge. A frontend developer would
+            extract hundreds of new JSON or YAML UI strings, hand them off to a
+            Product Manager, who would then email an Excel spreadsheet to an
+            external translation agency. The engineering squad would then be
+            forced to wait weeks for human linguists to return the localized
+            files before the feature could finally be shipped to European or
+            Asian markets.
+          </p>
+          <p>
+            This analog bottleneck actively penalizes agile development. It
+            forces companies into a brutal choice: either radically slow down
+            international product releases to wait for translations, or ship the
+            English version immediately and allow the localized versions to
+            awkwardly lag behind, creating a fragmented, second-class experience
+            for international users.
+          </p>
+
+          <h2>How does Terminology Drift degrade SaaS UX?</h2>
+          <p>
+            Beyond the severe delays, legacy localization introduces significant
+            quality assurance risks. Modern SaaS applications are not static
+            documents; they are living, highly modular networks of
+            micro-strings. A single feature rollout might consist of fifty
+            isolated JSON key-value pairs (`&#123;"button_submit": "Confirm
+            Changes", "error_timeout": "Connection lost."&#125;`).
+          </p>
+          <p>
+            When human translators or generic machine translation (MT) engines
+            receive these isolated strings devoid of visual context, they guess.
+            A generic API like Google Translate does not know if the word "Lead"
+            refers to a potential sales CRM customer, or the physical metal used
+            in a manufacturing integration. Consequently, terminology can
+            fracture. The user's "Dashboard" on Monday might become a "Control
+            Panel" on Thursday. This phenomenon, known as Terminology Drift,
+            disrupts the user experience of a SaaS product, potentially leading
+            to confused users and elevated support tickets.
+          </p>
+
+          <h2>
+            How does Flixu deliver flawless software localization instantly?
+          </h2>
+          <p>
+            Flixu engineered a fundamentally new localization architecture
+            designed specifically for high-velocity software teams. We
+            streamline the process by replacing slow external agency routing
+            with rapid, deterministic AI Context Orchestration.
+          </p>
+          <p>
+            Flixu operates as a headless localization infrastructure. Through
+            our REST API and CLI tools, developers integrate Flixu directly into
+            their GitHub Actions or GitLab CI pipelines. When a developer merges
+            a pull request containing a new array of English UI strings, the
+            pipeline automatically fires the payload to Flixu.
+          </p>
+          <p>
+            Crucially, Flixu does not blindly translate the text. Before
+            inference, the Orchestrator dynamically intercepts the payload and
+            injects your enterprise's rigorous Context Matrix. It forces the
+            underlying Large Language Model to perfectly adhere to your
+            proprietary Terminology Glossary, ensuring that "Customer" is never
+            accidentally translated as "User". It cross-references your strict
+            Translation Memory (TM) to ensure absolute historical consistency.
+            And it applies your pre-configured Brand Voice parameters, ensuring
+            the tone is perfectly formal for German enterprise clients, but
+            appropriately energetic for Brazilian users.
+          </p>
+
+          <h2>How does Flixu preserve code geometry and variables?</h2>
+          <p>
+            Translating software logic requires far more precision than
+            translating a blog post. If an AI corrupts a code structural
+            variable—accidentally translating an HTML class name, or breaking a
+            programmatic placeholder like `[userName]`—the entire frontend
+            compiler will crash during the build phase.
+          </p>
+          <p>
+            Flixu's ingestion parsers explicitly separate structural code
+            geometry from semantic linguistic content. We protect your React
+            props, your inline span tags, and your backend variables with
+            absolute certainty. The AI translates the pure human semantics, and
+            our engine flawlessly reconstructs the syntax tree. The translated
+            JSON or XLIFF file is pushed directly back into your repository
+            branch, perfectly intact and ready for instant deployment.
+          </p>
+          <p>
+            With Flixu, global deployment occurs in milliseconds, not months.
+            You no longer manage translation agencies; you manage linguistic
+            infrastructure. Ship localized software at the exact speed you write
+            code.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <!-- FAQ -->
+  <Section
+    data-chapter="07 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section data-chapter="08 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Ready to localize?</h2>
+        <p class="cta-footer-desc">
+          Start translating your product — free tier available.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand">
+        View Pricing
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

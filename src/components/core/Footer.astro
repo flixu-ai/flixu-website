@@ -1,0 +1,156 @@
+---
+import { navConfig } from "../../config/navigation";
+import LanguageSelector from "./LanguageSelector";
+import { useTranslations, getLocalizedPath } from "../../i18n/utils";
+
+const lang = Astro.currentLocale || "en";
+const t = await useTranslations(lang);
+const baseNav = navConfig.en; // Use EN structure as canonical
+
+function getKeyFromHref(href: string) {
+  const parts = href.split("/").filter(Boolean);
+  return parts[parts.length - 1] || "home";
+}
+---
+
+<footer class="border-t border-stone-200 bg-[#FDFCF8] mt-auto">
+  <div class="mx-auto w-full max-w-[1400px]">
+    <!-- Main Grid with Vertical Dividers -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-stone-100"
+    >
+      <!-- Brand Column -->
+      <div class="p-12 pl-6 md:pl-12 xl:pl-24">
+        <a
+          href={getLocalizedPath("/", lang)}
+          class="font-serif text-2xl tracking-tight text-stone-900 block mb-6"
+          >Flixu.</a
+        >
+        <p
+          class="font-sans text-sm text-stone-500 leading-relaxed max-w-xs"
+          set:html={t.navigation.footer.brandText}
+        />
+      </div>
+
+      <!-- Solutions -->
+      <div class="p-12">
+        <h3 class="font-serif text-lg text-stone-900 mb-6">
+          {t.navigation.footer.solutions}
+        </h3>
+        <ul class="space-y-4">
+          {
+            baseNav.footer.solutions.map((item) => {
+              const key = getKeyFromHref(item.href);
+              // @ts-ignore
+              const label =
+                t.navigation.solutions.items[key]?.title || item.title;
+              return (
+                <li>
+                  <a
+                    href={getLocalizedPath(item.href, lang)}
+                    class="font-sans text-sm text-stone-500 hover:text-orange-700 transition-colors"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div class="p-12">
+        <h3 class="font-serif text-lg text-stone-900 mb-6">
+          {t.navigation.footer.resources}
+        </h3>
+        <ul class="space-y-4">
+          {
+            baseNav.footer.resources.map((item) => {
+              const key = getKeyFromHref(item.href);
+              // @ts-ignore
+              const label =
+                t.navigation.resources.items[key]?.title || item.title;
+              return (
+                <li>
+                  <a
+                    href={getLocalizedPath(item.href, lang)}
+                    class="font-sans text-sm text-stone-500 hover:text-orange-700 transition-colors"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div class="p-12 pr-6 md:pr-12 xl:pr-24">
+        <h3 class="font-serif text-lg text-stone-900 mb-6">
+          {t.navigation.footer.company}
+        </h3>
+        <ul class="space-y-4">
+          {
+            baseNav.footer.company.map((item) => {
+              const key = getKeyFromHref(item.href);
+              // @ts-ignore
+              const label =
+                t.navigation.company.items[key]?.title || item.title;
+              return (
+                <li>
+                  <a
+                    href={getLocalizedPath(item.href, lang)}
+                    class="font-sans text-sm text-stone-500 hover:text-orange-700 transition-colors"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Utility Bar (Bottom) -->
+    <div
+      class="border-t border-stone-100 px-6 md:px-12 xl:px-24 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono uppercase tracking-widest text-stone-400"
+    >
+      <div class="flex gap-6">
+        <span>{t.navigation.footer.copyright}</span>
+        <a
+          href={getLocalizedPath("/legal/privacy", lang)}
+          class="hover:text-orange-700 transition-colors"
+          >{t.navigation.footer.privacy}</a
+        >
+        <a
+          href={getLocalizedPath("/legal/terms", lang)}
+          class="hover:text-orange-700 transition-colors"
+          >{t.navigation.footer.terms}</a
+        >
+      </div>
+
+      <div class="flex items-center gap-8">
+        <!-- Status -->
+        <a
+          href={getLocalizedPath("/status", lang)}
+          class="flex items-center gap-2 hover:text-stone-600 transition-colors"
+        >
+          <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+          <span>{t.navigation.footer.status}</span>
+        </a>
+
+        <!-- Language Switcher -->
+        <div class="hidden items-center gap-4">
+          <LanguageSelector
+            client:visible
+            currentLang={lang}
+            dict={(t as any).languageSelector}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

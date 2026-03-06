@@ -1,0 +1,109 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import Section from "../../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../../components/seo/Breadcrumbs.astro";
+import { getCollection } from "astro:content";
+import { getLocalizedPath, useTranslations } from "../../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const allTerms = await getCollection("glossary");
+const terms = allTerms
+  .filter((t) => t.id.startsWith("en/"))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const t = await useTranslations(lang);
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Knowledge Base", url: getLocalizedPath("/topic", lang) },
+  { name: "Glossary", url: getLocalizedPath("/topic/glossary", lang) },
+];
+
+const grouped = terms.reduce<Record<string, typeof terms>>((acc, term) => {
+  const letter = term.data.title.charAt(0).toUpperCase();
+  if (!acc[letter]) acc[letter] = [];
+  acc[letter].push(term);
+  return acc;
+}, {});
+
+const letters = Object.keys(grouped).sort();
+---
+
+<BaseLayout
+  title="Translation & Localization Glossary"
+  description="Clear definitions of translation, localization, and AI terminology. From CAT tools to context-aware translation — terms explained by practitioners, not textbooks."
+>
+  <Section data-chapter="01 — INTRO" class="hub-hero">
+    <div class="hub-grid-bg"></div>
+
+    <div class="relative z-10">
+      <Breadcrumbs items={breadcrumbItems} />
+
+      <header class="hub-header">
+        <span class="badge">Glossary</span>
+        <h1 class="hub-title">Translation & Localization Glossary.</h1>
+        <p class="hub-desc">
+          Clear definitions. No jargon soup. Every term explained from a
+          practitioner's perspective.
+        </p>
+      </header>
+
+      <!-- Alphabet nav -->
+      <div class="flex flex-wrap gap-2 mb-12">
+        {
+          letters.map((letter) => (
+            <a href={`#${letter}`} class="alpha-link">
+              {letter}
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- Term grid grouped by letter -->
+      {
+        letters.map((letter) => (
+          <div id={letter} class="mb-12">
+            <h2 class="font-serif text-3xl text-stone-900 mb-6 pb-3 border-b border-stone-200">
+              {letter}
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {grouped[letter].map((term) => {
+                const slug = term.id
+                  .replace(`${lang}/`, "")
+                  .replace(/\.mdx?$/, "");
+                return (
+                  <a
+                    href={getLocalizedPath(`/topic/glossary/${slug}`, lang)}
+                    class="group card p-6"
+                  >
+                    <div class="card-glow" />
+                    <h3 class="font-serif text-lg text-stone-900 group-hover:text-orange-700 transition-colors mb-2">
+                      {term.data.title}
+                    </h3>
+                    <p class="card-desc line-clamp-2">
+                      {term.data.description}
+                    </p>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))
+      }
+
+      {
+        terms.length === 0 && (
+          <div class="py-24 text-center border-2 border-dashed border-stone-200 rounded-sm">
+            <p class="text-stone-400 italic">
+              Glossary terms are being compiled. Check back soon.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </Section>
+</BaseLayout>

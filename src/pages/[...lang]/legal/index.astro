@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "de" } }];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const content = {
+  en: {
+    title: "Legal Hub",
+    desc: "Transparency, compliance, and trust.",
+    items: [
+      {
+        label: "Imprint",
+        href: getLocalizedPath("/legal/imprint", "en"),
+        desc: "Company information and legal disclosure.",
+      },
+      {
+        label: "Terms of Service",
+        href: getLocalizedPath("/legal/terms", "en"),
+        desc: "Usage rights, obligations, and limitations.",
+      },
+      {
+        label: "Privacy Policy",
+        href: getLocalizedPath("/legal/privacy", "en"),
+        desc: "How we process and protect your data.",
+      },
+    ],
+  },
+  de: {
+    title: "Rechtliches",
+    desc: "Transparenz, Compliance und Vertrauen.",
+    items: [
+      {
+        label: "Impressum",
+        href: getLocalizedPath("/legal/imprint", "de"),
+        desc: "Anbieterkennzeichnung und rechtliche Hinweise.",
+      },
+      {
+        label: "AGB",
+        href: getLocalizedPath("/legal/terms", "de"),
+        desc: "Nutzungsrechte, Pflichten und Einschränkungen.",
+      },
+      {
+        label: "Datenschutz",
+        href: getLocalizedPath("/legal/privacy", "de"),
+        desc: "Wie wir Ihre Daten verarbeiten und schützen.",
+      },
+    ],
+  },
+};
+
+const t = content[lang as keyof typeof content];
+const tGlobal = await useTranslations(lang);
+---
+
+<BaseLayout title={t.title} description={t.desc}>
+  <Section
+    data-chapter={`01 — ${tGlobal.rail.legal.toUpperCase()}`}
+    class="hero-section bg-[#FDFCF8] border-none"
+  >
+    <div class="max-w-2xl mx-auto">
+      <h1 class="font-serif text-5xl text-stone-900 mb-6">{t.title}</h1>
+      <p class="font-sans text-xl text-stone-500 mb-16">{t.desc}</p>
+
+      <div class="grid gap-6">
+        {
+          t.items.map((item) => (
+            <a
+              href={item.href}
+              class="block p-8 border border-stone-200 rounded-sm hover:border-orange-700/30 hover:bg-stone-50 transition-all group"
+            >
+              <h2 class="font-serif text-2xl text-stone-900 mb-2 group-hover:text-orange-900 transition-colors">
+                {item.label}
+              </h2>
+              <p class="font-sans text-stone-500">{item.desc}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

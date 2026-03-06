@@ -1,0 +1,416 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroAgencies from "../../../components/visuals/HeroAgencies.jsx";
+import {
+  useTranslations,
+  locales,
+  getLocalizedPath,
+} from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const content = t.forAgencies;
+const isDE = lang === "de";
+
+const isDev = import.meta.env.DEV;
+const appUrl = isDev ? "http://localhost:3000" : "https://app.flixu.ai";
+
+// Breadcrumbs Setup
+const tNav = t.navigation as any;
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.who?.title || "Who it's for",
+    url: getLocalizedPath("/for/freelancers", lang),
+  }, // Since there is no hub file yet, link to first item.
+  { name: content.hero.label, url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Why should a translation agency use Contextual AI?",
+    answer:
+      "Contextual AI allows agencies to scale their processing volume without linearly scaling their headcount. By utilizing an AI Orchestrator with mathematically enforced glossaries and shared TM, freelancer throughput triples while manual Project Manager oversight (LQA) is drastically reduced.",
+  },
+  {
+    question:
+      "How does Flixu eliminate the Desktop Publishing (DTP) tax for agencies?",
+    answer:
+      "When agencies translate complex formats like IDML or DOCX, text expansion traditionally breaks the layout, requiring expensive DTP specialists to manually fix it. Flixu uses Structural Geometric Parsing to mathematically separate text, translate it, and reconstruct the perfectly formatted document automatically.",
+  },
+  {
+    question:
+      "Can multiple freelance translators share a Translation Memory in real-time?",
+    answer:
+      "Yes, Flixu democratizes Translation Memory across your entire freelance network instantaneously. When one translator translates a clause, it becomes immediately available to the entire active project team, ensuring absolute terminology consistency.",
+  },
+  {
+    question: "How does the pricing model work for agencies?",
+    answer:
+      "Flixu offers an aggressive output-only pricing model that effectively removes per-word cost constraints. Agencies can translate large volumes at a fraction of traditional software licensing costs, drastically widening profit margins.",
+  },
+  {
+    question: "Are our client glossaries kept secure and isolated?",
+    answer:
+      "Absolutely. Each client operates within an isolated workspace. Glossaries and translation memories are strictly partitioned, ensuring zero cross-contamination of proprietary corporate terminology or brand voice parameters.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu for Translation Agencies",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={isDE ? "Für Agenturen | Flixu" : "For Agencies | Flixu"}
+  description={isDE
+    ? "Flixu für Übersetzungsagenturen: geteiltes TM, Glossar und Brand Voice für konsistente Qualität im Team."
+    : "Flixu for translation agencies: shared TM, glossary, and brand voice for consistent quality across your team."}
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <!-- HERO -->
+  <Section
+    data-chapter={`01 — ${t.rail.intro.toUpperCase()}`}
+    class="hero-section"
+  >
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">{content.hero.label}</span>
+        <h1 class="hero-title">
+          {content.hero.h1}
+        </h1>
+        <p class="hero-desc">
+          {content.hero.sub}
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroAgencies client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Traditional translation agencies face shrinking margins due to non-linguistic friction like DTP layout fixing and fragmented terminology management. Flixu provides algorithmic leverage, enabling agencies to scale volume asyncronously. With shared Translation Memory, strict Glossary enforcement, and automated file reconstruction (IDML/DOCX), agencies can triple their throughput and slash operational overhead."
+      />
+    </div>
+  </Section>
+
+  <!-- PROBLEM / BEFORE & AFTER -->
+  <Section
+    data-chapter={`03 — ${t.rail.problem.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.problem.label}</span
+      >
+      <h2 class="mb-6">
+        {content.problem.h2}
+      </h2>
+      <p class="text-xl">
+        {content.problem.body}
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {
+        content.problem.items.map((item) => (
+          <div
+            class={`p-8 rounded-sm border ${item.dim ? "border-stone-200 bg-stone-50/50" : "border-orange-200 bg-orange-50/30"}`}
+          >
+            <div class="font-mono text-[10px] uppercase tracking-widest mb-3 text-stone-400">
+              {item.num}
+            </div>
+            <h3
+              class={`mb-3 ${item.dim ? "text-stone-500" : "text-stone-900"}`}
+            >
+              {item.label}
+            </h3>
+            <p
+              class={`text-sm leading-relaxed ${item.dim ? "text-stone-400" : "text-stone-600"}`}
+            >
+              {item.body}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- TEAM FEATURES GRID -->
+  <Section
+    data-chapter={`04 — ${t.rail.features.toUpperCase()}`}
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mb-12">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.features.label}</span
+      >
+      <h2>{content.features.h2}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {
+        content.features.items.map((item) => (
+          <div class="border-l border-stone-200 pl-6 py-1">
+            <h3 class="mb-2">{item.title}</h3>
+            <p class="text-stone-500 text-sm leading-relaxed">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- UPGRADE PATH -->
+  <Section
+    data-chapter={`05 — ${t.rail.plans.toUpperCase()}`}
+    class="content-section border-b border-stone-100 bg-stone-50/30"
+  >
+    <div class="max-w-2xl">
+      <span
+        class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-4 block"
+        >{content.plans.label}</span
+      >
+      <h2 class="mb-4">
+        {content.plans.h2}
+      </h2>
+      <p class="mb-8 text-xl">
+        {content.plans.sub}
+      </p>
+      <div class="border-l-2 border-orange-200 pl-6">
+        <p class="text-stone-500 italic text-sm leading-relaxed">
+          {content.plans.trigger}
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="06 — DEEP DIVE"
+        class="content-section border-b border-stone-100"
+      >
+        <div class="max-w-3xl prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <KeyTakeaways
+            items={[
+              "Legacy agency margins are shrinking due to non-linguistic friction (DTP, TM management, LQA).",
+              "Flixu's Context Orchestration enforces glossaries at the API level, preventing vocabulary errors before they reach the draft.",
+              "Structural parsing dynamically handles IDML and DOCX layouts, dropping DTP costs to zero.",
+              "Freelancers transition into 'Context Engineers', processing 3x the volume per day.",
+            ]}
+          />
+          <h2>
+            Why are traditional translation agencies losing to Contextual AI?
+          </h2>
+          <p>
+            For the past two decades, the operational model of a translation
+            agency has remained largely unchanged. Agencies acquired clients,
+            managed complex project files, extracted text, and outsourced the
+            manual translation work to a vast network of freelance linguists.
+            While Computer-Assisted Translation (CAT) tools and basic Machine
+            Translation Post-Editing (MTPE) offered marginal gains in speed, the
+            core bottleneck remained human translation speed: a skilled
+            translator typically processes roughly 2,000 to 2,500 words per day.
+          </p>
+          <p>
+            In 2026, the localization landscape has fundamentally shifted.
+            Enterprise clients are demanding faster turnaround times,
+            significantly lower per-word costs, and continuous integration
+            directly into their software repositories. Agencies relying on
+            legacy, disjointed workflows and static translation memories are
+            experiencing a brutal margin squeeze. The solution is no longer
+            hiring more freelancers or negotiating lower per-word rates; the
+            solution is algorithmic leverage through AI Orchestration.
+          </p>
+
+          <h3>The Margin Squeeze: The Cost of Manual Workflows</h3>
+          <p>
+            The primary hidden cost crippling modern translation agencies is
+            non-linguistic administrative friction. When an enterprise client
+            sends a highly formatted, 100-page Adobe InDesign (IDML) brochure,
+            the raw translation is only half the battle. Because translated text
+            often expands—German text is typically 30% longer than English—the
+            meticulously designed layout breaks.
+          </p>
+          <p>
+            Agencies are forced to hire highly expensive Desktop Publishing
+            (DTP) specialists to manually resize fonts, expand bounding boxes,
+            and fix formatting structures before returning the document to the
+            client. Similarly, managing fragmented Translation Memories (TMX
+            files) and static Excel glossaries across 40 different freelance
+            translators working on the same project leads to critical
+            terminology inconsistencies. The Project Manager spends countless
+            hours executing manual Linguistic Quality Assurance (LQA), hunting
+            down incorrect jargon with basic "Find and Replace" tools. This
+            manual friction degrades agency profitability.
+          </p>
+
+          <h2>How does AI Orchestration transform agency throughput?</h2>
+          <p>
+            Flixu is engineered to serve as the technological backbone for
+            modern, high-velocity language service providers (LSPs). By
+            transitioning from legacy CAT tools to a centralized Context
+            Orchestrator, translation agencies can radically increase their
+            daily throughput, eliminate formatting costs entirely, and guarantee
+            absolute structural terminology consistency across their entire
+            decentralized freelance roster.
+          </p>
+
+          <h3>Centralized, Mathematically Enforced Glossaries</h3>
+          <p>
+            When you onboard a new enterprise client, managing their specific
+            terminology is the hardest challenge. If a medical tech company
+            insists that the English word "Screen" is translated as "Monitor"
+            rather than "Bildschirm", relying on a freelancer to remember that
+            rule on page 40 of a dense manual is an operational liability.
+          </p>
+          <p>
+            Flixu eliminates human error through{" "}
+            <strong>Context Injection</strong>. Agencies upload the client's
+            proprietary glossary into an isolated Flixu Workspace. When a
+            freelance translator processes a document, the Flixu engine
+            explicitly instructs the underlying Large Language Model to obey the
+            glossary. The AI is mathematically constrained; it cannot
+            hallucinate a synonym for "Screen." It builds the entire foreign
+            grammatical structure natively around the locked client terminology.
+            Your freelancers are no longer fixing bad terminology; they are
+            simply reviewing a perfect operational draft.
+          </p>
+
+          <h3>Shared Translation Memory in Real-Time</h3>
+          <p>
+            Flixu democratizes Translation Memory across your entire freelance
+            network instantaneously. If Translator A translates a specific
+            boilerplate legal clause on Monday, that exact phrasing is saved to
+            the client's isolated TM database. On Thursday, when Translator B
+            encounters a nearly identical clause in a different document, Flixu
+            instantly provides a 100% Exact Match or an 85% Fuzzy Match. By
+            utilizing Semantic Vector Retrieval (RAG), the system even surfaces
+            conceptually similar past translations to teach the AI the correct
+            corporate tone. Your agency stops paying to translate the same
+            sentence twice, unlocking significant operational arbitrage.
+          </p>
+
+          <h2>How does Flixu eradicate the Desktop Publishing (DTP) Tax?</h2>
+          <p>
+            Perhaps the most transformative capability of Flixu for agencies is
+            the total elimination of the Desktop Publishing bottleneck. When
+            your agency translates complex business documents—PDFs, PPTX, DOCX,
+            or software JSON—Flixu utilizes Structural Geometric Parsing.
+          </p>
+          <p>
+            Our ingestion engine perfectly maps the spatial boundaries, font
+            sizes, kerning, and positional coordinates of every text box. We
+            separate the content from the geometry, translate the text using the
+            localized Glossary via LLM, and then reconstruct the document using
+            algorithmic spatial micro-adjustments to handle the inevitable text
+            expansion. A complex English presentation deck is returned as a
+            flawless German presentation deck, fully localized, without a single
+            human designer ever opening Adobe Illustrator. This allows agencies
+            to offer zero-friction Document Translation at a high markup, with
+            effectively 100% software margins.
+          </p>
+
+          <h2>What are the economics of an AI-First agency?</h2>
+          <p>
+            By adopting Contextual AI, the economics of running a translation
+            agency completely invert. Historically, as an agency scaled, its
+            operational headcount (Project Managers, LQA specialists, DTP
+            designers) had to scale linearly with the volume of words processed.
+          </p>
+          <p>
+            With Flixu, your infrastructure scales asynchronously from your word
+            count. Your freelancers transition from manual typists to elite
+            "Context Engineers," capable of processing 6,000 to 8,000 words per
+            day by curating high-fidelity AI drafts rather than writing from
+            scratch. Your agency can process three times the volume, deliver
+            projects to clients in a fraction of the traditional turnaround
+            time, and maintain significantly higher quality—all while
+            aggressively widening your profit margins.
+          </p>
+          <p>
+            In the era of AI, clients are not paying you to type words. They are
+            paying you to manage complexity, ensure compliance, and safeguard
+            their global brand voice. Flixu provides the exact architectural
+            infrastructure necessary to deliver that promise at scale.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="07 — FAQ"
+    class="content-section border-b border-stone-100"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- CTA -->
+  <Section
+    data-chapter={`08 — ${t.rail.action.toUpperCase()}`}
+    class="content-section"
+  >
+    <div class="max-w-2xl">
+      <h2 class="mb-6">{content.cta.h2}</h2>
+      <p class="mb-10 text-xl">{content.cta.sub}</p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href={`${appUrl}/sign-up?plan=team&intent=business&interval=month`}
+          class="hidden"
+          >{content.cta.primary}
+        </a>
+        <a
+          href={`/${lang !== "en" ? lang + "/" : ""}pricing`}
+          class="px-8 py-4 border border-stone-200 text-stone-600 rounded-sm hover:border-stone-400 transition-colors"
+        >
+          {content.cta.secondary}
+        </a>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

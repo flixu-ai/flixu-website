@@ -1,0 +1,278 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroFidelity from "../../../components/visuals/HeroFidelity.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const tNav = t.navigation as any;
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.solutions_bofu?.title || "Use Cases",
+    url: getLocalizedPath("/use-cases/saas-localization", lang),
+  },
+  { name: "Document Translation", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Which file formats does Flixu support?",
+    answer:
+      "PDF, DOCX, PPTX, XLSX, XLIFF, JSON, YAML, PO, XML, and plain text. Each format has dedicated parsing that preserves structure and layout.",
+  },
+  {
+    question: "How does layout preservation work for PDFs?",
+    answer:
+      "Flixu uses geometric parsing to understand text positioning, then applies spatial micro-adjustments during translation to handle text expansion while maintaining visual fidelity.",
+  },
+  {
+    question: "Can I translate a 100-page document?",
+    answer:
+      "Yes. Flixu processes documents in segments, preserving your glossary and brand voice across the entire document. TM ensures repeated segments are translated consistently.",
+  },
+  {
+    question: "What about images with text?",
+    answer:
+      "Embedded text in images is not translated in the current version. OCR-based image text translation is on the roadmap.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Document Translation",
+      description:
+        "Translate PDF, DOCX, and PPTX documents while preserving layout, formatting, and visual fidelity. Context-aware AI handles text expansion and terminology automatically.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Document Translation — PDFs That Look Native"
+  description="Translate PDF, DOCX, and PPTX documents while preserving layout, formatting, and visual fidelity. Context-aware AI handles text expansion and terminology automatically."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Use Case</span>
+        <h1 class="hero-title">Document Translation.</h1>
+        <p class="hero-desc">
+          PDFs, contracts, presentations — translated with the layout your
+          readers expect.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroFidelity client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="Standard document translation often disrupts formatting due to language expansion (e.g., German text is often 30% longer than English). Flixu's Spatial Parsing engine separates the text from the geometry, translates it using your Glossary, and algorithmically reconstructs the original layout—significantly reducing or eliminating manual Desktop Publishing (DTP) effort."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — PROBLEM" class="content-section">
+    <div class="hero-container">
+      <h2 class="section-heading--lg">The Problem</h2>
+      <div class="prose-inline">
+        <p>
+          Document translation often disrupts layout. German text is often 30%
+          longer than English. Tables overflow. Bullets misalign. Headers push
+          content to new pages. Most tools translate the words and leave the
+          layout mess to you.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="04 — SOLUTION" class="content-section--alt">
+    <div class="hero-container">
+      <h2 class="section-heading--lg mb-10">How Flixu Solves This</h2>
+      <div class="space-y-8">
+        {
+          [
+            {
+              step: "01",
+              title: "Structural parsing",
+              desc: "Flixu reads your document's geometry — not just text. Paragraphs, tables, headers, and footnotes are identified and processed in context.",
+            },
+            {
+              step: "02",
+              title: "Context-aware translation",
+              desc: "Each segment is translated with your glossary, TM, and brand voice active. The AI knows the difference between a heading and a footnote.",
+            },
+            {
+              step: "03",
+              title: "Spatial adjustment",
+              desc: "Text expansion is handled through micro-adjustments — font size, spacing, and line breaks — keeping the visual structure intact.",
+            },
+          ].map(({ step, title, desc }) => (
+            <div class="flex gap-6">
+              <span class="step-number">{step}</span>
+              <div>
+                <h3 class="step-title">{title}</h3>
+                <p class="step-desc">{desc}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="05 — DEEP DIVE"
+        class="py-24 border-b border-stone-100"
+      >
+        <div class="hero-container prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <KeyTakeaways
+            items={[
+              "Minimize Desktop Publishing (DTP) effort by automatically preserving spatial constraints upon translation.",
+              "Flixu performs real-time geometric micro-adjustments for German or Spanish text expansion to prevent overflow.",
+              "Ingest and instantly output fully-formatted, complex presentation decks in 40+ languages.",
+            ]}
+          />
+          <h2>What is the Desktop Publishing (DTP) Tax?</h2>
+          <p>
+            In the professional translation industry, the linguistic translation
+            of a document represents only half of the operational challenge. The
+            second, significantly more expensive challenge is spatial
+            formatting. This phenomenon is known across the localization
+            industry as the Desktop Publishing (DTP) Tax.
+          </p>
+          <p>
+            When a financial services company translates a 50-page highly
+            formatted Annual Report (PDF or PPTX) from English into German, the
+            text historically expands by approximately 30%. Because English is
+            an exceptionally dense language, German translation inherently
+            requires more characters and longer compound words.
+          </p>
+          <p>
+            In a traditional agency workflow, translators extract the raw text
+            using Computer-Assisted Translation (CAT) tools, translate the
+            strings, and inject them back into the document. The result is often
+            a disrupted layout. The expanded text can overflow bounding boxes;
+            bullet points misalign, tables overflow their columns, and critical
+            headers are pushed onto subsequent pages. Agencies often rely on DTP
+            graphic designers to spend hours manually resizing fonts, adjusting
+            tracking, and fixing the layout before returning the document. This
+            adds significant overhead to fix structural issues created by the
+            translation process itself.
+          </p>
+
+          <h2>How does Algorithmic Geometric Parsing work?</h2>
+          <p>
+            Flixu permanently eliminates the DTP tax through proprietary
+            Algorithmic Geometric Parsing. When you upload a complex document
+            into the Flixu workspace, we do not simply extract the text. Our
+            parsing engine maps the exact spatial geometry of the entire
+            document.
+          </p>
+          <p>
+            We record the precise X and Y coordinates of every text block, the
+            font size, the kerning, the line height, and the exact spatial
+            relationship between a graphic and its accompanying caption. Flixu
+            separates this physical geometry from the semantic linguistics,
+            generating a headless "Skeleton" of your document.
+          </p>
+
+          <h2>How does Flixu reconstruct document structure?</h2>
+          <p>
+            Once the skeleton is isolated, Flixu routes the pure text through
+            our AI Context Orchestrator. As always, the underlying LLM inference
+            is strictly governed by your specific Terminology Glossary and
+            Translation Memory (TM) to guarantee absolute B2B consistency across
+            the 50-page report.
+          </p>
+          <p>
+            The true breakthrough occurs during document reconstruction. When
+            the AI returns the translated German text, Flixu algorithmically
+            reinjects the text back into the headless skeleton. However, because
+            the system is aware of the original spatial constraints, it performs
+            real-time micro-adjustments to handle the 30% text expansion.
+          </p>
+          <p>
+            If a translated German headline threatens to overflow a title box,
+            Flixu's reconstruction algorithm fractionally reduces the tracking
+            (letter-spacing) or incrementally decreases the font size by 0.5
+            points to ensure it fits perfectly within the original visual
+            parameters. If a table cell expands, the algorithm dynamically
+            balances the adjacent columns to preserve the layout grid.
+          </p>
+
+          <h2>How does this achieve zero-friction delivery?</h2>
+          <p>
+            The implications for B2B enterprises and translation agencies are
+            profound. You can upload a beautifully designed, highly complex
+            English presentation deck, and within minutes, download a flawless,
+            client-ready Spanish presentation deck.
+          </p>
+          <p>
+            The terminology is perfectly accurate because it was governed by
+            your Glossary API. The emotional tone is accurate because it was
+            governed by your Brand Voice profile. And the visual layout is
+            pristine because it was preserved by Geometric Parsing. No external
+            designers required. No DTP tax. Just pure, zero-friction global
+            communication.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="06 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <Section data-chapter="07 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Try it with your own document.</h2>
+        <p class="cta-footer-desc">Upload a PDF and see the result — free.</p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand">
+        View Pricing
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

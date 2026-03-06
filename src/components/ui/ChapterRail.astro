@@ -1,0 +1,103 @@
+---
+const { staticLabel, introLabel } = Astro.props;
+---
+
+<!-- LEFT RAIL -->
+<aside
+  class="fixed left-6 top-0 bottom-0 z-40 hidden xl:flex flex-col items-center justify-center w-[1px] pointer-events-none"
+>
+  <div class="flex-grow w-px bg-stone-200"></div>
+  <div class="py-8 bg-[#FDFCF8] flex items-center justify-center">
+    <span
+      id="chapter-label"
+      class="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 whitespace-nowrap writing-vertical rotate-180 transition-opacity duration-300"
+    >
+      {staticLabel || introLabel || "Intro"}
+    </span>
+  </div>
+  <div class="flex-grow w-px bg-stone-200"></div>
+</aside>
+
+<!-- RIGHT RAIL -->
+<aside
+  class="fixed right-6 top-0 bottom-0 z-40 hidden xl:flex flex-col items-center justify-center w-[1px] pointer-events-none"
+>
+  <div class="h-full w-px bg-stone-200 dashed-line"></div>
+</aside>
+
+<script>
+  const sections = Array.from(
+    document.querySelectorAll("section[data-chapter]"),
+  );
+  const label = document.getElementById("chapter-label");
+
+  if (sections.length > 0 && label) {
+    let currentChapter = "";
+
+    const updateRail = () => {
+      // Default to the first chapter
+      let activeSection = sections[0];
+
+      // Find the last section that has crossed the trigger line (top 40% of viewport)
+      const triggerOffset = window.innerHeight * 0.4;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const rect = sections[i].getBoundingClientRect();
+        if (rect.top <= triggerOffset) {
+          activeSection = sections[i];
+          break;
+        }
+      }
+
+      const chapterName = activeSection.getAttribute("data-chapter") || "";
+
+      if (chapterName !== currentChapter) {
+        // If it's the very first load, don't animate the initial paint
+        if (currentChapter === "") {
+          currentChapter = chapterName;
+          label.innerText = currentChapter;
+          label.style.opacity = "1";
+        } else {
+          currentChapter = chapterName;
+          // Fade out
+          label.style.opacity = "0";
+          setTimeout(() => {
+            label.innerText = currentChapter;
+            // Fade in
+            label.style.opacity = "1";
+          }, 300);
+        }
+      }
+    };
+
+    // Run once on load
+    updateRail();
+
+    // Listen to scroll events efficiently
+    let isTicking = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!isTicking) {
+          window.requestAnimationFrame(() => {
+            updateRail();
+            isTicking = false;
+          });
+          isTicking = true;
+        }
+      },
+      { passive: true },
+    );
+  }
+</script>
+
+<style>
+  .writing-vertical {
+    writing-mode: vertical-rl;
+  }
+  .dashed-line {
+    background-image: linear-gradient(to bottom, #e7e5e4 60%, transparent 40%);
+    background-size: 1px 8px;
+    background-repeat: repeat-y;
+  }
+</style>

@@ -1,0 +1,1139 @@
+{
+  "hero": {
+    "h1": "Your Voice. <br/> In Every Language.",
+    "sub": "Go beyond raw AI translation without the complexity of a heavy TMS. Flixu provides the context, glossaries, and brand consistency teams need — minus the enterprise bloat.",
+    "btnPrimary": "Start free trial",
+    "btnSecondary": "See how it works",
+    "badge": "No setup required. Ready in seconds.",
+    "metaTitle": "Flixu - AI Translation",
+    "badgeLabel": "New: Version 1.0"
+  },
+  "widget": {
+    "label": "LIVE DEMONSTRATION",
+    "h2": "Precision you can test.",
+    "sub": "See how Flixu adapts tone and terminology in real-time. No login required.",
+    "placeholder": "Type or paste text here...",
+    "translationReady": "READY",
+    "translationEmpty": "Translation will appear here...",
+    "processing": "Processing Context...",
+    "translateBtn": "Translate with Context",
+    "translating": "Translating..."
+  },
+  "features": {
+    "h2": "More than an engine. Less than a headache.",
+    "items": [
+      {
+        "title": "Contextual Intelligence",
+        "body": "Raw AI guesses. Flixu knows. We inject your glossary and style guide into every translation request.",
+        "icon": "FileText",
+        "image": "/src/assets/features/feature-text.jpg",
+        "visualVariant": "text"
+      },
+      {
+        "title": "Document Fidelity",
+        "body": "Keep your layout intact. Upload PDF or DOCX and get a perfectly formatted translation back. No re-formatting needed.",
+        "icon": "Layers",
+        "image": "/src/assets/features/feature-doc.jpg",
+        "visualVariant": "doc"
+      },
+      {
+        "title": "Context Awareness",
+        "body": "Seven layers of context — cultural, domain, formality, brand voice, and more. Every translation is analysed before and after.",
+        "icon": "Cpu",
+        "image": "/src/assets/features/feature-visual.jpg",
+        "visualVariant": "visual"
+      },
+      {
+        "title": "Team Memory",
+        "body": "Stop correcting the same terms twice. Your team builds a shared translation memory automatically as you work.",
+        "icon": "BookMarked",
+        "image": "/src/assets/features/feature-doc.jpg",
+        "visualVariant": "doc"
+      }
+    ]
+  },
+  "logic": {
+    "h2": "The missing layer.",
+    "c1": {
+      "title": "Better than Raw AI",
+      "body": "DeepL and GPT don't know your brand. Flixu adds the context layer they miss.",
+      "icon": "Cpu"
+    },
+    "c2": {
+      "title": "Faster than a TMS",
+      "body": "No complex workflows. No certification courses. Just invite your team and translate.",
+      "icon": "Globe"
+    },
+    "c3": {
+      "title": "Model Agnostic",
+      "body": "We route to the best model for the job, so you never have to choose between engines.",
+      "icon": "BookMarked"
+    }
+  },
+  "cta": {
+    "h2": "Ready when you are.",
+    "sub": "Create your workspace, upload your glossary, and start translating with clarity.",
+    "btn": "Start for free"
+  },
+  "about": {
+    "title": "The Golden Mean.",
+    "subtitle": "Why I left the corporate TMS world to build a workspace that sells itself.",
+    "bgLabel": "The Origin",
+    "p1": "For years, I lived a double life. By day, I was an Account Executive for a market-leading Translation Management System. By night, I lived in my campervan, analyzing the gap between what I sold and what the world actually needed.",
+    "p2": "Every day, I spoke with international teams. Their frustration was identical. The raw AI engines were fast but lacked control. The enterprise platforms were bloated, confusing, and overpriced—packed with features nobody used but everyone paid for.",
+    "quote": "They didn't want a 12-month project. They just wanted to work.",
+    "p3": "Clients were begging for the golden mean. A solution that focused on the essentials: Translation Memory, Glossaries, and strict Brand Voice control—without the heavy enterprise bureaucracy.",
+    "p4": "I left the corporate track to build exactly that. Flixu is the answer to hundreds of customer conversations. It is a product built to convince through quality, not through aggressive sales. It is the tool I wished I could have sold them.",
+    "sign": "Deniz",
+    "role": "Founder"
+  },
+  "contact": {
+    "title": "Concierge Support.",
+    "sub": "Choose a channel. Our AI agents will guide you to the fastest resolution."
+  },
+  "status": {
+    "title": "System Status.",
+    "sub": "Real-time performance metrics and availability."
+  },
+  "pricing": {
+    "pageTitle": "Pricing",
+    "pageDesc": "Transparent, output-based pricing for translation.",
+    "hero": {
+      "h1": "Pay for value, <br /> <span class=\"text-orange-700 italic\">not volume.</span>",
+      "sub": "Most tools charge for every character you upload. We only charge for the translated output. Because context shouldn't be costly."
+    },
+    "pool": {
+      "fair": {
+        "title": "Fair Text Units",
+        "sub": "1 output character = 1 unit. Formatting tags, white space, and uploads are never counted."
+      },
+      "media": {
+        "title": "Image Context",
+        "sub": "Attach images as translation context. Your AI reads the visual layout and applies it to the translation — free of charge."
+      },
+      "rollover": {
+        "title": "Smart Rollover",
+        "sub": "Unused characters don't expire immediately. Your monthly pool resets, but we offer a 30-day grace period for overflow."
+      }
+    },
+    "specs": {
+      "title": "Detailed Specifications",
+      "headers": {
+        "feature": "Feature",
+        "free": "Free",
+        "ind": "Individual",
+        "team": "Team",
+        "biz": "Business",
+        "ent": "Enterprise"
+      },
+      "enterprise": {
+        "text": "Need explicit SLAs or On-Premise deployment?",
+        "link": "Contact us for Enterprise options ->"
+      },
+      "rows": [
+        {
+          "category": "Translation Memory Architecture",
+          "items": [
+            {
+              "label": "TM Engine",
+              "free": "Standard (256-dim)",
+              "ind": "Smart (1024-dim)",
+              "team": "Advanced (1024-dim, Instruct)",
+              "biz": "Precision (2048-dim)",
+              "ent": "Elite (4096-dim)"
+            },
+            {
+              "label": "Secondary Reranker",
+              "free": "-",
+              "ind": "AI-Reranking",
+              "team": "Reranker-4B",
+              "biz": "Reranker-8B",
+              "ent": "Reranker-8B + Cross-lingual"
+            },
+            {
+              "label": "Top-K Candidates",
+              "free": "-",
+              "ind": "Auto",
+              "team": "Auto",
+              "biz": "15",
+              "ent": "20"
+            }
+          ]
+        },
+        {
+          "category": "Resources & Limits",
+          "items": [
+            {
+              "label": "Monthly Credits",
+              "free": "30,000",
+              "ind": "300,000",
+              "team": "1,000,000",
+              "biz": "3,000,000",
+              "ent": "Custom"
+            },
+            {
+              "label": "Translation Memories",
+              "free": "1",
+              "ind": "5",
+              "team": "15",
+              "biz": "35",
+              "ent": "Unlimited"
+            },
+            {
+              "label": "Glossaries",
+              "free": "1",
+              "ind": "10",
+              "team": "25",
+              "biz": "50",
+              "ent": "Unlimited"
+            },
+            {
+              "label": "Brand Voices",
+              "free": "1",
+              "ind": "3",
+              "team": "8",
+              "biz": "20",
+              "ent": "Unlimited"
+            },
+            {
+              "label": "Client Management",
+              "free": "-",
+              "ind": "Up to 10",
+              "team": "Unlimited",
+              "biz": "Unlimited",
+              "ent": "Unlimited"
+            }
+          ]
+        },
+        {
+          "category": "Storage & History",
+          "items": [
+            {
+              "label": "Translation History",
+              "free": "7 Days",
+              "ind": "Unlimited",
+              "team": "Unlimited",
+              "biz": "Unlimited",
+              "ent": "Unlimited"
+            },
+            {
+              "label": "Storage Limit",
+              "free": "None",
+              "ind": "10 GB",
+              "team": "50 GB",
+              "biz": "500 GB",
+              "ent": "Unlimited"
+            }
+          ]
+        },
+        {
+          "category": "Workflow & Collaboration",
+          "items": [
+            {
+              "label": "Seats (Users)",
+              "free": "1",
+              "ind": "1",
+              "team": "5 Included",
+              "biz": "10 Included",
+              "ent": "Custom"
+            },
+            {
+              "label": "Shared Resources",
+              "free": "-",
+              "ind": "-",
+              "team": "Yes",
+              "biz": "Yes",
+              "ent": "Yes"
+            },
+            {
+              "label": "Roles & Permissions",
+              "free": "-",
+              "ind": "-",
+              "team": "Yes",
+              "biz": "Yes",
+              "ent": "Yes"
+            },
+            {
+              "label": "Activity Feed",
+              "free": "-",
+              "ind": "-",
+              "team": "Yes",
+              "biz": "Yes",
+              "ent": "Yes"
+            }
+          ]
+        },
+        {
+          "category": "Enterprise & Support",
+          "items": [
+            {
+              "label": "API Access",
+              "free": "-",
+              "ind": "-",
+              "team": "-",
+              "biz": "100 req/min",
+              "ent": "Custom Limits"
+            },
+            {
+              "label": "SSO & Audit Logs",
+              "free": "-",
+              "ind": "-",
+              "team": "Add-on",
+              "biz": "Add-on",
+              "ent": "Included"
+            },
+            {
+              "label": "SLA Guarantee",
+              "free": "-",
+              "ind": "-",
+              "team": "-",
+              "biz": "99.5%",
+              "ent": "Custom SLA"
+            },
+            {
+              "label": "Support",
+              "free": "Community",
+              "ind": "48h",
+              "team": "24h",
+              "biz": "Priority",
+              "ent": "Dedicated"
+            }
+          ]
+        }
+      ]
+    },
+    "addons": {
+      "title": "Add-ons & Credit Top-ups",
+      "subtitle": "Customize your plan to fit your workflow.",
+      "topups": {
+        "title": "Credit Top-ups",
+        "desc": "Top-up credits don't expire and are used before your monthly quota.",
+        "items": [
+          { "name": "Flex (500K)", "price": "$69" },
+          { "name": "Starter (1M)", "price": "$129" },
+          { "name": "Standard (3M)", "price": "$349" },
+          { "name": "Pro (5M)", "price": "$549" }
+        ]
+      },
+      "packs": {
+        "title": "Resource & Feature Packs",
+        "desc": "Expand your capabilities without upgrading your entire plan.",
+        "items": [
+          { "name": "Voice Pack (+5 Brand Voices)", "price": "$49/mo" },
+          { "name": "Memory Pack (+10 TMs & Glossaries)", "price": "$49/mo" },
+          { "name": "Priority Support", "price": "$99/mo" },
+          { "name": "SSO (SAML 2.0)", "price": "$149/mo" }
+        ]
+      }
+    }
+  },
+  "methodPage": {
+    "hero": {
+      "badge": "HOW WE BUILD FLIXU",
+      "title": "The Method Behind the Magic",
+      "description": "Flixu isn't a string-based translation prompt. It is a technical translation workspace built on a deep context architecture, rigorous vector search, and a relentless pursuit of quality."
+    },
+    "whatIsFlixu": {
+      "title": "What is Flixu?",
+      "copy1": "Traditional tools like Google Translate or DeepL operate on a 'string-in, string-out' basis. They are stateless. Every sentence they translate is effectively the first time they have ever translated anything. They do not know who your client is, what tone of voice your brand uses, or what the previous paragraph was about.",
+      "copy2": "Flixu is built differently. It operates as a stateful agent. Before a single word is translated, the engine queries an intricate network of Translation Memories, verified Glossaries, and Document Context. It remembers your preferences, establishing continuity across millions of segments."
+    },
+    "architecture": {
+      "title": "Our Technology",
+      "subtitle": "The 7-Layer Context Architecture",
+      "intro": "When a document enters Flixu, it isn't simply handed off to an LLM. It is processed through a pipeline that extracts and binds seven distinct layers of metadata to the text.",
+      "points": [
+        "Document Context: The entire flow and narrative of the text are maintained.",
+        "Structural Flow: HTML/Markdown tags and layout fidelity are preserved perfectly.",
+        "Visual Cues: Image context ensures UI labels and diagrams are translated accurately.",
+        "Formality: Strict adherence to 'Sie' vs. 'du' or 'usted' algorithms.",
+        "Cultural Nuance: Dialect adaptation for specific locales (e.g., Swiss German).",
+        "Brand Voice: Custom instructions that dictate the tone—from corporate to playful.",
+        "Memory & Glossary: Forced hard-matching of corporate terminology."
+      ]
+    },
+    "quality": {
+      "title": "Standard of Quality",
+      "subtitle": "Precision Translation Memory",
+      "copy1": "To achieve absolute consistency, Flixu utilizes a heavy Retrieval-Augmented Generation (RAG) architecture. We don't just prompt a model; we execute high-dimensional Vector Searches against your private Translation Memories.",
+      "copy2": "Our Enterprise tier utilizes a 4096-dimension embedding model paired with a fine-tuned Qwen 8B Secondary Reranker. This system assesses up to 20 candidate matches for every single segment simultaneously, guaranteeing that previous human translations take precedent over raw AI generation."
+    },
+    "cta": {
+      "title": "Ready to test the method?",
+      "primary": "Start Free Trial",
+      "secondary": "Contact for Enterprise"
+    }
+  },
+  "navigation": {
+    "solutions": {
+      "title": "Product",
+      "groups": {
+        "core engine": {
+          "title": "Core Engine"
+        },
+        "features": {
+          "title": "Features"
+        }
+      },
+      "items": {
+        "text": {
+          "title": "Text Translation",
+          "desc": "Context-aware, segment-level translation."
+        },
+        "documents": {
+          "title": "Document Translation",
+          "desc": "Layout fidelity. Format preserved."
+        },
+        "context": {
+          "title": "Context Awareness",
+          "desc": "Seven layers. One precise output."
+        },
+        "client-management": {
+          "title": "Client Management",
+          "desc": "Organize memories by client."
+        },
+        "project-management": {
+          "title": "Project Management",
+          "desc": "Track translation progress."
+        },
+        "translation-memory": {
+          "title": "Translation Memory",
+          "desc": "Inject matches as holistic context."
+        },
+        "brand-voice": {
+          "title": "Brand Voice",
+          "desc": "Enforce tone and style."
+        },
+        "team-collaboration": {
+          "title": "Team Collaboration",
+          "desc": "Work together seamlessly."
+        },
+        "quick-translations": {
+          "title": "Quick Translations",
+          "desc": "Instant text translation."
+        }
+      }
+    },
+    "whofor": {
+      "title": "Who it's for",
+      "groups": {
+        "roles": {
+          "title": "Roles"
+        },
+        "industries": {
+          "title": "Industries"
+        }
+      },
+      "items": {
+        "freelancers": {
+          "title": "Freelancers",
+          "desc": "Terminology, tone, and client memory."
+        },
+        "agencies": {
+          "title": "Agencies",
+          "desc": "Shared TM and brand voice for teams."
+        },
+        "localization-manager": {
+          "title": "Localization Managers",
+          "desc": "Your workflow, simplified."
+        },
+        "content-marketer": {
+          "title": "Content Marketers",
+          "desc": "Brand voice consistency."
+        },
+        "saas-teams": {
+          "title": "SaaS Teams",
+          "desc": "API, RBAC, and precision TM."
+        },
+        "ecommerce": {
+          "title": "E-Commerce",
+          "desc": "Product catalogs in 50+ languages."
+        },
+        "legal": {
+          "title": "Legal & Compliance",
+          "desc": "Format preservation and strict accuracy."
+        },
+        "global-marketing": {
+          "title": "Global Marketing",
+          "desc": "Brand Voice across all channels."
+        }
+      }
+    },
+    "resources": {
+      "title": "Resources",
+      "items": {
+        "notes": {
+          "title": "The Journal",
+          "desc": "Thoughts on AI & Culture."
+        },
+        "topic": {
+          "title": "Topic Library",
+          "desc": "Concepts explained."
+        },
+        "compare": {
+          "title": "Compare Tools",
+          "desc": "Market analysis 2026."
+        },
+        "docs": {
+          "title": "API Documentation",
+          "desc": "For developers."
+        }
+      }
+    },
+    "company": {
+      "title": "Company",
+      "items": {
+        "pricing": {
+          "title": "Pricing"
+        },
+        "about": {
+          "title": "Manifesto"
+        },
+        "contact": {
+          "title": "Contact"
+        },
+        "legal": {
+          "title": "Legal"
+        }
+      }
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "status": "Operational",
+      "brandText": "Translation, treated with care.<br />Precise, culturally intelligent, and built for teams who value nuance.",
+      "solutions": "Solutions",
+      "resources": "Resources",
+      "company": "Company",
+      "copyright": "© 2026 Flixu AI LLC"
+    },
+    "actions": {
+      "signIn": "Sign In"
+    },
+    "method": {
+      "title": "Method"
+    },
+    "pricing": {
+      "title": "Pricing"
+    },
+    "common": {
+      "select": "Select a Solution",
+      "precision": "Architectural Precision"
+    }
+  },
+  "rail": {
+    "intro": "Intro",
+    "manifesto": "Manifesto",
+    "preview": "Preview",
+    "interface": "Interface",
+    "capabilities": "Capabilities",
+    "logic": "Logic",
+    "action": "Action",
+    "contact": "Contact",
+    "hq": "Headquarters",
+    "problem": "Problem",
+    "workflow": "Workflow",
+    "formats": "Formats",
+    "features": "Features",
+    "plans": "Plans",
+    "usecases": "Use Cases",
+    "pillars": "Pillars",
+    "specs": "Specs",
+    "pipeline": "Pipeline",
+    "layers": "Layers",
+    "related": "Related",
+    "integrity": "Integrity",
+    "challenge": "Challenge",
+    "mechanic": "Mechanic",
+    "legal": "Legal",
+    "notes": "Notes",
+    "topics": "Topics",
+    "comparison": "Comparison",
+    "pricing": "Pricing",
+    "method": "Method",
+    "architecture": "Architecture",
+    "quality": "Quality",
+    "trust": "Trust",
+    "agencies": "Agencies",
+    "demo": "Demo",
+    "ecosystem": "Ecosystem"
+  },
+  "pricingGrid": [
+    {
+      "name": "Free",
+      "price": "0",
+      "desc": "For testing.",
+      "pool": "30,000 chars / mo",
+      "features": [
+        "Standard TM",
+        "1 Glossary, 1 Brand Voice",
+        "Quick Translate & Projects"
+      ],
+      "cta": "Start Free"
+    },
+    {
+      "name": "Individual",
+      "priceMonthly": "39",
+      "priceYearly": "396",
+      "desc": "For active freelancers.",
+      "billing": {
+        "monthly": "per month",
+        "yearly": "billed yearly"
+      },
+      "pool": "300,000 chars / mo",
+      "features": [
+        "Smart TM & AI-Reranking",
+        "5 TMs, 10 Glossaries",
+        "3 Brand Voices, 1 Seat"
+      ],
+      "cta": "Start Trial",
+      "badge": "Most Popular"
+    },
+    {
+      "name": "Team",
+      "priceMonthly": "149",
+      "priceYearly": "1500",
+      "billing": {
+        "monthly": "per month",
+        "yearly": "billed yearly"
+      },
+      "desc": "For teams & small agencies.",
+      "pool": "1M chars / mo",
+      "poolNote": "(Shared Pool)",
+      "features": [
+        "Advanced TM & Instruct",
+        "Shared Resources",
+        "5 Seats included"
+      ],
+      "cta": "Create Team"
+    },
+    {
+      "name": "Business",
+      "priceMonthly": "449",
+      "priceYearly": "4500",
+      "billing": {
+        "monthly": "per month",
+        "yearly": "billed yearly"
+      },
+      "desc": "For scale & infrastructure.",
+      "pool": "3M chars / mo",
+      "poolNote": "(Shared Pool)",
+      "features": [
+        "Precision TM & 15 Candidates",
+        "API Access & Custom Limits",
+        "10 Seats included"
+      ],
+      "cta": "Get Business"
+    }
+  ],
+  "enterpriseCard": {
+    "title": "Enterprise",
+    "badge": "CUSTOM",
+    "desc": "For organizations with strict compliance needs, custom pools, or on-premise requirements. We build the infrastructure around your security policies.",
+    "features": [
+      "Custom Embeddings & Quality",
+      "Included SSO & Audit Logs",
+      "Unlimited Users"
+    ],
+    "cta": "Talk to a Founder"
+  },
+  "roadmap": {
+    "h1": "Flixu Roadmap",
+    "sub": "See what we are building, vote on features, and help shape the future of Flixu.",
+    "badges": {
+      "launched": "Launched",
+      "in-progress": "In Progress",
+      "planned": "Planned",
+      "requested": "Requested"
+    },
+    "upvote": "Upvote",
+    "upvoted": "Upvoted",
+    "suggestFeature": "Suggest a Feature",
+    "modalTitle": "What Should We Build Next?",
+    "modalDesc": "Tell us how we can make Flixu better for your translation workflow.",
+    "titleLabel": "Feature Title",
+    "titlePlaceholder": "e.g., Figma Plugin",
+    "descLabel": "Description (Optional)",
+    "descPlaceholder": "How would this feature help you?",
+    "cancel": "Cancel",
+    "submit": "Submit Request",
+    "success": "Request submitted! We will review it shortly."
+  },
+  "languageSelector": {
+    "searchPlaceholder": "Search language...",
+    "noResults": "No languages found."
+  },
+  "comparison": {
+    "preTitle": "Market Analysis 2026",
+    "whyTitle": "Why Flixu?",
+    "whyDesc": "Discover how we use real-time context to reduce manual reviews by 80%.",
+    "ctaPricing": "View Pricing",
+    "ctaTrial": "Start free trial",
+    "disclaimer": "* Independent analysis based on Q4 2025 market data."
+  },
+  "topic": {
+    "railLabel": "Topic Definition",
+    "badge": "Definition",
+    "ctaTitle": "See this concept in action.",
+    "ctaDesc": "Experience {title} inside the Flixu Workspace.",
+    "ctaButton": "Explore {product} ->"
+  },
+  "product": {
+    "ctaTrial": "Start free trial",
+    "ctaHow": "How it works",
+    "specsTitle": "Technical Specifications"
+  },
+  "languageSwitch": {
+    "regions": {
+      "global": "Global & Europe",
+      "nordics": "Nordics",
+      "asia": "Asia",
+      "middleEast": "Middle East",
+      "restOfWorld": "Rest of World"
+    }
+  },
+  "home": {
+    "accelerated": "Accelerated by & Member of",
+    "discover": "Discover your workflow.",
+    "freelancerTitle": "You translate alone. Flixu remembers for you.",
+    "freelancerDesc": "Client profiles, TM, glossary — applied automatically on every project.",
+    "freelancerLink": "For Freelancers →",
+    "agencyTitle": "Your team. One voice.",
+    "agencyDesc": "Shared TMs, glossaries, brand voices — consistency becomes structural.",
+    "agencyLink": "For Agencies →",
+    "enterpriseTitle": "Your brand voice. In every language.",
+    "enterpriseDesc": "API, RBAC, precision TM — without the 12-month implementation project.",
+    "enterpriseLink": "For SaaS & Tech →"
+  },
+  "forFreelancers": {
+    "hero": {
+      "label": "For Freelancers",
+      "h1": "Flixu remembers for you.",
+      "sub": "Terminology, tone, client preferences — applied automatically. On every project. On every segment."
+    },
+    "problem": {
+      "label": "The Problem",
+      "h2": "Every project feels like the first.",
+      "body": "TM in Word files. Glossary in your head. Brand Voice buried in an email thread. As a freelancer, you're the only one who knows how Client X should sound. Flixu structures that knowledge — and applies it automatically.",
+      "items": [
+        {
+          "num": "01",
+          "label": "Before Flixu",
+          "body": "Every segment: Did I translate this term before? How did the client want this phrased again?",
+          "dim": true
+        },
+        {
+          "num": "02",
+          "label": "With Flixu",
+          "body": "TM matches as context. Glossary terms flagged. Brand Voice active. Just translate.",
+          "dim": false
+        }
+      ]
+    },
+    "workflow": {
+      "label": "Your Workflow",
+      "h2": "One profile per client.",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Create a client profile",
+          "body": "Name, domain, formality, language. Set it once. Never repeat yourself again."
+        },
+        {
+          "step": "02",
+          "title": "Define Brand Voice",
+          "body": "Tone, style preferences, do's & don'ts. Flixu applies it to every segment automatically."
+        },
+        {
+          "step": "03",
+          "title": "Import TM & Glossary",
+          "body": "Import existing TMX, TBX, or CSV files. Or build your terminology directly in the workspace."
+        },
+        {
+          "step": "04",
+          "title": "Translate",
+          "body": "Flixu analyses, retrieves context, translates — and returns a quality score."
+        }
+      ]
+    },
+    "formats": {
+      "label": "Formats",
+      "h2": "Your formats. Your workflows.",
+      "list": [
+        "DOCX",
+        "HTML / HTM",
+        "Markdown",
+        "XLIFF 1.2 / 2.0",
+        "XML / JSON / YAML",
+        "PO / POT",
+        "iOS .strings",
+        "SRT / VTT"
+      ]
+    },
+    "cta": {
+      "h2": "Start for free.",
+      "sub": "50,000 credits. No credit card. No setup fees.",
+      "primary": "Create your workspace",
+      "secondary": "Learn about Context Awareness →"
+    }
+  },
+  "forAgencies": {
+    "hero": {
+      "label": "For Agencies",
+      "h1": "Your team. One voice.",
+      "sub": "Shared TMs, glossaries, brand voices — consistency becomes structural, not conversational."
+    },
+    "problem": {
+      "label": "The Problem",
+      "h2": "Quality depends on the person, not the system.",
+      "body": "The more translators on your team, the more divergence. Different glossaries. Different tones. And you as the owner are the only one who notices — because you review everything. Flixu makes consistency infrastructure.",
+      "items": [
+        {
+          "num": "01",
+          "label": "Without Flixu",
+          "body": "Reviewer = Owner. Every error costs time. Every new translator needs an onboarding briefing. QA is the bottleneck.",
+          "dim": true
+        },
+        {
+          "num": "02",
+          "label": "With Flixu",
+          "body": "Shared TM, Glossary, and Brand Voice. Every team member works with the same parameters. Consistency is the foundation — not the exception.",
+          "dim": false
+        }
+      ]
+    },
+    "features": {
+      "label": "For Teams",
+      "h2": "What your team gets.",
+      "items": [
+        {
+          "title": "Shared Translation Memory",
+          "body": "One TM for the whole team. Fuzzy matches are automatically detected and used as context."
+        },
+        {
+          "title": "Shared Glossary",
+          "body": "Centrally managed terminology. Changes take effect immediately across all projects."
+        },
+        {
+          "title": "Shared Brand Voices",
+          "body": "One Brand Voice per client, shared across the team. No more briefing documents."
+        },
+        {
+          "title": "Activity Feed",
+          "body": "See in real-time what your team is translating. No more file ping-pong over email."
+        },
+        {
+          "title": "Roles & Permissions",
+          "body": "Translator, Reviewer, Admin — each with the right level of access."
+        },
+        {
+          "title": "Quality Score per Segment",
+          "body": "Every translated segment receives a context-based score. Reviewers can prioritise at a glance."
+        }
+      ]
+    },
+    "plans": {
+      "label": "Getting started",
+      "h2": "From Individual to Team.",
+      "sub": "Start solo, grow into a team. No platform switch. No data migration.",
+      "trigger": "Typical upgrade moment: your first sub-contractor project. Or when you realise: review takes longer than translation."
+    },
+    "cta": {
+      "h2": "Ready for your team?",
+      "sub": "14 days free. No credit card.",
+      "primary": "Create your team",
+      "secondary": "View pricing →"
+    }
+  },
+  "forEnterprise": {
+    "hero": {
+      "label": "For SaaS & Tech",
+      "h1": "Your brand voice. In every language.",
+      "sub": "Consistent. Auditable. Scalable. Without the 12-month implementation project."
+    },
+    "problem": {
+      "label": "The Dilemma",
+      "h2": "Between too simple and too complex.",
+      "body": "DeepL is fast — but it doesn't know your terminology, your tone, your audience. Phrase or Smartling are powerful — but you need an internal team and a six-figure budget just for setup. Flixu sits in between: precision, without the bureaucracy.",
+      "comparison": [
+        {
+          "tool": "DeepL / ChatGPT",
+          "verdict": "Too simple",
+          "issue": "No TM. No Brand Voice. No control.",
+          "dim": true
+        },
+        {
+          "tool": "Flixu",
+          "verdict": "Just right",
+          "issue": "API, TM, Brand Voice, RBAC — in days, not months.",
+          "dim": false
+        },
+        {
+          "tool": "Phrase / Smartling",
+          "verdict": "Too complex",
+          "issue": "12-month implementation. 5+ user roles. Dedicated CSM required.",
+          "dim": true
+        }
+      ]
+    },
+    "usecases": {
+      "label": "Use Cases",
+      "h2": "What Localization Managers translate with Flixu.",
+      "items": [
+        {
+          "title": "SaaS Documentation",
+          "body": "Changelog, Help Center, Release Notes — multilingual, terminology-consistent."
+        },
+        {
+          "title": "Marketing Websites",
+          "body": "Landing pages, blog posts, ads — brand voice preserved exactly."
+        },
+        {
+          "title": "In-App Strings",
+          "body": "UI strings, error messages, onboarding flows — via API directly from your CMS."
+        },
+        {
+          "title": "Legal & Compliance",
+          "body": "Privacy policies, T&Cs, licence agreements — domain-aware with a Legal glossary."
+        },
+        {
+          "title": "Support Content",
+          "body": "FAQs, ticket responses, macros — consistent tone across Support."
+        },
+        {
+          "title": "XLIFF / PO Workflows",
+          "body": "Direct integration into existing localisation pipelines."
+        }
+      ]
+    },
+    "pillars": {
+      "label": "Three Principles",
+      "h2": "How Flixu is built for teams.",
+      "items": [
+        {
+          "title": "Sovereignty",
+          "body": "Ephemeral processing. Zero retention. No customer data used for model training."
+        },
+        {
+          "title": "Precision",
+          "body": "Automatic domain detection. TM as context. Glossary enforced. Quality score after every translation."
+        },
+        {
+          "title": "Velocity",
+          "body": "REST API. RBAC. SSO. No 12-month onboarding. Operational in days."
+        }
+      ]
+    },
+    "cta": {
+      "h2": "Pilot Programme.",
+      "sub": "We work directly with Localization Managers who want to integrate Flixu into their existing infrastructure. Limited spots.",
+      "primary": "Contact the Founders",
+      "secondary": "View Pricing →"
+    }
+  },
+  "productContext": {
+    "specs": [
+      {
+        "label": "Pipeline Steps",
+        "value": "4 (Analyse → Retrieve → Translate → Score)"
+      },
+      {
+        "label": "Context Layers",
+        "value": "7"
+      },
+      {
+        "label": "Image Formats",
+        "value": "JPG, PNG, WEBP (as reference)"
+      },
+      {
+        "label": "TM Match Type",
+        "value": "Fuzzy → Context (not direct output)"
+      },
+      {
+        "label": "Domain Detection",
+        "value": "Automatic from input"
+      },
+      {
+        "label": "Quality Score",
+        "value": "Context-Aware (post-translation)"
+      }
+    ],
+    "pipeline": {
+      "label": "The Pipeline",
+      "h2": "Four steps. Before and after every translation.",
+      "desc": "Other tools translate. Flixu analyses, retrieves, translates — and scores. Every time.",
+      "disclaimer": "No other tool in this segment returns a context-based quality score after every translation.",
+      "steps": [
+        {
+          "step": "01 — Analysis",
+          "desc": "Input is analysed for culture, domain, formality, visual context, and complexity. The optimal model is selected."
+        },
+        {
+          "step": "02 — Retrieval",
+          "desc": "TM is searched for fuzzy matches. Glossary terms are extracted. Reranking applied depending on plan."
+        },
+        {
+          "step": "03 — Translation",
+          "desc": "All parameters and Brand Voice are passed to the chosen LLM. TM matches serve as context, not as raw output."
+        },
+        {
+          "step": "04 — Quality Score",
+          "desc": "A separate analysis LLM scores the output: terminology, brand voice, fluency, context alignment. Score is returned with the translation."
+        }
+      ]
+    },
+    "layers": {
+      "label": "Seven Layers",
+      "h2": "What Flixu understands.",
+      "diffLabel": "The Difference",
+      "items": [
+        {
+          "num": "01",
+          "label": "Cultural Awareness",
+          "body": "Target country defines context — not just language. EN→JP (Tokyo) ≠ EN→JP (Osaka)."
+        },
+        {
+          "num": "02",
+          "label": "Domain Awareness",
+          "body": "Flixu detects whether your text is Legal, Medical, Tech, or Marketing — automatically. The right model is selected."
+        },
+        {
+          "num": "03",
+          "label": "Document Awareness",
+          "body": "Long documents are read in full before a single segment is translated. No more sentence-by-sentence guessing."
+        },
+        {
+          "num": "04",
+          "label": "Image Context",
+          "body": "Attach a UI screenshot as visual reference. The model reads the layout and translates with spatial precision."
+        },
+        {
+          "num": "05",
+          "label": "Formality Awareness",
+          "body": "Sie or Du? Tu or Vous? Flixu infers the correct register from your Brand Voice and target market."
+        },
+        {
+          "num": "06",
+          "label": "Brand Voice Awareness",
+          "body": "Your configured Brand Voice is embedded into every translation. Consistent across all clients, automatically."
+        },
+        {
+          "num": "07",
+          "label": "TM + Glossary Awareness",
+          "body": "Fuzzy TM matches are passed as context to the LLM — not served as the raw output like other tools. The result is a complete, context-correct translation."
+        }
+      ]
+    },
+    "related": {
+      "label": "Applied in",
+      "textLink": "Text Translation →",
+      "textDesc": "Context-aware. Terminology-consistent. Segment by segment.",
+      "docLink": "Document Translation →",
+      "docDesc": "Layout preserved. Context preserved."
+    }
+  },
+  "productDocuments": {
+    "specs": [
+      {
+        "label": "DOCX / HTML / MD",
+        "value": "Up to 20 MB"
+      },
+      {
+        "label": "XLIFF 1.2 / 2.0",
+        "value": "Up to 20 MB · Tags preserved"
+      },
+      {
+        "label": "XML / JSON / YAML",
+        "value": "Up to 10 MB · Keys protected"
+      },
+      {
+        "label": "PO / POT / iOS .strings",
+        "value": "Up to 10 MB · Plurals & vars"
+      },
+      {
+        "label": "SRT / VTT Subtitles",
+        "value": "Timing preserved, text translated"
+      },
+      {
+        "label": "Security",
+        "value": "Ephemeral Processing"
+      }
+    ],
+    "problem": {
+      "label": "The Problem",
+      "h2": "Format breaks easily.",
+      "p1": "Translating a PDF usually involves a painful choice: Use a basic tool and lose all formatting, or hire an agency to manually rebuild the layout in InDesign.",
+      "p2": "Flixu decouples content from geometry. We extract the text, translate it with context, and re-inject it into the original coordinate system."
+    },
+    "integrity": {
+      "h3": "Structural Integrity.",
+      "p": "Tables stay tables. Headers stay headers. Even complex multi-column layouts in PowerPoint or InDesign files remain intact.",
+      "list": [
+        "PDF Text & Vector Layering",
+        "Font Matching & Replacement",
+        "Text Expansion Handling"
+      ]
+    }
+  },
+  "productText": {
+    "specs": [
+      {
+        "label": "Latency",
+        "value": "< 120ms / req"
+      },
+      {
+        "label": "Context Window",
+        "value": "128k Tokens"
+      },
+      {
+        "label": "Supported Formats",
+        "value": "JSON, XML, HTML, Plain"
+      },
+      {
+        "label": "Glossary Match",
+        "value": "Exact & Fuzzy"
+      },
+      {
+        "label": "Encryption",
+        "value": "AES-256 (At Rest)"
+      },
+      {
+        "label": "Model Routing",
+        "value": "Auto-Adaptive"
+      }
+    ],
+    "challenge": {
+      "label": "The Challenge",
+      "h2": "Meaning is fragile.",
+      "p1": "Standard translation engines treat sentences in isolation. They see words, not intent. The result? A \"bank\" becomes a river side instead of a financial institution. A casual \"Hello\" becomes a stiff formal greeting.",
+      "p2": "For global brands, these micro-errors accumulate into a disconnect with the customer. Flixu solves this by anchoring every translation in your specific context."
+    },
+    "mechanic": {
+      "h3": "Tone of Voice Control.",
+      "p": "Define your persona once. Whether you need the crisp professionalism of a legal contract or the warm empathy of a support chat, Flixu adapts the linguistic output to match.",
+      "list": [
+        "Formal / Informal switching",
+        "Brand-specific slang support",
+        "Gender-neutral adaptation"
+      ]
+    },
+    "agencies": {
+      "label": "For Professional Translators",
+      "h3": "Your client's voice. In every language.",
+      "p": "Define a Brand Voice once per client. Flixu applies it to every segment — automatically. No briefing. No re-explaining the tone to a new tool. Just your client's identity, preserved across every project.",
+      "link": "How translators use Flixu →",
+      "card": {
+        "header": "Client Profile — Acme GmbH",
+        "f": "Formality",
+        "f_val": "Sie (formal)",
+        "d": "Domain",
+        "d_val": "B2B SaaS / Legal",
+        "t": "Tone",
+        "t_val": "Calm, precise, no hype",
+        "g": "Glossary",
+        "g_val": "247 terms active",
+        "footer": "Applied to every segment. Automatically."
+      }
+    }
+  }
+}

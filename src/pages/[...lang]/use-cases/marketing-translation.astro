@@ -1,0 +1,297 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import KeyTakeaways from "../../../components/seo/KeyTakeaways.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import HeroMarketingTranslation from "../../../components/visuals/HeroMarketingTranslation.jsx";
+import { getLocalizedPath, useTranslations } from "../../../i18n/utils";
+
+export const prerender = false;
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const t = await useTranslations(lang);
+const tNav = t.navigation as any;
+const breadcrumbItems = [
+  { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
+  {
+    name: tNav?.solutions_bofu?.title || "Use Cases",
+    url: getLocalizedPath("/use-cases/saas-localization", lang),
+  },
+  { name: "Marketing Translation", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Can AI translate marketing copy well?",
+    answer:
+      "With context. Generic MT produces flat, generic output. Context-aware translation with brand voice settings, formality, and glossary constraints produces copy that sounds like your brand — in every language.",
+  },
+  {
+    question: "Is transcreation supported?",
+    answer:
+      "Flixu's context-aware approach handles most marketing translation needs. For highly creative campaigns (slogans, wordplay), we recommend an MTPE workflow: AI draft + human creative review.",
+  },
+  {
+    question: "How do I set brand voice?",
+    answer:
+      "Configure tone (casual/professional), formality (tu/Sie), vocabulary preferences, and sentence style per language. These settings persist across all translations.",
+  },
+  {
+    question: "Do I need an agency to review everything?",
+    answer:
+      "Flixu acts as a near-perfect operational draft. While a quick internal review by a native speaker is recommended for top-tier creative campaigns, Flixu entirely eliminates the heavy lifting of raw translation.",
+  },
+  {
+    question: "Can I use Flixu for daily social media posts?",
+    answer:
+      "Yes, our Contextual Engine processes small ad snippets or social media strings in seconds, ensuring your quick daily outputs carry the same rigorous Brand Voice as your large campaigns.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      headline: "Marketing Translation",
+      description:
+        "Translate marketing campaigns, landing pages, and brand content with AI that respects your voice, terminology, and cultural nuance.",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Marketing Translation — Brand Voice Across Every Language"
+  description="Translate marketing campaigns, landing pages, and brand content with AI that respects your voice, terminology, and cultural nuance."
+>
+  <SchemaOrg schema={schema} slot="schema" />
+  <Section data-chapter="01 — INTRO" class="hero-section">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+    >
+      <div class="hero-container !px-0">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span class="badge">Use Case</span>
+        <h1 class="hero-title">Marketing Translation.</h1>
+        <p class="hero-desc">
+          Your brand has a voice. It should sound the same in every language.
+        </p>
+      </div>
+      <div class="relative w-full aspect-[4/3] hidden lg:block">
+        <HeroMarketingTranslation client:load />
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        text="A 'good' translation is rarely a 'converting' translation. Standard API tools strip your marketing campaigns of their emotion, humor, and persuasive cadence—the Uncanny Valley. By acting as a Contextual Orchestrator, Flixu rigidly enforces your specific Digital Brand Personas in over 50 languages, transforming a generic translation into an emotionally resonant international campaign."
+      />
+    </div>
+  </Section>
+
+  <Section data-chapter="03 — PROBLEM" class="content-section">
+    <div class="hero-container">
+      <h2 class="section-heading--lg">The Problem</h2>
+      <div class="prose-inline">
+        <p>
+          Marketing copy lives on emotion, rhythm, and cultural resonance.
+          Generic machine translation strips all three. The result: technically
+          accurate text that nobody would ever click on, share, or remember.
+        </p>
+        <p>
+          The traditional alternative — human transcreation — is slow,
+          expensive, and doesn't scale when you're shipping landing pages in 15
+          languages every sprint.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section data-chapter="04 — SOLUTION" class="content-section--alt">
+    <div class="hero-container">
+      <h2 class="section-heading--lg mb-10">How Flixu Solves This</h2>
+      <div class="space-y-8">
+        {
+          [
+            {
+              step: "01",
+              title: "Brand voice configuration",
+              desc: "Set tone, formality, and vocabulary preferences per language. Your German voice might be 'du' and direct; your Japanese voice 'keigo' and respectful.",
+            },
+            {
+              step: "02",
+              title: "Context-aware translation",
+              desc: "Marketing headlines, CTAs, and body copy are translated with your brand constraints active. The AI knows 'Get Started' might need a different energy in French.",
+            },
+            {
+              step: "03",
+              title: "Rapid iteration",
+              desc: "A/B test headlines in multiple languages. Ship campaigns same-day. Review with your in-market team, not a 2-week agency cycle.",
+            },
+          ].map(({ step, title, desc }) => (
+            <div class="flex gap-6">
+              <span class="step-number">{step}</span>
+              <div>
+                <h3 class="step-title">{title}</h3>
+                <p class="step-desc">{desc}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  {
+    lang === "en" && (
+      <Section
+        data-chapter="05 — DEEP DIVE"
+        class="py-24 border-b border-stone-100"
+      >
+        <div class="hero-container prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
+          <KeyTakeaways
+            items={[
+              "Generic machine translation can erode brand trust by sounding robotic or emotionally flat (The 'Uncanny Valley').",
+              "Human transcreation is too slow to support modern, agile performance marketing sprints.",
+              "Flixu injects programmable Brand Voice Personas directly into the AI, ensuring tone, formality, and emotional resonance remain precise in every language.",
+            ]}
+          />
+          <h2>What is the Uncanny Valley of Multilingual Brand Voice?</h2>
+          <p>
+            In B2B SaaS and enterprise marketing, technical parity is a given.
+            What fundamentally drives premium conversion rates—what transforms a
+            cold visitor into a high-LTV enterprise customer—is trust. And
+            digital trust is almost entirely a function of emotional resonance,
+            rhythm, and Brand Voice.
+          </p>
+          <p>
+            A significant challenge arises when highly polished English
+            marketing campaigns are localized. Many companies utilize generic
+            Machine Translation (MT) APIs to generate foreign landing pages in
+            an attempt to capture organic international traffic. While these raw
+            MT tools are technically competent at delivering literal,
+            grammatically correct sentences, they often miss the emotional
+            nuance.
+          </p>
+          <p>
+            When you strip the carefully engineered cadence, the subtle humor,
+            and the confident assertiveness from a marketing landing page, you
+            push your brand into the "Uncanny Valley of Brand Voice." The
+            foreign prospect reads the translated German or Japanese text,
+            understands the literal features of the software, but subconsciously
+            identifies the brand as cheap, robotic, and untrustworthy.
+          </p>
+
+          <h2>Why is human transcreation unscalable?</h2>
+          <p>
+            Historically, the only solution to the Uncanny Valley was human
+            "Transcreation"—hiring elite, specialized copywriters to entirely
+            reimagine the marketing campaign from scratch in every target
+            language. Transcreation delivers beautiful results, but it is
+            fundamentally unscalable. It requires weeks of briefing, high
+            freelance fees, and complex editorial review cycles.
+          </p>
+          <p>
+            If your growth marketing team operates on rapid testing
+            cycles—launching a new landing page variant every Tuesday based on
+            real-time ad performance data—a three-week human transcreation delay
+            can significantly impact your operational advantage. Agile
+            international growth loops require language operations that can
+            match the speed of modern performance marketing.
+          </p>
+
+          <h2>How does Flixu achieve programmatic emotional resonance?</h2>
+          <p>
+            Flixu bridges the impossible divide between the instantaneous scale
+            of machine translation and the premium emotional resonance of human
+            transcreation. We achieve this through dynamic, programmable Brand
+            Voice Injection.
+          </p>
+          <p>
+            Unlike generic cloud translation vendors, Flixu operates as a
+            Contextual Orchestrator. Within the platform, marketing directors
+            establish strict "Digital Brand Personas" for specific campaign
+            types. You configure the exact semantic boundaries of your tone. Is
+            your brand highly disruptive, casual, and energetic? Or is it deeply
+            conservative, academic, and focused on risk-mitigation for
+            enterprise compliance officers?
+          </p>
+          <p>
+            When you submit a new high-converting English landing page for
+            translation, Flixu dynamically injects your pre-configured Brand
+            Persona directly into the inference logic of the Large Language
+            Model. We enforce strict grammatical rules (such as enforcing the
+            formal "Sie" vs the informal "du" in German) while simultaneously
+            commanding the AI engine to mirror the emotional cadence of the
+            original English text.
+          </p>
+
+          <h2>How do we guarantee data-driven linguistic consistency?</h2>
+          <p>
+            To guarantee absolute consistency across fragmented campaigns, Flixu
+            integrates your proprietary Marketing Glossary. If your core product
+            differentiator requires the specific phrasing "Context
+            Orchestration" rather than a generic translation like "Automated
+            Management", the AI is mathematically constrained to obey that rule
+            across every headline, meta description, and call-to-action button,
+            in all 40 supported languages.
+          </p>
+          <p>
+            This architectural approach allows your growth team to reclaim their
+            agility. You can A/B test a dramatic new product headline in
+            English, instantly generate perfectly on-brand, localized variants
+            for the French, Brazilian, and Japanese markets in milliseconds, and
+            deploy them to your ad networks immediately.
+          </p>
+          <p>
+            With Flixu, you are no longer sacrificing your premium brand
+            perception for the sake of international scale. You can finally
+            speak to the world with one consistent, deeply human voice.
+          </p>
+        </div>
+      </Section>
+    )
+  }
+
+  <Section
+    data-chapter="06 — FAQ"
+    class="content-section--alt border-y-0 border-t"
+  >
+    <div class="hero-container">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <Section data-chapter="07 — START" class="content-section--border-top">
+    <div class="cta-footer">
+      <div>
+        <h2 class="cta-footer-title">Try it with your next campaign.</h2>
+        <p class="cta-footer-desc">
+          Paste your copy and see how it sounds in another language.
+        </p>
+      </div>
+      <a href={getLocalizedPath("/pricing", lang)} class="btn-brand">
+        View Pricing
+      </a>
+    </div>
+  </Section>
+</BaseLayout>
