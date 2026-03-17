@@ -6,8 +6,8 @@
 const PAGE_TITLE_ID = '_top';
 
 const title = Astro.locals.starlightRoute.entry.data.title;
-const slug = Astro.locals.starlightRoute.slug;
-const githubRawUrl = `https://raw.githubusercontent.com/flixu-ai/flixu-website/main/docs-site/src/content/docs/${slug}.mdx`;
+const entryId = Astro.locals.starlightRoute.entry.id;
+const githubRawUrl = `https://raw.githubusercontent.com/flixu-ai/flixu-website/main/docs-site/src/content/docs/${entryId}.mdx`;
 ---
 
 <div class="page-title-row">
