@@ -1,0 +1,47 @@
+---
+/**
+ * Custom Sidebar with Search at the top (Anthropic-style).
+ * Search is placed above the navigation tree, like Anthropic's docs.
+ */
+import config from 'virtual:starlight/user-config';
+import Search from 'virtual:starlight/components/Search';
+import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
+
+const { sidebar } = Astro.locals.starlightRoute;
+const shouldRenderSearch =
+  config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
+---
+
+<div class="sidebar-search">
+  {shouldRenderSearch && <Search />}
+</div>
+
+<SidebarPersister>
+  <SidebarSublist sublist={sidebar} />
+</SidebarPersister>
+
+<div class="md:sl-hidden">
+  <MobileMenuFooter />
+</div>
+
+<style>
+  .sidebar-search {
+    padding: 0.75rem 1rem 0.5rem;
+    border-bottom: 1px solid #e7e5e4;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Make the search input fill the sidebar width */
+  .sidebar-search :global(starlight-search),
+  .sidebar-search :global(site-search) {
+    width: 100%;
+  }
+
+  .sidebar-search :global(button[aria-label="Search"]),
+  .sidebar-search :global(button[data-open-modal]) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+</style>

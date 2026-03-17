@@ -493,3 +493,32 @@ main {
 [data-theme] .sl-badge.default {
   background: #44403c;
 }
+
+/* ── Anthropic-style Header Layout Fixes ───────────────────────── */
+/* Single clean border under header */
+header.header {
+  border-bottom: 1px solid #e7e5e4;
+}
+
+/* Remove duplicate/double borders from nav */
+.header ~ nav,
+nav.top-tabs {
+  display: none !important;
+}
+
+/* Remove social icon separator line */
+.social-icons::after {
+  display: none !important;
+}
+
+/* ── Content spacing ───────────────────────────────────────────── */
+.main-frame > .content-panel:first-child,
+.content-panel {
+  padding-top: 2rem;
+}
+
+/* ── Sidebar top padding ───────────────────────────────────────── */
+.sidebar-content {
+  padding-top: 0;
+}
+
