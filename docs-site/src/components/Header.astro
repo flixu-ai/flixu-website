@@ -24,7 +24,7 @@ const activeTab = tabs.find(tab => {
 ---
 
 <div class="header sl-flex">
-  <div class="title-wrapper">
+  <div class="title-wrapper sl-flex">
     <SiteTitle />
   </div>
   <nav class="header-tabs" aria-label="Documentation sections">
@@ -48,28 +48,64 @@ const activeTab = tabs.find(tab => {
 </div>
 
 <style>
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    padding: 0;
-    gap: 1rem;
+  /* CRITICAL: Starlight's page layout depends on the header's @layer starlight.core
+     grid template to position the sidebar and content columns correctly. */
+  @layer starlight.core {
+    .header {
+      display: flex;
+      gap: var(--sl-nav-gap);
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    .title-wrapper {
+      overflow: clip;
+      padding: 0.25rem;
+      margin: -0.25rem;
+      min-width: 0;
+    }
+
+    .right-group,
+    .social-icons {
+      gap: 1rem;
+      align-items: center;
+    }
+
+    @media (min-width: 50rem) {
+      :global(:root[data-has-sidebar]) {
+        --__sidebar-pad: calc(2 * var(--sl-nav-pad-x));
+      }
+      :global(:root:not([data-has-toc])) {
+        --__toc-width: 0rem;
+      }
+      .header {
+        --__sidebar-width: max(0rem, var(--sl-content-inline-start, 0rem) - var(--sl-nav-pad-x));
+        --__main-column-fr: calc(
+          (
+              100% + var(--__sidebar-pad, 0rem) - var(--__toc-width, var(--sl-sidebar-width)) -
+                (2 * var(--__toc-width, var(--sl-nav-pad-x))) - var(--sl-content-inline-start, 0rem) -
+                var(--sl-content-width)
+            ) / 2
+        );
+        display: grid;
+        grid-template-columns:
+          minmax(
+            calc(var(--__sidebar-width) + max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))),
+            auto
+          )
+          1fr
+          auto;
+        align-content: center;
+      }
+    }
   }
 
-  .title-wrapper {
-    flex-shrink: 0;
-    overflow: clip;
-    padding: 0.25rem;
-    margin: -0.25rem;
-  }
-
-  /* ── Tabs — centered in header ───────────────────────────────── */
+  /* ── Tabs — centered in middle column ────────────────────────── */
   .header-tabs {
     display: none;
     align-items: center;
     gap: 0.25rem;
-    flex: 1;
     justify-content: center;
   }
 
@@ -110,12 +146,12 @@ const activeTab = tabs.find(tab => {
     flex-shrink: 0;
   }
 
-  .social-icons {
-    gap: 0.75rem;
+  .search-wrapper {
     align-items: center;
   }
 
-  .search-wrapper {
+  .social-icons {
+    gap: 0.75rem;
     align-items: center;
   }
 </style>
