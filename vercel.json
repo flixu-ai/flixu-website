@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build && cd docs-site && npm run build && cp -r dist/ ../dist/docs/",
+  "buildCommand": "npm run build && cd docs-site && npm install && npm run build && mkdir -p ../.vercel/output/static/docs && cp -r dist/* ../.vercel/output/static/docs/",
   "rewrites": [
     { "source": "/docs", "destination": "/docs/developer-guide/introduction/index.html" },
     { "source": "/docs/(.*)", "destination": "/docs/$1" }
