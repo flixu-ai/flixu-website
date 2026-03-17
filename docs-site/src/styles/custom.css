@@ -38,7 +38,7 @@
   --sl-color-gray-4: #a8a29e;         /* stone-400 */
   --sl-color-gray-5: #78716c;         /* stone-500 */
   --sl-color-gray-6: #57534e;         /* stone-600 */
-  --sl-color-white: #ffffff;
+  --sl-color-white: #1c1917;           /* Starlight uses this for page titles */
 
   /* Hairline Borders */
   --sl-color-hairline-light: #e7e5e4;
@@ -77,7 +77,7 @@
   --sl-color-gray-4: #a8a29e;
   --sl-color-gray-5: #78716c;
   --sl-color-gray-6: #57534e;
-  --sl-color-white: #ffffff;
+  --sl-color-white: #1c1917;
   --sl-color-hairline-light: #e7e5e4;
   --sl-color-hairline: #d6d3d1;
   color-scheme: light;
@@ -433,4 +433,63 @@ starlight-menu-button + nav {
 /* ── Footer ────────────────────────────────────────────────────── */
 .page-footer {
   border-top: 1px solid #e7e5e4;
+}
+
+/* ── Page Title Fix ─────────────────────────────────────────────── */
+[data-page-title],
+.content-panel h1,
+main h1:first-of-type,
+.sl-markdown-content > h1:first-child {
+  color: #1c1917 !important;
+  font-family: 'Instrument Serif', Georgia, serif !important;
+  font-weight: 400 !important;
+}
+
+/* ── Sidebar Group Label Fix ───────────────────────────────────── */
+.sidebar-content details > summary > div,
+.sidebar-content .top-level > li > details > summary span,
+.sidebar-content summary span,
+nav[aria-label='Main'] summary > div {
+  color: #1c1917 !important;
+  font-weight: 500 !important;
+}
+
+/* ── Card Title Fix ─────────────────────────────────────────────── */
+.card .card__content .card__title,
+.sl-link-card .card__title,
+.sl-link-card a .card__content .card__title,
+.card .card__title {
+  color: #1c1917 !important;
+  font-weight: 500 !important;
+}
+
+.sl-link-card .card__description,
+.card .card__description {
+  color: #57534e !important;
+}
+
+/* ── Search Bar Fix ─────────────────────────────────────────────── */
+site-search button,
+starlight-search-dialog,
+[data-search-toggle],
+button[aria-label='Search'] {
+  background: #ffffff !important;
+  color: #78716c !important;
+  border: 1px solid #e7e5e4 !important;
+}
+
+/* ── Ensure content background is white ─────────────────────────── */
+.main-pane,
+.content-panel,
+main {
+  background: #ffffff;
+}
+
+/* ── Force all Starlight badges/labels to be visible ────────────── */
+[data-theme] .sl-badge {
+  color: #ffffff;
+}
+
+[data-theme] .sl-badge.default {
+  background: #44403c;
 }
