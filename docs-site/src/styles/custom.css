@@ -1,7 +1,436 @@
-/* Flixu Docs — Orange accent to match the marketing site */
-:root {
+/* ═══════════════════════════════════════════════════════════════════
+   FLIXU DOCS — Custom Starlight Theme
+   Matches the marketing site's design system exactly:
+   - Instrument Serif 400 for headings
+   - Inter 300–500 for body
+   - Geist Mono for code
+   - Orange-700 (#C2410C) accent
+   - Paper (#FDFCF8) background — light mode only
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts (matching main site @fontsource stack) ────────── */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+
+/* ── Root Variables ─────────────────────────────────────────────── */
+:root,
+[data-theme='light'] {
+  /* Accent — Flixu Orange */
   --sl-color-accent-low: #fff7ed;
-  --sl-color-accent: #c2410c;
+  --sl-color-accent: #C2410C;
   --sl-color-accent-high: #7c2d12;
+
+  /* Typography */
   --sl-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --sl-font-system-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* Text Colors — Stone palette */
+  --sl-color-text: #44403c;           /* stone-700 — body */
+  --sl-color-text-accent: #C2410C;    /* orange-700 */
+
+  /* Background — Paper */
+  --sl-color-bg-nav: #FDFCF8;
+  --sl-color-bg-sidebar: #FDFCF8;
+  --sl-color-bg-content: #ffffff;
+  --sl-color-black: #1c1917;          /* stone-900 */
+  --sl-color-gray-1: #f5f5f4;         /* stone-100 */
+  --sl-color-gray-2: #e7e5e4;         /* stone-200 */
+  --sl-color-gray-3: #d6d3d1;         /* stone-300 */
+  --sl-color-gray-4: #a8a29e;         /* stone-400 */
+  --sl-color-gray-5: #78716c;         /* stone-500 */
+  --sl-color-gray-6: #57534e;         /* stone-600 */
+  --sl-color-white: #ffffff;
+
+  /* Hairline Borders */
+  --sl-color-hairline-light: #e7e5e4;
+  --sl-color-hairline: #d6d3d1;
+
+  /* Content sizing */
+  --sl-content-width: 48rem;
+  --sl-sidebar-width: 17rem;
+
+  /* Text sizes */
+  --sl-text-xs: 0.75rem;
+  --sl-text-sm: 0.875rem;
+  --sl-text-base: 1rem;
+  --sl-text-lg: 1.125rem;
+  --sl-text-xl: 1.25rem;
+  --sl-text-2xl: 1.5rem;
+  --sl-text-3xl: 1.875rem;
+  --sl-text-4xl: 2.25rem;
+  --sl-text-5xl: 3rem;
+}
+
+/* ── Force light mode (kill dark mode) ──────────────────────────── */
+[data-theme='dark'] {
+  --sl-color-accent-low: #fff7ed;
+  --sl-color-accent: #C2410C;
+  --sl-color-accent-high: #7c2d12;
+  --sl-color-text: #44403c;
+  --sl-color-text-accent: #C2410C;
+  --sl-color-bg-nav: #FDFCF8;
+  --sl-color-bg-sidebar: #FDFCF8;
+  --sl-color-bg-content: #ffffff;
+  --sl-color-black: #1c1917;
+  --sl-color-gray-1: #f5f5f4;
+  --sl-color-gray-2: #e7e5e4;
+  --sl-color-gray-3: #d6d3d1;
+  --sl-color-gray-4: #a8a29e;
+  --sl-color-gray-5: #78716c;
+  --sl-color-gray-6: #57534e;
+  --sl-color-white: #ffffff;
+  --sl-color-hairline-light: #e7e5e4;
+  --sl-color-hairline: #d6d3d1;
+  color-scheme: light;
+}
+
+/* Hide dark mode toggle */
+starlight-theme-select,
+[data-theme-toggle] {
+  display: none !important;
+}
+
+/* ── Global Body ───────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  color: #44403c;
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Headings — Instrument Serif ──────────────────────────────── */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  color: #1c1917;
+  letter-spacing: -0.025em;
+}
+
+.sl-markdown-content h1 {
+  font-size: clamp(2.25rem, 4vw + 0.5rem, 3rem);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.sl-markdown-content h2 {
+  font-size: clamp(1.75rem, 3vw + 0.25rem, 2.25rem);
+  line-height: 1.15;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e7e5e4;
+}
+
+.sl-markdown-content h3 {
+  font-size: clamp(1.375rem, 2vw + 0.25rem, 1.75rem);
+  line-height: 1.25;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.sl-markdown-content h4 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Body Text ────────────────────────────────────────────────── */
+.sl-markdown-content p {
+  font-weight: 300;
+  color: #57534e;
+  line-height: 1.8;
+  font-size: 1.0625rem;
+  margin-bottom: 1.25rem;
+}
+
+.sl-markdown-content li {
+  font-weight: 300;
+  color: #57534e;
+  line-height: 1.7;
+  font-size: 1.0625rem;
+}
+
+.sl-markdown-content strong {
+  font-weight: 500;
+  color: #1c1917;
+}
+
+/* ── Links ─────────────────────────────────────────────────────── */
+.sl-markdown-content a:not([class]) {
+  color: #C2410C;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.sl-markdown-content a:not([class]):hover {
+  color: #9a3412;
+  text-decoration: underline;
+}
+
+/* ── Code — Geist Mono ────────────────────────────────────────── */
+.sl-markdown-content code:not(pre code) {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 0.875em;
+  font-weight: 400;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  background: #f5f5f4;
+  color: #C2410C;
+  border: 1px solid #e7e5e4;
+}
+
+.sl-markdown-content pre {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  border: 1px solid #e7e5e4;
+  border-radius: 4px;
+  background: #fafaf9 !important;
+}
+
+.sl-markdown-content pre code {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  color: #1c1917;
+}
+
+/* ── Tables ────────────────────────────────────────────────────── */
+.sl-markdown-content table {
+  font-size: 0.9375rem;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.sl-markdown-content th {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #78716c;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #e7e5e4;
+  text-align: left;
+}
+
+.sl-markdown-content td {
+  font-weight: 300;
+  color: #57534e;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e7e5e4;
+  vertical-align: top;
+}
+
+.sl-markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Asides (Note, Caution, Tip) ──────────────────────────────── */
+.starlight-aside {
+  border-radius: 4px;
+  border-width: 1px;
+  font-size: 0.9375rem;
+}
+
+.starlight-aside--note {
+  border-color: #e7e5e4;
+  background: #fafaf9;
+}
+
+.starlight-aside--tip {
+  border-color: #d6d3d1;
+  background: #fafaf9;
+}
+
+.starlight-aside--caution {
+  border-color: #C2410C;
+  background: #fff7ed;
+}
+
+.starlight-aside .starlight-aside__title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────── */
+nav.sidebar {
+  background: #FDFCF8;
+  border-right: 1px solid #e7e5e4;
+}
+
+nav.sidebar a {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: #57534e;
+  transition: color 0.15s ease;
+}
+
+nav.sidebar a:hover {
+  color: #C2410C;
+}
+
+nav.sidebar a[aria-current='page'],
+nav.sidebar a[aria-current='true'] {
+  font-weight: 500;
+  color: #C2410C;
+  background: transparent;
+}
+
+/* Sidebar group headings */
+.sidebar-content .top-level > li > details > summary,
+.sidebar-content .top-level > li > a,
+nav.sidebar summary {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1c1917;
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+header.header,
+.header {
+  background: #FDFCF8;
+  border-bottom: 1px solid #e7e5e4;
+}
+
+.site-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #1c1917;
+}
+
+/* ── Tabs (code group replacement) ─────────────────────────────── */
+starlight-tabs [role='tablist'] {
+  border-bottom: 1px solid #e7e5e4;
+}
+
+starlight-tabs [role='tab'] {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: #78716c;
+}
+
+starlight-tabs [role='tab'][aria-selected='true'] {
+  font-weight: 500;
+  color: #C2410C;
+  border-bottom-color: #C2410C;
+}
+
+/* ── Cards (LinkCard, CardGrid) ────────────────────────────────── */
+.sl-link-card {
+  border: 1px solid #e7e5e4;
+  background: #FDFCF8;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.sl-link-card:hover {
+  border-color: rgba(194, 65, 12, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sl-link-card .sl-link-card__title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  color: #1c1917;
+}
+
+.sl-link-card .sl-link-card__description {
+  font-weight: 300;
+  color: #78716c;
+}
+
+/* ── Search ────────────────────────────────────────────────────── */
+.search-input,
+[data-pagefind-ui] input {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  border: 1px solid #e7e5e4;
+  background: #ffffff;
+}
+
+/* ── Pagination ────────────────────────────────────────────────── */
+.pagination-links a {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  color: #57534e;
+  border: 1px solid #e7e5e4;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.pagination-links a:hover {
+  border-color: rgba(194, 65, 12, 0.3);
+  color: #C2410C;
+}
+
+/* ── Table of Contents ─────────────────────────────────────────── */
+starlight-toc a {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: #78716c;
+}
+
+starlight-toc a:hover {
+  color: #C2410C;
+}
+
+starlight-toc a[aria-current='true'] {
+  font-weight: 500;
+  color: #C2410C;
+}
+
+/* ── Horizontal Rules ──────────────────────────────────────────── */
+.sl-markdown-content hr {
+  border-color: #e7e5e4;
+  margin: 2.5rem 0;
+}
+
+/* ── List markers ──────────────────────────────────────────────── */
+.sl-markdown-content ul > li::marker,
+.sl-markdown-content ol > li::marker {
+  color: #C2410C;
+}
+
+/* ── Steps ─────────────────────────────────────────────────────── */
+.sl-steps > li::before {
+  background: #C2410C;
+  color: #ffffff;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* ── Blockquotes ───────────────────────────────────────────────── */
+.sl-markdown-content blockquote {
+  border-left: 3px solid #e7e5e4;
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: #78716c;
+  font-weight: 300;
+}
+
+/* ── Mobile Menu ───────────────────────────────────────────────── */
+.mobile-preferences,
+starlight-menu-button + nav {
+  background: #FDFCF8;
+}
+
+/* ── Footer ────────────────────────────────────────────────────── */
+.page-footer {
+  border-top: 1px solid #e7e5e4;
 }
