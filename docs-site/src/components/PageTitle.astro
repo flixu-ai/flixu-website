@@ -43,71 +43,72 @@ const githubRawUrl = `https://raw.githubusercontent.com/flixu-ai/flixu-website/m
   </div>
 </div>
 
-<script>
-  // Toggle dropdown
-  document.addEventListener('astro:page-load', () => {
+<script is:inline>
+  function initCopyButton() {
     const btn = document.getElementById('copy-page-btn');
     const dropdown = document.getElementById('copy-dropdown');
     const copyBtn = document.getElementById('copy-markdown-btn');
 
     if (!btn || !dropdown || !copyBtn) return;
 
-    btn.addEventListener('click', () => {
+    // Prevent duplicate listeners
+    if (btn.dataset.initialized) return;
+    btn.dataset.initialized = 'true';
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       dropdown.hidden = !dropdown.hidden;
     });
 
-    // Close dropdown on outside click
     document.addEventListener('click', (e) => {
-      if (!btn.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
+      if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
         dropdown.hidden = true;
       }
     });
 
-    // Copy page as Markdown
     copyBtn.addEventListener('click', async () => {
       const content = document.querySelector('.sl-markdown-content');
       if (!content) return;
 
-      // Convert content to clean markdown
       const title = document.querySelector('h1')?.textContent || '';
-      let markdown = `# ${title}\n\n`;
+      let markdown = '# ' + title + '\n\n';
 
       const elements = content.querySelectorAll('h2, h3, h4, h5, h6, p, ul, ol, pre, table, blockquote, hr');
       elements.forEach((el) => {
         const tag = el.tagName.toLowerCase();
         if (tag.startsWith('h')) {
           const level = parseInt(tag[1]);
-          markdown += `${'#'.repeat(level)} ${el.textContent?.trim()}\n\n`;
+          markdown += '#'.repeat(level) + ' ' + el.textContent.trim() + '\n\n';
         } else if (tag === 'p') {
-          markdown += `${el.textContent?.trim()}\n\n`;
+          markdown += el.textContent.trim() + '\n\n';
         } else if (tag === 'ul') {
-          el.querySelectorAll(':scope > li').forEach(li => {
-            markdown += `- ${li.textContent?.trim()}\n`;
+          el.querySelectorAll(':scope > li').forEach(function(li) {
+            markdown += '- ' + li.textContent.trim() + '\n';
           });
           markdown += '\n';
         } else if (tag === 'ol') {
-          let i = 1;
-          el.querySelectorAll(':scope > li').forEach(li => {
-            markdown += `${i}. ${li.textContent?.trim()}\n`;
+          var i = 1;
+          el.querySelectorAll(':scope > li').forEach(function(li) {
+            markdown += i + '. ' + li.textContent.trim() + '\n';
             i++;
           });
           markdown += '\n';
         } else if (tag === 'pre') {
-          const code = el.querySelector('code');
-          const lang = code?.className?.replace('language-', '') || '';
-          markdown += `\`\`\`${lang}\n${code?.textContent || el.textContent}\`\`\`\n\n`;
+          var code = el.querySelector('code');
+          var lang = code?.className?.replace('language-', '') || '';
+          markdown += '```' + lang + '\n' + (code?.textContent || el.textContent) + '```\n\n';
         } else if (tag === 'blockquote') {
-          markdown += `> ${el.textContent?.trim()}\n\n`;
+          markdown += '> ' + el.textContent.trim() + '\n\n';
         } else if (tag === 'hr') {
-          markdown += `---\n\n`;
+          markdown += '---\n\n';
         } else if (tag === 'table') {
-          const rows = el.querySelectorAll('tr');
-          rows.forEach((row, idx) => {
-            const cells = row.querySelectorAll('th, td');
-            const line = Array.from(cells).map(c => c.textContent?.trim()).join(' | ');
-            markdown += `| ${line} |\n`;
+          var rows = el.querySelectorAll('tr');
+          rows.forEach(function(row, idx) {
+            var cells = row.querySelectorAll('th, td');
+            var line = Array.from(cells).map(function(c) { return c.textContent.trim(); }).join(' | ');
+            markdown += '| ' + line + ' |\n';
             if (idx === 0) {
-              markdown += `| ${Array.from(cells).map(() => '---').join(' | ')} |\n`;
+              markdown += '| ' + Array.from(cells).map(function() { return '---'; }).join(' | ') + ' |\n';
             }
           });
           markdown += '\n';
@@ -116,11 +117,11 @@ const githubRawUrl = `https://raw.githubusercontent.com/flixu-ai/flixu-website/m
 
       try {
         await navigator.clipboard.writeText(markdown.trim());
-        const label = btn.querySelector('.copy-label');
+        var label = btn.querySelector('.copy-label');
         if (label) {
-          const original = label.textContent;
+          var original = label.textContent;
           label.textContent = 'Copied!';
-          setTimeout(() => { label.textContent = original; }, 2000);
+          setTimeout(function() { label.textContent = original; }, 2000);
         }
       } catch (err) {
         console.error('Failed to copy:', err);
@@ -128,7 +129,14 @@ const githubRawUrl = `https://raw.githubusercontent.com/flixu-ai/flixu-website/m
 
       dropdown.hidden = true;
     });
-  });
+  }
+
+  // Run immediately if DOM is ready, otherwise wait
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCopyButton);
+  } else {
+    initCopyButton();
+  }
 </script>
 
 <style>
