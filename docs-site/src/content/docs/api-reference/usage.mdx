@@ -1,0 +1,99 @@
+---
+title: Get Usage
+description: Get translation usage statistics for a date range, broken down by target language.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`GET /v1/usage`
+
+Returns aggregated translation usage for your organization within a specified date range. Data is grouped by target language for detailed analytics.
+
+## Query parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `from` | `string` | Start date in `YYYY-MM-DD` format. Defaults to **30 days ago**. |
+| `to` | `string` | End date in `YYYY-MM-DD` format. Defaults to **today**. |
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.from` | `string` | Start of the query range (`YYYY-MM-DD`). |
+| `data.to` | `string` | End of the query range (`YYYY-MM-DD`). |
+| `data.total_characters` | `integer` | Total characters translated across all languages. |
+| `data.total_documents` | `integer` | Total number of translations performed. |
+| `data.by_language` | `LanguageUsage[]` | Usage breakdown by target language, sorted by character count descending. |
+
+**LanguageUsage fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `target_lang` | `string` | Target language code. |
+| `characters` | `integer` | Total characters translated into this language. |
+| `documents` | `integer` | Number of translations into this language. |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl "https://api.flixu.ai/v1/usage?from=2026-03-01&to=2026-03-17" \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const params = new URLSearchParams({ from: '2026-03-01', to: '2026-03-17' });
+
+const response = await fetch(`https://api.flixu.ai/v1/usage?${params}`, {
+  headers: { 'Authorization': 'Bearer flx_your_api_key' },
+});
+
+const { data } = await response.json();
+console.log(`Total: ${data.total_characters.toLocaleString()} chars`);
+data.by_language.forEach(lang => {
+  console.log(`  ${lang.target_lang}: ${lang.characters.toLocaleString()} chars (${lang.documents} docs)`);
+});
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.get(
+    'https://api.flixu.ai/v1/usage',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+    params={'from': '2026-03-01', 'to': '2026-03-17'},
+)
+
+data = response.json()['data']
+print(f"Total: {data['total_characters']:,} characters")
+for lang in data['by_language']:
+    print(f"  {lang['target_lang']}: {lang['characters']:,} chars")
+```
+  </TabItem>
+</Tabs>
+
+## Response example
+
+```json title="200 OK"
+{
+  "data": {
+    "from": "2026-03-01",
+    "to": "2026-03-17",
+    "total_characters": 284500,
+    "total_documents": 47,
+    "by_language": [
+      { "target_lang": "de", "characters": 98400, "documents": 15 },
+      { "target_lang": "fr", "characters": 76200, "documents": 12 },
+      { "target_lang": "es", "characters": 62300, "documents": 11 },
+      { "target_lang": "ja", "characters": 47600, "documents": 9 }
+    ]
+  },
+  "meta": {
+    "request_id": "b8c9d0e1-f2a3-4567-8901-bcdef1234567"
+  }
+}
+```

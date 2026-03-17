@@ -1,0 +1,52 @@
+---
+title: Glossary
+description: Key terms and concepts used throughout the Flixu API documentation.
+---
+
+## API & Authentication
+
+| Term | Definition |
+|------|-----------|
+| **API Key** | A `flx_`-prefixed token for authenticating API requests. Hashed with SHA-256 — never stored in plain text. Scoped to an organization. |
+| **JWT Token** | A JSON Web Token issued by Clerk for session-based authentication. Used by the Flixu web app and Clerk-integrated applications. |
+| **Scopes** | Permission sets assigned to API keys: `translate` (translation endpoints), `read` (reference/usage data), `write` (asset management). |
+| **Organization** | The billing and access boundary. All credits, assets, and translations belong to an organization (identified by `org_id`). |
+
+## Translation
+
+| Term | Definition |
+|------|-----------|
+| **Source Language** | The original language of the text to be translated. Specified as an ISO 639-1 code (e.g., `en`, `de`). |
+| **Target Language** | The language to translate into. |
+| **Translation Memory (TM)** | A database of previously approved translation pairs. When a new text closely matches a TM entry, the stored translation is reused — saving cost and ensuring consistency. |
+| **Glossary** | A curated list of term pairs (source → target) that must be used exactly as defined. Ensures critical terminology like brand names, product features, or legal terms are never mistranslated. |
+| **Brand Voice** | A profile defining tone, style, formality, and writing rules for translations. Ensures all translated content sounds like your brand. |
+| **Quality Score** | A 0–100 score assigned to each translation, measuring accuracy, fluency, and cultural appropriateness. Scores above 85 indicate high confidence. |
+| **Cultural Adaptation** | The process of adapting content beyond literal translation — localizing numbers, dates, currencies, measurement units, and cultural references per locale. |
+
+## Billing
+
+| Term | Definition |
+|------|-----------|
+| **Credit** | The unit of billing. 1 credit ≈ 1 output character translated. CJK and RTL scripts may have weight multipliers. |
+| **Allowance** | Monthly credit quota included in your plan. Resets each billing cycle. |
+| **Top-Up Credits** | Additional credits purchased separately. Never expire and are consumed in FIFO order after your monthly allowance. |
+| **Pre-flight Check** | An automatic credit check that runs before every translation. If insufficient credits are available, the request fails with `402` without consuming resources. |
+
+## File Formats
+
+| Term | Definition |
+|------|-----------|
+| **XLIFF** | XML Localization Interchange File Format — the industry standard for exchanging translations between tools. |
+| **PO/POT** | GNU Gettext Portable Object files — used by WordPress, Django, and PHP applications. |
+| **ARB** | Application Resource Bundle — Flutter's native localization format. |
+| **ICU Message Format** | A standard for handling plurals, gender, and complex message patterns across locales. |
+| **Interpolation** | Dynamic values inserted into translated strings at runtime (e.g., `{name}`, `%s`, `{{count}}`). Flixu preserves these across translations. |
+
+## Infrastructure
+
+| Term | Definition |
+|------|-----------|
+| **Rate Limit** | Maximum number of API requests per minute, determined by your plan. Tracked via `X-RateLimit-*` response headers. |
+| **Request ID** | A UUID assigned to every API request. Available in `meta.request_id` (success) or `error.request_id` (error). Include in support requests. |
+| **Response Envelope** | The standardized JSON wrapper: `{ data: {...}, meta: { request_id, credits_used, processing_time_ms } }`. |

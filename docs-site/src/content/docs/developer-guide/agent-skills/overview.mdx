@@ -1,0 +1,75 @@
+---
+title: Agent Skills
+description: Install Flixu skills to enhance your AI coding agent with localization superpowers.
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+Agent Skills are modular capabilities that extend AI coding agents — like Claude Code, Cursor, GitHub Copilot, and 15+ others — with specialized localization expertise. Install a skill, and your AI assistant gains the ability to set up i18n architecture, translate files, audit translation quality, and automate localization workflows — all from your IDE.
+
+:::note
+Flixu Agent Skills work with any agent that supports the [skills standard](https://skills.sh) — Claude Code, Cursor, GitHub Copilot, Cline, Windsurf, and more.
+:::
+
+## Installing skills
+
+Install any Flixu skill using the skills CLI:
+
+```bash
+npx skills add flixu-ai/agent-skills
+```
+
+To install a specific skill:
+
+```bash
+npx skills add flixu-ai/agent-skills --skill flixu-translate
+```
+
+## Prerequisites
+
+Most skills require a Flixu API key. Set it as an environment variable:
+
+```bash
+export FLIXU_API_KEY=flx_your_api_key
+```
+
+Create your API key at [app.flixu.ai/settings/api-keys](https://app.flixu.ai/settings/api-keys).
+
+---
+
+## 🏗️ Localization Architecture
+
+Skills for setting up and structuring internationalization in your application.
+
+<CardGrid>
+  <LinkCard title="i18n-setup" href="/docs/developer-guide/agent-skills/getting-started/#i18n-setup" description="Set up i18n file structure, routing, and configuration for Next.js, React, Flutter, Rails, iOS, and more." />
+  <LinkCard title="i18n-migration" href="/docs/developer-guide/agent-skills/getting-started/#i18n-migration" description="Migrate from DeepL, Google Translate, Lokalise, or Phrase to Flixu." />
+</CardGrid>
+
+## 🌐 Translation & Quality
+
+Skills for translating content and ensuring quality across your codebase.
+
+<CardGrid>
+  <LinkCard title="flixu-translate" href="/docs/developer-guide/agent-skills/getting-started/#flixu-translate" description="Full translation workflow: detects file format, selects the right endpoint, manages glossary/TM context." />
+  <LinkCard title="translation-qa" href="/docs/developer-guide/agent-skills/getting-started/#translation-qa" description="Scans your codebase for missing translations, duplicate keys, inconsistent interpolations." />
+</CardGrid>
+
+## 🚀 Automation & CI/CD
+
+Skills for automating localization in your development workflow.
+
+<CardGrid>
+  <LinkCard title="flixu-ci" href="/docs/developer-guide/agent-skills/getting-started/#flixu-ci" description="Generate GitHub Actions or GitLab CI configs that auto-translate new strings on push." />
+  <LinkCard title="flixu-assets" href="/docs/developer-guide/agent-skills/getting-started/#flixu-assets" description="Manage translation assets — create glossaries, import TMs from CSV/TMX, configure brand voices." />
+</CardGrid>
+
+---
+
+## Finding more skills
+
+Browse additional skills at [skills.sh](https://skills.sh) or search interactively:
+
+```bash
+npx skills find localization
+```

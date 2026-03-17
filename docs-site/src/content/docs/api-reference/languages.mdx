@@ -1,0 +1,82 @@
+---
+title: List Languages
+description: Get all supported languages with text direction metadata.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`GET /v1/languages`
+
+Returns the complete list of supported languages, including ISO 639-1 codes and text direction (`ltr` or `rtl`). Use this to populate language selectors and validate input codes programmatically.
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.languages` | `LanguageInfo[]` | Array of supported language objects. |
+| `data.total` | `integer` | Total number of supported languages (currently 147). |
+
+**LanguageInfo fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `code` | `string` | ISO 639-1 language code. Example: `en`, `de`, `ar`, `zh`. |
+| `name` | `string` | English display name of the language. |
+| `direction` | `string` | Text direction: `ltr` (left-to-right) or `rtl` (right-to-left). |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl https://api.flixu.ai/v1/languages \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch('https://api.flixu.ai/v1/languages', {
+  headers: { 'Authorization': 'Bearer flx_your_api_key' },
+});
+
+const { data } = await response.json();
+const rtlLanguages = data.languages.filter(l => l.direction === 'rtl');
+console.log(`Total: ${data.total}, RTL: ${rtlLanguages.length}`);
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.get(
+    'https://api.flixu.ai/v1/languages',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+)
+
+languages = response.json()['data']['languages']
+rtl = [l for l in languages if l['direction'] == 'rtl']
+print(f"Total: {len(languages)}, RTL: {len(rtl)}")
+```
+  </TabItem>
+</Tabs>
+
+## Response example
+
+```json title="200 OK"
+{
+  "data": {
+    "languages": [
+      { "code": "en", "name": "English", "direction": "ltr" },
+      { "code": "de", "name": "German", "direction": "ltr" },
+      { "code": "ar", "name": "Arabic", "direction": "rtl" },
+      { "code": "zh", "name": "Chinese", "direction": "ltr" },
+      { "code": "ja", "name": "Japanese", "direction": "ltr" },
+      { "code": "he", "name": "Hebrew", "direction": "rtl" }
+    ],
+    "total": 147
+  },
+  "meta": {
+    "request_id": "e5f6a7b8-c9d0-1234-5678-90abcdef1234"
+  }
+}
+```

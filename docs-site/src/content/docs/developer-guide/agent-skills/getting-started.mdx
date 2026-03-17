@@ -1,0 +1,176 @@
+---
+title: Getting Started with Skills
+description: Install your first Flixu skill and localize your application in minutes.
+---
+
+## Prerequisites
+
+1. **Flixu account** — Sign up at [flixu.ai](https://flixu.ai)
+2. **API key** — Create at [app.flixu.ai/settings/api-keys](https://app.flixu.ai/settings/api-keys)
+3. **AI coding agent** — Any agent supporting skills (Claude Code, Cursor, Copilot, etc.)
+
+## Install all Flixu skills
+
+```bash
+npx skills add flixu-ai/agent-skills --all
+```
+
+Or install individually:
+
+```bash
+npx skills add flixu-ai/agent-skills --skill i18n-setup
+npx skills add flixu-ai/agent-skills --skill flixu-translate
+```
+
+## Configure your API key
+
+Set the API key as an environment variable so skills can authenticate:
+
+```bash
+# Add to .env or shell profile
+export FLIXU_API_KEY=flx_your_api_key
+```
+
+:::caution
+Never commit your API key to version control. Add `FLIXU_API_KEY` to your `.env` file and ensure `.env` is in `.gitignore`.
+:::
+
+## Your first skill run
+
+After installing, just ask your AI agent naturally:
+
+```
+"Set up i18n for my Next.js app with support for English, German, and Spanish"
+```
+
+The **i18n-setup** skill will automatically:
+1. Detect your framework (Next.js)
+2. Install `next-intl` as the i18n library
+3. Create locale directories (`messages/en.json`, `messages/de.json`, `messages/es.json`)
+4. Configure middleware for locale routing
+5. Set up the provider in your layout
+
+---
+
+## Skill Reference
+
+### i18n-setup
+
+**Category**: Localization Architecture
+
+Set up a complete i18n file structure for your framework. Creates locale directories, installs dependencies, configures routing, and scaffolds initial translation files.
+
+| Framework | Library | What gets created |
+|-----------|---------|-------------------|
+| Next.js (App Router) | `next-intl` | Middleware, provider, `messages/` directory, routing config |
+| React (Vite/CRA) | `react-i18next` | i18n config, `locales/` directory, `<I18nextProvider>` setup |
+| Flutter | ARB (built-in) | `l10n/` directory, `l10n.yaml`, ARB template files |
+| Rails | `rails-i18n` | `config/locales/` YAML files, `I18n.default_locale` config |
+| iOS/macOS | `.strings` | `.lproj/` directories, `Localizable.strings` files |
+
+**Example prompts:**
+- "Add i18n to my Next.js app for English, German, and Japanese"
+- "Set up localization for my Flutter app"
+- "Initialize react-i18next with RTL support for Arabic"
+
+---
+
+### i18n-migration
+
+**Category**: Localization Architecture
+
+Migrate from another translation provider to Flixu. Audits your existing i18n setup, maps key formats, exports/imports translation memories and glossaries, and rewrites API calls.
+
+**Supported migrations:**
+- DeepL API → Flixu
+- Google Cloud Translation → Flixu
+- Lokalise → Flixu (export → import TM)
+- Phrase (Memsource) → Flixu
+- Generic TMX/CSV import
+
+**Example prompts:**
+- "Migrate my app from DeepL to Flixu"
+- "Import my Lokalise translations into Flixu TM"
+- "Replace Google Translate API calls with Flixu"
+
+---
+
+### flixu-translate
+
+**Category**: Translation & Quality
+
+Full translation workflow. Detects file format, selects the correct API endpoint, manages translation context (glossary, TM, brand voice), and writes output files to your locale directories.
+
+**What it handles:**
+- Single text translation → `POST /v1/translate`
+- Batch key-value strings → `POST /v1/translate/batch`
+- Full document files → `POST /v1/translate/document`
+- Auto-detection of `.json`, `.yaml`, `.po`, `.xliff`, `.strings`, `.docx`, `.srt` files
+
+**Example prompts:**
+- "Translate my en.json to German and French"
+- "Localize all strings in locales/en.yaml to Spanish"
+- "Translate this XLIFF file to Japanese"
+- "Batch translate my i18n keys to 5 languages"
+
+---
+
+### translation-qa
+
+**Category**: Translation & Quality
+
+Scans your codebase for localization issues and runs quality analysis. Generates actionable reports with fix suggestions.
+
+**Checks performed:**
+- Missing translation keys (present in source locale, absent in target)
+- Duplicate keys within locale files
+- Inconsistent interpolation variables (`{name}` in source, `{nom}` in target)
+- Untranslated strings hardcoded in components
+- Translation quality scoring via `/v1/analyze/headless`
+
+**Example prompts:**
+- "Find all untranslated strings in my app"
+- "Audit translation quality for my German locale"
+- "Check for missing i18n keys across all locales"
+- "Validate interpolation consistency in my PO files"
+
+---
+
+### flixu-ci
+
+**Category**: Automation & CI/CD
+
+Generate CI/CD pipeline configurations that automate translation on every push. Creates GitHub Actions or GitLab CI configs with quality gates.
+
+**Generated workflows:**
+- Detect new/changed strings in locale files
+- Auto-translate via Flixu API
+- Create PR with translated files
+- Quality gate: block merge if quality score < threshold
+- Slack/email notification on translation completion
+
+**Example prompts:**
+- "Create a GitHub Action that auto-translates new strings"
+- "Set up a CI pipeline that translates my i18n files on push"
+- "Add a translation quality gate to my PR workflow"
+
+---
+
+### flixu-assets
+
+**Category**: Automation & CI/CD
+
+Manage translation assets (Translation Memories, Glossaries, Brand Voices) via the Flixu API. Helps with asset strategy decisions.
+
+**Operations:**
+- Create and configure glossaries with domain-specific terms
+- Import TMs from CSV, XLSX, or TMX files
+- Set up brand voice profiles for tone consistency
+- List and export existing assets
+- Recommend asset strategy based on project size and domain
+
+**Example prompts:**
+- "Create a glossary for my medical app with these terms..."
+- "Import my legacy TMX file into Flixu"
+- "Set up a brand voice profile — formal tone, Sie-form for German"
+- "What TM/glossary strategy should I use for my e-commerce app?"

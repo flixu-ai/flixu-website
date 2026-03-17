@@ -1,0 +1,161 @@
+---
+title: Error Codes
+description: API error responses, status codes, and how to handle them
+---
+
+All error responses follow a consistent JSON envelope:
+
+```json
+{
+  "error": {
+    "code": "insufficient_credits",
+    "message": "Insufficient credits. Required: 5000, available: 1234.",
+    "type": "billing_error",
+    "request_id": "550e8400-e29b-41d4-a716-446655440000"
+  }
+}
+```
+
+Always include the `request_id` when contacting support — it enables instant lookup.
+
+## HTTP status codes
+
+| Code | Meaning | When |
+|------|---------|------|
+| `200` | Success | Request completed successfully |
+| `400` | Bad Request | Missing or invalid parameters, unsupported format |
+| `401` | Unauthorized | Missing, invalid, or expired auth token |
+| `402` | Payment Required | Insufficient credits for the operation |
+| `403` | Forbidden | Feature not available on your plan, or insufficient scopes |
+| `404` | Not Found | Resource doesn't exist or belongs to a different organization |
+| `413` | Payload Too Large | File exceeds the format-specific size limit |
+| `429` | Too Many Requests | Rate limit exceeded |
+| `500` | Internal Server Error | Server-side failure |
+
+## Error types
+
+| Type | Description |
+|------|-------------|
+| `validation_error` | Invalid input parameters (`400`) |
+| `authentication_error` | Auth token issues (`401`) |
+| `authorization_error` | Insufficient permissions or scopes (`403`) |
+| `billing_error` | Credit-related issues (`402`) |
+| `not_found_error` | Resource not found (`404`) |
+| `rate_limit_error` | Too many requests (`429`) |
+| `server_error` | Internal failures (`500`) |
+
+## Common scenarios
+
+### Insufficient credits (402)
+
+```json
+{
+  "error": {
+    "code": "insufficient_credits",
+    "message": "Insufficient credits. Required: 5000, available: 1234.",
+    "type": "billing_error",
+    "request_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+  }
+}
+```
+
+**Resolution**: Top up credits at [app.flixu.ai/settings/billing](https://app.flixu.ai/settings/billing) or upgrade your plan.
+
+### Rate limit exceeded (429)
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Rate limit exceeded. Check X-RateLimit-Reset header for retry timing.",
+    "type": "rate_limit_error",
+    "request_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  }
+}
+```
+
+Check the response headers for retry timing:
+
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 42
+```
+
+**Resolution**: Wait `X-RateLimit-Reset` seconds before retrying. See [rate limits](/docs/developer-guide/concepts/rate-limits/) for plan-specific limits.
+
+### Feature locked (403)
+
+```json
+{
+  "error": {
+    "code": "feature_locked",
+    "message": "Brand voice is not available on your current plan.",
+    "type": "authorization_error",
+    "request_id": "b2c3d4e5-f6a7-8901-bcde-f01234567890"
+  }
+}
+```
+
+**Resolution**: Upgrade your plan to access the requested feature.
+
+### Unsupported format (400)
+
+```json
+{
+  "error": {
+    "code": "unsupported_format",
+    "message": "Unsupported file format: .pptx",
+    "type": "validation_error",
+    "request_id": "c3d4e5f6-a7b8-9012-cdef-012345678901"
+  }
+}
+```
+
+**Resolution**: Use one of the [supported formats](/docs/developer-guide/concepts/formats/).
+
+## Retry strategy
+
+For production integrations, implement exponential backoff:
+
+```javascript
+async function translateWithRetry(payload, maxRetries = 3) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const response = await fetch('https://api.flixu.ai/v1/translate', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) return response.json();
+
+    if (response.status === 429) {
+      const resetAfter = parseInt(response.headers.get('X-RateLimit-Reset') || '5');
+      await new Promise(r => setTimeout(r, resetAfter * 1000));
+      continue;
+    }
+
+    if (response.status >= 500) {
+      await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+      continue;
+    }
+
+    // Client errors (4xx) — don't retry
+    throw new Error(`API error ${response.status}: ${(await response.json()).error.message}`);
+  }
+  throw new Error('Max retries exceeded');
+}
+```
+
+## Debugging
+
+Every response includes a unique request ID:
+
+- **Successful responses**: `meta.request_id` in the response body
+- **Error responses**: `error.request_id` in the error body
+- **All responses**: `X-Request-Id` response header
+
+Include this ID in support requests for instant lookup.

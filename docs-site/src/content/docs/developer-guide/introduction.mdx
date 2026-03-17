@@ -1,0 +1,69 @@
+---
+title: Introduction
+description: Enterprise translation API for developers — 147 languages, 16 formats, AI-powered quality.
+---
+
+import { LinkCard, CardGrid, Steps } from '@astrojs/starlight/components';
+
+Flixu provides an enterprise-grade translation API that combines AI-powered translation with **Translation Memory**, **Glossary enforcement**, and **Brand Voice consistency** — the same quality features used by professional LSPs, built as a developer-first API.
+
+## What you can build
+
+<CardGrid>
+  <LinkCard title="Translate Text" href="/docs/api-reference/translate-text/" description="Translate strings with full context awareness — glossaries, TM, and brand voice in every request." />
+  <LinkCard title="Batch Translate" href="/docs/api-reference/translate-batch/" description="Localize up to 500 strings across 20 languages in a single API call." />
+  <LinkCard title="Translate Documents" href="/docs/api-reference/translate-document/" description="Upload DOCX, XLIFF, PO, YAML, JSON, SRT — 16 formats with structure preservation." />
+  <LinkCard title="Analyze Content" href="/docs/api-reference/analyze-text/" description="Pre-flight analysis: detect language, domain, formality, and translation risks." />
+</CardGrid>
+
+## Key capabilities
+
+| Capability | Details |
+|------------|---------|
+| **Languages** | 147 languages with RTL/LTR support ([list →](/docs/developer-guide/concepts/languages/)) |
+| **File formats** | 16 formats: XLIFF, DOCX, PO, YAML, JSON, SRT, VTT, and more ([list →](/docs/developer-guide/concepts/formats/)) |
+| **Translation Memory** | Automatically match and reuse previously approved translations |
+| **Glossary** | Enforce terminology consistency across all translations |
+| **Brand Voice** | Maintain tone, style, and formality alignment |
+| **Quality scoring** | Every translation includes a 0–100 quality score |
+| **Text analysis** | Detect language, domain, formality, and complexity before translating |
+| **Credit billing** | Pay-per-character with pre-flight checks — no surprise charges |
+
+## Base URL
+
+```
+https://api.flixu.ai/v1
+```
+
+## Response format
+
+All responses are wrapped in a consistent `{ data, meta }` envelope:
+
+```json
+{
+  "data": { ... },
+  "meta": {
+    "request_id": "550e8400-e29b-...",
+    "credits_used": 85,
+    "processing_time_ms": 1240
+  }
+}
+```
+
+## Get started
+
+<Steps>
+
+1. **Create an API key**
+
+   Sign in at [app.flixu.ai](https://app.flixu.ai) → Settings → API Keys
+
+2. **Make your first call**
+
+   Follow the [Quick Start guide](/docs/developer-guide/quickstart/) — translate text in under 2 minutes
+
+3. **Explore the API**
+
+   Browse the [full API reference](/docs/api-reference/overview/) or try the [interactive Swagger UI](https://api.flixu.ai/swagger-ui)
+
+</Steps>

@@ -1,0 +1,126 @@
+---
+title: Analyze Text
+description: Analyze text to detect language, domain, formality, and translation complexity before translating.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`POST /v1/analyze/headless`
+
+Analyze a text before translation to get intelligent metadata: detected language, content domain, formality level, recommended model tier, and risk signals. Use this for pre-flight checks, cost estimation, or building smart translation pipelines.
+
+:::note
+This endpoint does not consume translation credits. It uses a lightweight analysis model.
+:::
+
+## Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `text` | `string` | ✓ | The text to analyze. Must not be empty. |
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.detected_language` | `string` | Detected source language code ([ISO 639-1](/docs/developer-guide/concepts/languages/)). Returns `auto` if detection is inconclusive. |
+| `data.domain` | `string` | Content domain classification. Examples: `Legal`, `Medical`, `Marketing`, `Technical`, `General`, `Finance`. |
+| `data.formality` | `string` | Formality level. One of: `Formal`, `Neutral`, `Informal`. |
+| `data.model_tier` | `string` | Recommended model tier. One of: `mini` (fast, simple text), `standard` (balanced), `premium` (complex, nuanced content). |
+| `data.routing_confidence` | `number` | Confidence in the model tier recommendation, `0.0` to `1.0`. Values below `0.7` suggest the text is ambiguous. |
+| `data.risks` | `object` | Risk assessment across 5 dimensions (see below). |
+| `data.tags` | `string[] \| null` | Content classification tags. Examples: `["privacy", "compliance", "B2B"]`. |
+| `data.title` | `string` | Auto-generated short title summarizing the text content. |
+
+**Risk dimensions** (each rated `Low`, `Medium`, or `High`):
+
+| Dimension | Description |
+|-----------|-------------|
+| `semanticRisk` | Likelihood of meaning distortion |
+| `implicitMeaningLoad` | Hidden context or cultural subtext |
+| `discourseComplexity` | Structural complexity (nested clauses, etc.) |
+| `constraintSaturation` | Density of terms, acronyms, or format constraints |
+| `crossCulturalRisk` | Sensitivity to cultural adaptation |
+
+## Error responses
+
+| Status | Code | Description |
+|--------|------|-------------|
+| `400` | `bad_request` | Missing or empty `text` |
+| `429` | `rate_limit_exceeded` | Plan rate limit hit |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl -X POST https://api.flixu.ai/v1/analyze/headless \
+  -H "Authorization: Bearer flx_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Der Auftragnehmer haftet für mittelbare Schäden nur bei Vorsatz oder grober Fahrlässigkeit."
+  }'
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch('https://api.flixu.ai/v1/analyze/headless', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer flx_your_api_key',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    text: 'Der Auftragnehmer haftet für mittelbare Schäden nur bei Vorsatz oder grober Fahrlässigkeit.',
+  }),
+});
+
+const { data } = await response.json();
+console.log(`Domain: ${data.domain}, Tier: ${data.model_tier}`);
+// "Domain: Legal, Tier: premium"
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.post(
+    'https://api.flixu.ai/v1/analyze/headless',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+    json={
+        'text': 'Der Auftragnehmer haftet für mittelbare Schäden nur bei Vorsatz oder grober Fahrlässigkeit.',
+    },
+)
+
+data = response.json()['data']
+print(f"Language: {data['detected_language']}, Domain: {data['domain']}")
+# "Language: de, Domain: Legal"
+```
+  </TabItem>
+</Tabs>
+
+## Response example
+
+```json title="200 OK"
+{
+  "data": {
+    "detected_language": "de",
+    "domain": "Legal",
+    "formality": "Formal",
+    "model_tier": "premium",
+    "routing_confidence": 0.94,
+    "risks": {
+      "semanticRisk": "High",
+      "implicitMeaningLoad": "Medium",
+      "discourseComplexity": "Medium",
+      "constraintSaturation": "High",
+      "crossCulturalRisk": "Low"
+    },
+    "tags": ["legal", "liability", "B2B"],
+    "title": "Contractor Liability Clause"
+  },
+  "meta": {
+    "request_id": "b2c3d4e5-f6a7-8901-bcde-f01234567890"
+  }
+}
+```

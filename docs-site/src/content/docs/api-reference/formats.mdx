@@ -1,0 +1,86 @@
+---
+title: List Formats
+description: Get all supported file formats with size limits and MIME types.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`GET /v1/formats`
+
+Returns the complete list of supported file formats for document translation, including maximum file sizes, MIME types, and category groupings.
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.formats` | `FormatInfo[]` | Array of supported file format objects. |
+| `data.total` | `integer` | Total number of supported formats (currently 16). |
+
+**FormatInfo fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `extension` | `string` | File extension without leading dot. Example: `docx`, `xliff`, `json`. |
+| `name` | `string` | Human-readable format name. Example: `Microsoft Word`, `XLIFF`, `JSON`. |
+| `mime_type` | `string` | Standard MIME type for the format. |
+| `max_size_mb` | `integer` | Maximum file size in megabytes. |
+| `category` | `string` | Format category: `document`, `localization`, `data`, or `subtitle`. |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl https://api.flixu.ai/v1/formats \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch('https://api.flixu.ai/v1/formats', {
+  headers: { 'Authorization': 'Bearer flx_your_api_key' },
+});
+
+const { data } = await response.json();
+const locFormats = data.formats.filter(f => f.category === 'localization');
+console.log('Localization formats:', locFormats.map(f => f.extension));
+// ["xliff", "xlf", "json", "yaml", "yml", "po", "pot", "strings"]
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.get(
+    'https://api.flixu.ai/v1/formats',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+)
+
+formats = response.json()['data']['formats']
+by_category = {}
+for f in formats:
+    by_category.setdefault(f['category'], []).append(f['extension'])
+print(by_category)
+```
+  </TabItem>
+</Tabs>
+
+## Response example
+
+```json title="200 OK"
+{
+  "data": {
+    "formats": [
+      { "extension": "docx", "name": "Microsoft Word", "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "max_size_mb": 20, "category": "document" },
+      { "extension": "xliff", "name": "XLIFF", "mime_type": "application/xliff+xml", "max_size_mb": 20, "category": "localization" },
+      { "extension": "json", "name": "JSON", "mime_type": "application/json", "max_size_mb": 10, "category": "localization" },
+      { "extension": "po", "name": "GNU Gettext PO", "mime_type": "text/x-gettext-translation", "max_size_mb": 10, "category": "localization" },
+      { "extension": "srt", "name": "SubRip Subtitle", "mime_type": "application/x-subrip", "max_size_mb": 5, "category": "subtitle" }
+    ],
+    "total": 16
+  },
+  "meta": {
+    "request_id": "f6a7b8c9-d0e1-2345-6789-0abcdef12345"
+  }
+}
+```

@@ -1,0 +1,70 @@
+---
+title: Release Notes
+description: Updates and changes to the Flixu Translation API and platform.
+---
+
+:::note
+Subscribe to API updates via your [dashboard notification settings](https://app.flixu.ai/settings).
+:::
+
+## March 17, 2026
+
+### New: Agent Skills
+
+- Launched 6 developer-centric Agent Skills for AI coding assistants
+- Skills cover i18n setup, migration, translation, quality audit, CI/CD, and asset management
+- Compatible with Claude Code, Cursor, GitHub Copilot, and 15+ AI agents
+- Install via `npx skills add flixu-ai/agent-skills`
+
+### New: Text Analysis Endpoint
+
+- Added `POST /v1/analyze/headless` — detect language, domain, formality, and translation complexity
+- Zero credit cost — analyze before spending on translation
+- Returns risk signals across 5 dimensions (semantic, cultural, discourse, constraint, implicit)
+
+### Improved: API Documentation
+
+- Full documentation rewrite to enterprise standard
+- All response examples now show correct `{ data, meta }` envelope
+- Multi-language code examples (cURL, Node.js, Python) on every endpoint page
+- New concept pages: Rate Limits, expanded Error Codes with retry strategy
+- Documentation restructured into 4 tabs: Developer Guide, API Reference, Resources, Release Notes
+
+---
+
+## March 10, 2026
+
+### New: Headless Translation API
+
+- `POST /v1/translate` — synchronous text translation with glossary, TM, and brand voice support
+- `POST /v1/translate/batch` — batch translate up to 500 strings × 20 languages
+- `POST /v1/translate/document` — full document translation (16 formats)
+- `GET /v1/translate/:job_id` — async job status polling
+- `GET /v1/quota` — credits, rate limits, and plan limits
+- `GET /v1/usage` — usage history by date range and language
+- `GET /v1/languages` — 147 supported languages with RTL metadata
+- `GET /v1/formats` — 16 supported file formats with size limits
+
+### New: API Key Authentication
+
+- API keys with `flx_` prefix and granular scopes (`translate`, `read`, `write`)
+- SHA-256 hashing — keys never stored in plain text
+- `GET /v1/me` identity verification endpoint
+
+### New: Rate Limiting
+
+- Plan-based rate limits with `X-RateLimit-*` response headers
+- Transparent retry guidance via `X-RateLimit-Reset`
+
+---
+
+## February 2026
+
+### Platform Launch
+
+- Flixu Translation Platform launched at [app.flixu.ai](https://app.flixu.ai)
+- 147 languages, 16 file formats
+- Translation Memory with tiered vector search
+- Glossary enforcement and Brand Voice consistency
+- Project Workspace with segment-level editing
+- Credit-based billing with pre-flight checks

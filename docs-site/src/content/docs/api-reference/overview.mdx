@@ -1,0 +1,81 @@
+---
+title: API Overview
+description: Complete API reference for the Flixu Translation API
+---
+
+The Flixu API enables you to translate text, documents, and localization files programmatically. All endpoints are accessible at:
+
+```
+https://api.flixu.ai/v1
+```
+
+## Authentication
+
+All requests require authentication via the `Authorization` header. [Learn more →](/docs/developer-guide/authentication/)
+
+```bash
+Authorization: Bearer flx_your_api_key
+```
+
+## Response format
+
+Every successful response wraps the result in a `{ data, meta }` envelope:
+
+```json
+{
+  "data": { ... },
+  "meta": {
+    "request_id": "550e8400-e29b-...",
+    "credits_used": 85,
+    "processing_time_ms": 1240
+  }
+}
+```
+
+Errors follow a consistent `{ error }` format. [See error codes →](/docs/developer-guide/concepts/error-codes/)
+
+## Endpoints
+
+### Translation
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | [`/v1/translate`](/docs/api-reference/translate-text/) | Translate a single text string |
+| `POST` | [`/v1/translate/batch`](/docs/api-reference/translate-batch/) | Batch translate keyed strings across languages |
+| `POST` | [`/v1/translate/document`](/docs/api-reference/translate-document/) | Translate a document file (16 formats) |
+| `GET` | [`/v1/translate/:job_id`](/docs/api-reference/job-status/) | Poll async job status |
+| `POST` | [`/v1/analyze/headless`](/docs/api-reference/analyze-text/) | Analyze text before translation |
+
+### Reference
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | [`/v1/languages`](/docs/api-reference/languages/) | List 147 supported languages |
+| `GET` | [`/v1/formats`](/docs/api-reference/formats/) | List 16 supported file formats |
+
+### Usage & Billing
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | [`/v1/quota`](/docs/api-reference/quota/) | Credits, rate limits, and plan limits |
+| `GET` | [`/v1/usage`](/docs/api-reference/usage/) | Usage history by date range and language |
+
+### Account
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | [`/v1/me`](/docs/api-reference/me/) | Verify credentials and get identity |
+
+## Rate limiting
+
+Requests are rate-limited based on your plan. Every response includes rate limit headers. [Learn more →](/docs/developer-guide/concepts/rate-limits/)
+
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 299
+X-RateLimit-Reset: 42
+```
+
+## Interactive explorer
+
+Visit the [Swagger UI](https://api.flixu.ai/swagger-ui) for an interactive API explorer with all schemas and try-it-out functionality.

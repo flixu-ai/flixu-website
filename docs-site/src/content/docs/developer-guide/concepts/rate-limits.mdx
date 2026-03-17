@@ -1,0 +1,95 @@
+---
+title: Rate Limits
+description: Plan-based rate limits, response headers, and best practices for high-throughput integrations.
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+The Flixu API enforces per-minute rate limits based on your subscription plan. Rate limits protect service quality for all users and ensure fair resource allocation.
+
+## Limits by plan
+
+| Plan | Translations/min | Segments/min | Analysis/min | Total API/min |
+|------|----------------:|-------------:|-------------:|--------------:|
+| **Free** | 10 | 5 | 5 | 30 |
+| **Starter** | 60 | 30 | 30 | 120 |
+| **Professional** | 300 | 60 | 100 | 600 |
+| **Enterprise** | Custom | Custom | Custom | Custom |
+
+:::note
+Enterprise rate limits are configured per organization. [Contact sales](https://flixu.ai/pricing) to discuss your throughput requirements.
+:::
+
+## Rate limit headers
+
+Every API response includes rate limit headers:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | Maximum requests allowed per minute |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Seconds until the rate limit window resets |
+
+```
+HTTP/1.1 200 OK
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 297
+X-RateLimit-Reset: 42
+```
+
+## Handling rate limits
+
+When you exceed the rate limit, the API returns a `429 Too Many Requests` response:
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Rate limit exceeded. Check X-RateLimit-Reset header for retry timing.",
+    "type": "rate_limit_error",
+    "request_id": "a1b2c3d4-..."
+  }
+}
+```
+
+### Recommended retry logic
+
+1. Check the `X-RateLimit-Reset` header for the exact wait time
+2. Wait the specified number of seconds
+3. Retry the request
+
+```javascript
+async function fetchWithRateLimit(url, options) {
+  const response = await fetch(url, options);
+
+  if (response.status === 429) {
+    const resetAfter = parseInt(response.headers.get('X-RateLimit-Reset') || '60');
+    console.log(`Rate limited. Retrying in ${resetAfter}s...`);
+    await new Promise(resolve => setTimeout(resolve, resetAfter * 1000));
+    return fetch(url, options);
+  }
+
+  return response;
+}
+```
+
+## Best practices
+
+<CardGrid>
+  <LinkCard title="Use batch translation" description="Translate up to 500 strings × 20 languages in a single /v1/translate/batch request instead of individual calls." href="/docs/api-reference/translate-batch/" />
+  <LinkCard title="Monitor remaining quota" description="Check X-RateLimit-Remaining headers to throttle before hitting limits." href="/docs/api-reference/quota/" />
+</CardGrid>
+
+- **Implement backoff** — Use exponential backoff with jitter for retries. Never retry immediately.
+- **Cache responses** — Cache translation results on your side to avoid redundant API calls.
+
+## Checking your limits
+
+Use the [`GET /v1/quota`](/docs/api-reference/quota/) endpoint to see your current rate limits:
+
+```bash
+curl https://api.flixu.ai/v1/quota \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+
+The `rate_limits` object in the response shows your plan-specific limits.

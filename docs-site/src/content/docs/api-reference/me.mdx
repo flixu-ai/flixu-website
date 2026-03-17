@@ -1,0 +1,94 @@
+---
+title: Get Identity
+description: Verify your credentials and get the current authenticated identity.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`GET /v1/me`
+
+Returns information about the currently authenticated user or API key. Use this to verify that your credentials are valid and to inspect the resolved organization, plan, and scopes.
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.user_id` | `string` | Clerk user ID (for JWT auth) or the organization owner's ID (for API key auth). |
+| `data.org_id` | `string` | Internal organization ID (CUID). This is the org context for all billed operations. |
+| `data.source` | `string` | Authentication method used. One of: `clerk_jwt` (Clerk session token), `api_key` (API key with `flx_` prefix). |
+| `data.plan` | `string` | Current plan: `free`, `starter`, `professional`, or `enterprise`. |
+| `data.scopes` | `string[]` | Granted permission scopes. Only present for API key authentication. |
+
+**Scope permissions:**
+
+| Scope | Permissions |
+|-------|-------------|
+| `translate` | Text and document translation |
+| `read` | Read-only access to resources (quota, usage, languages) |
+| `write` | Create/modify glossaries, TMs, brand voices |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl https://api.flixu.ai/v1/me \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch('https://api.flixu.ai/v1/me', {
+  headers: { 'Authorization': 'Bearer flx_your_api_key' },
+});
+
+const { data } = await response.json();
+console.log(`Org: ${data.org_id}, Plan: ${data.plan}, Auth: ${data.source}`);
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.get(
+    'https://api.flixu.ai/v1/me',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+)
+
+data = response.json()['data']
+print(f"Authenticated as {data['source']}, plan: {data['plan']}")
+```
+  </TabItem>
+</Tabs>
+
+## Response examples
+
+```json title="200 — API Key"
+{
+  "data": {
+    "user_id": "user_2xK...",
+    "org_id": "cm1abc123def456",
+    "source": "api_key",
+    "plan": "professional",
+    "scopes": ["translate", "read"]
+  },
+  "meta": {
+    "request_id": "c9d0e1f2-a3b4-5678-9012-cdef12345678"
+  }
+}
+```
+
+```json title="200 — JWT"
+{
+  "data": {
+    "user_id": "user_2xK...",
+    "org_id": "cm1abc123def456",
+    "source": "clerk_jwt",
+    "plan": "professional",
+    "scopes": null
+  },
+  "meta": {
+    "request_id": "d0e1f2a3-b4c5-6789-0123-def123456789"
+  }
+}
+```

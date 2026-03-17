@@ -1,0 +1,7 @@
+/* Flixu Docs — Orange accent to match the marketing site */
+:root {
+  --sl-color-accent-low: #fff7ed;
+  --sl-color-accent: #c2410c;
+  --sl-color-accent-high: #7c2d12;
+  --sl-font: 'Inter', system-ui, -apple-system, sans-serif;
+}

@@ -1,0 +1,45 @@
+---
+title: Languages
+description: 147 supported languages with RTL/LTR metadata
+---
+
+Flixu supports **147 languages** with writing direction metadata. Use ISO 639-1 codes (e.g., `en`, `de`, `zh`, `ar`) in all API requests.
+
+## Language codes
+
+All language parameters accept standard [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) or [ISO 639-3](https://en.wikipedia.org/wiki/ISO_639-3) codes.
+
+## Writing direction
+
+Every language includes a `direction` field (`ltr` or `rtl`). Use this to set CSS `dir` attributes for proper text rendering.
+
+| Direction | Count | Examples |
+|-----------|------:|---------|
+| **LTR** (Left-to-Right) | 134 | English, German, French, Chinese, Japanese, Korean |
+| **RTL** (Right-to-Left) | 13 | Arabic, Hebrew, Persian, Urdu, Pashto, Dari, Sindhi, Uyghur, Yiddish |
+
+## Popular languages
+
+| Code | Language | Direction |
+|------|----------|-----------|
+| `en` | English | LTR |
+| `zh` | Chinese | LTR |
+| `es` | Spanish | LTR |
+| `ar` | Arabic | RTL |
+| `hi` | Hindi | LTR |
+| `pt` | Portuguese | LTR |
+| `fr` | French | LTR |
+| `de` | German | LTR |
+| `ja` | Japanese | LTR |
+| `ko` | Korean | LTR |
+| `ru` | Russian | LTR |
+| `tr` | Turkish | LTR |
+
+## Fetch programmatically
+
+Use the [`GET /v1/languages`](/docs/api-reference/languages/) endpoint to get the full, up-to-date list:
+
+```bash
+curl https://api.flixu.ai/v1/languages \
+  -H "Authorization: Bearer flx_your_key"
+```

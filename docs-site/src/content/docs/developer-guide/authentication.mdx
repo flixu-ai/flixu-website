@@ -1,0 +1,102 @@
+---
+title: Authentication
+description: Authenticate with API keys or JWT tokens
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+All Flixu API endpoints require authentication via the `Authorization` header.
+
+## API Key (Recommended)
+
+API keys are the recommended authentication method for integrations, CI/CD pipelines, and server-side applications. Keys use the `flx_` prefix and are scoped to your organization.
+
+```bash
+Authorization: Bearer flx_your_api_key_here
+```
+
+### Create an API key
+
+1. Sign in at [app.flixu.ai](https://app.flixu.ai)
+2. Navigate to **Settings → API Keys**
+3. Click **Create API Key**
+4. Give it a descriptive name (e.g., `CI Pipeline`, `Figma Plugin`, `GitHub Action`)
+5. Select scopes: `translate`, `read`, `write`
+6. Copy the key — it's shown only once
+
+### Key properties
+
+| Property | Details |
+|----------|---------|
+| **Prefix** | `flx_` — all keys start with this |
+| **Hashing** | SHA-256 — raw keys are never stored |
+| **Scopes** | `translate`, `read`, `write` — granular access control |
+| **Revocation** | Instant — delete the key anytime in Settings |
+
+### Scopes
+
+| Scope | Permissions |
+|-------|-------------|
+| `translate` | `POST /v1/translate`, `POST /v1/translate/batch`, `POST /v1/translate/document`, `POST /v1/analyze/headless` |
+| `read` | `GET /v1/quota`, `GET /v1/usage`, `GET /v1/languages`, `GET /v1/formats`, `GET /v1/me` |
+| `write` | Create and modify glossaries, translation memories, and brand voices |
+
+:::caution
+API keys are hashed with SHA-256. We cannot retrieve your key after creation. If you lose it, revoke and create a new one.
+:::
+
+## JWT Token (Clerk sessions)
+
+If your application uses Clerk for authentication, the same JWT token works with the Flixu API:
+
+```bash
+Authorization: Bearer eyJhbGciOiJS...
+```
+
+This is primarily used by the Flixu web app and Clerk-integrated applications. JWT tokens resolve the user's organization automatically via Clerk's JWKS verification.
+
+## Verify your credentials
+
+Use the [`GET /v1/me`](/docs/api-reference/me/) endpoint to verify authentication and inspect your identity:
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl https://api.flixu.ai/v1/me \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch('https://api.flixu.ai/v1/me', {
+  headers: { 'Authorization': 'Bearer flx_your_api_key' },
+});
+
+const { data } = await response.json();
+console.log(`Org: ${data.org_id}, Plan: ${data.plan}`);
+```
+  </TabItem>
+</Tabs>
+
+```json title="Response"
+{
+  "data": {
+    "user_id": "user_2xK...",
+    "org_id": "cm1abc123def456",
+    "source": "api_key",
+    "plan": "professional",
+    "scopes": ["translate", "read"]
+  },
+  "meta": {
+    "request_id": "550e8400-e29b-..."
+  }
+}
+```
+
+## Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `401` | Missing, invalid, or expired token |
+| `403` | Valid token but insufficient scopes for the requested operation |
+| `429` | Rate limit exceeded — check `X-RateLimit-Reset` header |

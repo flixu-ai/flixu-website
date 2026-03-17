@@ -1,0 +1,63 @@
+---
+title: Credits
+description: How credit-based billing works — metering, deduction, and pre-flight checks.
+---
+
+Flixu uses a credit-based billing system. **1 credit = 1 output character translated.**
+
+## How credits work
+
+- Credits are deducted **atomically** after each successful translation
+- CJK and RTL scripts have a weight multiplier applied to the output character count
+- Your plan includes a monthly credit allowance that resets each billing cycle
+- You can purchase **Top-Up credits** that never expire and are consumed in FIFO order
+- A **pre-flight check** runs before every translation — if you lack credits, the request fails with `402` without consuming resources
+
+## Credit deduction
+
+| Operation | Cost calculation |
+|-----------|-----------------|
+| Text translation | Output characters × script weight |
+| Batch translation | Sum of output characters × script weight, per target language |
+| Document translation | Total output characters × script weight |
+| Text analysis | **Free** — no credits consumed |
+
+:::note
+Script weights account for CJK character density (e.g., Chinese characters encode more meaning per character). Most Latin-script languages have a weight of `1.0`.
+:::
+
+## Checking your balance
+
+```bash
+curl https://api.flixu.ai/v1/quota \
+  -H "Authorization: Bearer flx_your_key"
+```
+
+```json title="Response"
+{
+  "data": {
+    "plan": "professional",
+    "credits": {
+      "allowance": 500000,
+      "consumed": 124500,
+      "top_up_balance": 50000,
+      "remaining": 425500,
+      "usage_percent": 22.6
+    }
+  },
+  "meta": {
+    "request_id": "..."
+  }
+}
+```
+
+## Plans
+
+| Plan | Monthly Allowance | Top-Up Available |
+|------|------------------:|:----------------:|
+| **Free** | 30,000 | ✗ |
+| **Starter** | 150,000 | ✓ |
+| **Professional** | 500,000 | ✓ |
+| **Enterprise** | Custom | ✓ |
+
+Upgrade or purchase top-ups at [app.flixu.ai/settings/billing](https://app.flixu.ai/settings/billing).

@@ -1,0 +1,48 @@
+---
+title: Formats
+description: 16 supported file formats for document translation — localization, document, subtitle, and data.
+---
+
+Flixu supports **16 file formats** across 4 categories. All formats preserve the original file structure and formatting during translation.
+
+## Localization formats
+
+| Extension | Name | Max Size | Use case |
+|-----------|------|----------|----------|
+| `.xliff` / `.xlf` | XLIFF | 20 MB | Industry-standard localization interchange |
+| `.json` | JSON (i18n) | 10 MB | React, Vue, Angular — flat or nested key structures |
+| `.yaml` / `.yml` | YAML | 10 MB | Rails, Flutter, Hugo i18n files |
+| `.po` / `.pot` | GNU Gettext | 10 MB | WordPress, Django, PHP applications |
+| `.strings` | iOS Strings | 5 MB | Apple iOS/macOS localization |
+
+## Document formats
+
+| Extension | Name | Max Size | Use case |
+|-----------|------|----------|----------|
+| `.docx` | Microsoft Word | 20 MB | Contracts, manuals, marketing materials |
+| `.xml` | XML | 10 MB | Structured content, DITA, DocBook |
+| `.html` | HTML | 10 MB | Web pages, email templates |
+| `.txt` | Plain Text | 5 MB | README files, general text |
+| `.md` | Markdown | 5 MB | Documentation, knowledge bases |
+
+## Subtitle formats
+
+| Extension | Name | Max Size | Use case |
+|-----------|------|----------|----------|
+| `.srt` | SubRip | 5 MB | Video subtitles (YouTube, Vimeo) |
+| `.vtt` | WebVTT | 5 MB | HTML5 video, streaming platforms |
+
+## Data formats
+
+| Extension | Name | Max Size | Use case |
+|-----------|------|----------|----------|
+| `.csv` | CSV | 10 MB | Spreadsheet data, bulk content |
+
+## Fetch programmatically
+
+Use the [`GET /v1/formats`](/docs/api-reference/formats/) endpoint to get the full list with MIME types:
+
+```bash
+curl https://api.flixu.ai/v1/formats \
+  -H "Authorization: Bearer flx_your_key"
+```

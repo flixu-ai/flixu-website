@@ -1,0 +1,83 @@
+---
+title: Use Cases
+description: Common integration patterns for building with the Flixu API.
+---
+
+## CI/CD Pipeline Translation
+
+Automate localization as part of your build process. New or changed strings are detected, translated, and committed back — no manual intervention.
+
+**Best for**: SaaS products with frequent releases, mobile apps, documentation sites.
+
+:::note
+Use the **flixu-ci** agent skill to generate these configs automatically: `"Create a GitHub Action that translates my i18n files on push"`
+:::
+
+---
+
+## CMS Content Localization
+
+Translate CMS content on-demand when editors publish new pages or articles.
+
+**Pattern**:
+1. Editor publishes content in your CMS (Contentful, Sanity, Strapi)
+2. Webhook triggers your translation service
+3. `POST /v1/translate` translates the content
+4. API writes translated content back to CMS in target locales
+
+**Best for**: Marketing teams, documentation platforms, editorial workflows.
+
+---
+
+## Mobile App Localization
+
+Translate iOS `.strings` and Android XML resource files as part of your mobile CI.
+
+**Pattern**:
+1. Developer adds strings to base locale file
+2. CI runs: `POST /v1/translate/document` with the strings file
+3. Translated files saved to `*.lproj/` (iOS) or `values-*/` (Android) directories
+4. App build includes all locale variants
+
+**Best for**: iOS and Android apps shipping to multiple markets.
+
+---
+
+## E-commerce Product Catalog
+
+Translate product descriptions, categories, and metadata at scale using batch translation.
+
+**Pattern**:
+1. Export product catalog as key-value JSON
+2. `POST /v1/translate/batch` with all product strings × target locales
+3. Import translations back into your product database
+
+**Best for**: Shopify, WooCommerce, custom e-commerce platforms.
+
+---
+
+## Documentation & Knowledge Base
+
+Translate entire markdown or HTML documentation sets while preserving structure and links.
+
+**Pattern**:
+1. Source docs in `docs/en/`
+2. `POST /v1/translate/document` for each file
+3. Output to `docs/de/`, `docs/fr/`, etc.
+4. Static site generator builds all locales
+
+**Best for**: Developer docs (Mintlify, Docusaurus, GitBook), help centers, wikis.
+
+---
+
+## Real-time Chat Translation
+
+Translate user messages in real-time for multilingual support channels.
+
+**Pattern**:
+1. User sends message in their language
+2. `POST /v1/translate` (latency: ~800ms for short text)
+3. Agent sees translated text
+4. Agent's reply translated back to user's language
+
+**Best for**: Customer support, community platforms, live chat.

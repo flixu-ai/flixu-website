@@ -1,0 +1,120 @@
+---
+title: Get Quota
+description: Get your current credit balance, rate limits, and plan limits.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`GET /v1/quota`
+
+Returns your organization's current credit balance, plan-based rate limits, and resource limits. Use this to build dashboards, pre-flight credit checks, or usage alerts.
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.plan` | `string` | Your current plan. One of: `free`, `starter`, `professional`, `enterprise`. |
+| `data.credits` | `CreditsInfo` | Current credit balance and usage (see below). |
+| `data.rate_limits` | `RateLimitsInfo` | Plan-based request rate limits per minute (see below). |
+| `data.limits` | `LimitsInfo` | Plan-based resource limits (see below). |
+
+**CreditsInfo fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `allowance` | `integer` | Monthly credit allowance included in your plan. |
+| `consumed` | `integer` | Credits consumed in the current billing period. |
+| `top_up_balance` | `integer` | Remaining balance from purchased top-up credits (FIFO order). |
+| `remaining` | `integer` | Total remaining credits: `allowance + top_up_balance - consumed`. |
+| `usage_percent` | `number` | Percentage of total available credits consumed (`0.0`–`100.0`). |
+
+**RateLimitsInfo fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `translate_per_min` | `integer` | Maximum translation requests per minute. |
+| `segment_per_min` | `integer` | Maximum segment translation requests per minute. |
+| `analyze_per_min` | `integer` | Maximum analysis requests per minute. |
+| `api_per_min` | `integer` | Maximum total API requests per minute. |
+
+**LimitsInfo fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `translation_memories_max` | `integer` | Maximum number of translation memories. |
+| `glossaries_max` | `integer` | Maximum number of glossaries. |
+| `brandvoice_profiles_max` | `integer` | Maximum number of brand voice profiles. |
+| `projects_max` | `integer` | Maximum number of active projects. |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl https://api.flixu.ai/v1/quota \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch('https://api.flixu.ai/v1/quota', {
+  headers: { 'Authorization': 'Bearer flx_your_api_key' },
+});
+
+const { data } = await response.json();
+
+if (data.credits.usage_percent > 80) {
+  console.warn(`⚠️ ${data.credits.usage_percent}% credits used — consider topping up`);
+}
+
+console.log(`Plan: ${data.plan}, Remaining: ${data.credits.remaining} credits`);
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.get(
+    'https://api.flixu.ai/v1/quota',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+)
+
+data = response.json()['data']
+print(f"Plan: {data['plan']}")
+print(f"Credits: {data['credits']['remaining']} remaining ({data['credits']['usage_percent']}% used)")
+print(f"Rate limit: {data['rate_limits']['translate_per_min']} translations/min")
+```
+  </TabItem>
+</Tabs>
+
+## Response example
+
+```json title="200 OK"
+{
+  "data": {
+    "plan": "professional",
+    "credits": {
+      "allowance": 500000,
+      "consumed": 124500,
+      "top_up_balance": 50000,
+      "remaining": 425500,
+      "usage_percent": 22.6
+    },
+    "rate_limits": {
+      "translate_per_min": 300,
+      "segment_per_min": 60,
+      "analyze_per_min": 100,
+      "api_per_min": 600
+    },
+    "limits": {
+      "translation_memories_max": 20,
+      "glossaries_max": 20,
+      "brandvoice_profiles_max": 10,
+      "projects_max": 50
+    }
+  },
+  "meta": {
+    "request_id": "a7b8c9d0-e1f2-3456-7890-abcdef123456"
+  }
+}
+```

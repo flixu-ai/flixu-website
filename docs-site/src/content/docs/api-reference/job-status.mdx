@@ -1,0 +1,122 @@
+---
+title: Job Status
+description: Poll the status of an asynchronous document translation job.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`GET /v1/translate/{job_id}`
+
+Check the status and progress of a document translation job. Use this endpoint after submitting a document translation to track processing progress.
+
+## Path parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | `string` | ✓ | The document translation job ID returned from `POST /v1/translate/document`. |
+
+## Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.job_id` | `string` | The job identifier. |
+| `data.status` | `string` | Current job status. One of: `created`, `processing`, `completed`, `error`, `failed`. |
+| `data.progress` | `number \| null` | Completion progress from `0.0` to `1.0`. `null` if status is unknown. |
+| `data.result_url` | `string \| null` | Download URL for the translated file. Only present when `status` is `completed`. |
+| `data.error` | `string \| null` | Error message if the job failed. Only present when `status` is `error` or `failed`. |
+
+**Progress mapping:**
+
+| Status | Progress |
+|--------|----------|
+| `created` | `0.0` |
+| `processing` | `0.5` |
+| `completed` | `1.0` |
+| `error` / `failed` | `0.0` |
+
+## Error responses
+
+| Status | Code | Description |
+|--------|------|-------------|
+| `404` | `not_found` | Job ID not found or belongs to a different organization |
+
+## Request examples
+
+<Tabs>
+  <TabItem label="cURL">
+```bash
+curl https://api.flixu.ai/v1/translate/doc_abc123def456 \
+  -H "Authorization: Bearer flx_your_api_key"
+```
+  </TabItem>
+  <TabItem label="Node.js">
+```javascript
+const response = await fetch(
+  'https://api.flixu.ai/v1/translate/doc_abc123def456',
+  {
+    headers: {
+      'Authorization': 'Bearer flx_your_api_key',
+    },
+  }
+);
+
+const { data } = await response.json();
+
+if (data.status === 'completed') {
+  console.log(`Download: ${data.result_url}`);
+} else {
+  console.log(`Status: ${data.status}, Progress: ${data.progress}`);
+}
+```
+  </TabItem>
+  <TabItem label="Python">
+```python
+import requests
+
+response = requests.get(
+    'https://api.flixu.ai/v1/translate/doc_abc123def456',
+    headers={'Authorization': 'Bearer flx_your_api_key'},
+)
+
+result = response.json()
+data = result['data']
+
+if data['status'] == 'completed':
+    print(f"Download: {data['result_url']}")
+else:
+    print(f"Status: {data['status']}, Progress: {data['progress']}")
+```
+  </TabItem>
+</Tabs>
+
+## Response examples
+
+```json title="200 — Completed"
+{
+  "data": {
+    "job_id": "doc_abc123def456",
+    "status": "completed",
+    "progress": 1.0,
+    "result_url": "https://api.flixu.ai/v1/documents/doc_abc123def456/download",
+    "error": null
+  },
+  "meta": {
+    "request_id": "c3d4e5f6-7890-abcd-ef12-345678901234"
+  }
+}
+```
+
+```json title="200 — Processing"
+{
+  "data": {
+    "job_id": "doc_abc123def456",
+    "status": "processing",
+    "progress": 0.5,
+    "result_url": null,
+    "error": null
+  },
+  "meta": {
+    "request_id": "d4e5f6a7-8901-bcde-f012-456789012345"
+  }
+}
+```
