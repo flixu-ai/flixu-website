@@ -3,7 +3,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/ui/Section.astro";
 import OutlineCard from "../../components/ui/OutlineCard.astro";
 import HeroAmbient from "../../components/homepage/HeroAmbient.astro";
-import TranslationWidget from "../../components/widget/TranslationWidget.jsx";
 import WorkspaceVisual from "../../components/widget/WorkspaceVisual.jsx";
 import TranslationComparator from "../../components/widget/TranslationComparator.jsx";
 import SchemaOrg from "../../components/seo/SchemaOrg.astro";
@@ -152,7 +151,7 @@ const homepageSchema = [
               />
             </a>
             <a
-              href="#demo"
+              href="#comparison"
               class="px-8 py-4 rounded-sm border border-stone-200 text-stone-600 hover:border-stone-400 hover:text-stone-900 transition-colors bg-white"
             >
               {t.hero.btnSecondary}
@@ -209,7 +208,7 @@ const homepageSchema = [
     data-chapter="02 — THE MISSING MIDDLE"
     class="py-32 border-b border-stone-200 bg-paper"
   >
-    <div class="max-w-5xl mx-auto">
+    <div class="w-full">
       <div class="mb-16 max-w-3xl">
         <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">The Problem</span>
         <h2 class="mb-6">Serving the Missing Middle of B2B Localization.</h2>
@@ -274,7 +273,7 @@ const homepageSchema = [
     data-chapter="03 — TRUST & VALIDATION"
     class="py-32 border-b border-stone-200 bg-paper"
   >
-    <div class="max-w-5xl mx-auto w-full text-center">
+    <div class="w-full">
       <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">Beta Tester Voices</span>
       <h2 class="mb-16">Trusted by Localization Managers.</h2>
       
@@ -322,11 +321,11 @@ const homepageSchema = [
     data-chapter="04 — QUALITY COMPARATOR"
     class="py-32 border-b border-stone-200 bg-paper"
   >
-    <div class="max-w-5xl mx-auto w-full">
-      <div class="text-center mb-16">
+    <div class="w-full">
+      <div class="mb-16">
         <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">Before & After</span>
-        <h2>The Context Difference.</h2>
-        <p class="text-stone-600 max-w-2xl mx-auto">Toggle between raw, context-blind APIs and Flixu's 7-layer context architecture.</p>
+        <h2 class="mb-6">The Context Difference.</h2>
+        <p class="text-stone-600 max-w-2xl">Toggle between raw, context-blind APIs and Flixu's 7-layer context architecture.</p>
       </div>
       
       <!-- Interactive Comparison Container -->
@@ -334,37 +333,11 @@ const homepageSchema = [
     </div>
   </Section>
 
-  <!-- WIDGET SECTION (Restored) -->
   <Section
-    id="demo"
-    data-chapter={`05 — ${t.rail.preview.toUpperCase()}`}
-    class="py-32 border-b border-stone-200 bg-paper"
-  >
-    <div class="mb-16 max-w-5xl mx-auto w-full">
-      <div class="max-w-2xl">
-        <span
-          class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block"
-          >{t.widget.label}</span
-        >
-        <h2>
-          {t.widget.h2}
-        </h2>
-        <p>
-          {t.widget.sub}
-        </p>
-      </div>
-    </div>
-
-    <div class="w-full">
-      <TranslationWidget client:load t={t.widget} />
-    </div>
-  </Section>
-
-  <Section
-    data-chapter={`06 — ${t.rail.manifesto.toUpperCase()}`}
+    data-chapter={`05 — ${t.rail.manifesto.toUpperCase()}`}
     class="py-32 bg-paper"
   >
-    <div class="max-w-3xl mx-auto text-center">
+    <div class="max-w-3xl">
       <span class="font-serif italic text-stone-500 text-xl mb-8 block"
         >A note on craft.</span
       >
@@ -380,19 +353,18 @@ const homepageSchema = [
         We built Flixu to close that gap. To build a quiet, precise workspace that
         respects language in all its complexity."
       </h2>
-      <div class="flex justify-center items-center gap-4">
+      <div class="flex items-center gap-4">
         <div class="h-px w-12 bg-stone-300"></div>
         <span class="font-mono text-xs uppercase tracking-widest text-stone-500"
           >The Founder</span
         >
-        <div class="h-px w-12 bg-stone-300"></div>
       </div>
     </div>
   </Section>
 
   <!-- SEO & AIO KNOWLEDGE BASE SECTION -->
   <Section class="py-32 bg-paper border-b border-stone-200">
-    <div class="max-w-5xl mx-auto w-full">
+    <div class="w-full">
       <div class="max-w-3xl mb-16">
         <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">Platform Overview</span>
         <h2 class="text-3xl lg:text-4xl font-serif mb-6 text-stone-900">What is Context-Aware AI Translation?</h2>
