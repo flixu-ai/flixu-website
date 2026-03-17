@@ -5,6 +5,7 @@ import OutlineCard from "../../components/ui/OutlineCard.astro";
 import HeroAmbient from "../../components/homepage/HeroAmbient.astro";
 import TranslationWidget from "../../components/widget/TranslationWidget.jsx";
 import WorkspaceVisual from "../../components/widget/WorkspaceVisual.jsx";
+import TranslationComparator from "../../components/widget/TranslationComparator.jsx";
 import SchemaOrg from "../../components/seo/SchemaOrg.astro";
 import {
   Cpu,
@@ -329,63 +330,7 @@ const homepageSchema = [
       </div>
       
       <!-- Interactive Comparison Container -->
-      <div class="border border-stone-200 rounded-lg overflow-hidden bg-white shadow-xl w-full mx-auto relative group">
-         <div class="flex border-b border-stone-200 bg-stone-50 justify-between items-center sm:pr-0">
-            <div class="flex">
-              <div class="px-6 py-4 text-sm font-bold bg-white text-stone-900 border-r border-stone-200 shadow-[0_2px_0_0_rgba(0,0,0,0.05)_relative] z-10">Google Translate / DeepL</div>
-            </div>
-            <div class="px-6 py-4 text-sm font-bold text-orange-700 bg-orange-50/50 border-l border-orange-100 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" /> 
-              <span>Flixu Context Engine</span>
-            </div>
-         </div>
-         
-         <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-stone-200">
-            <!-- Left Side (Raw API) -->
-            <div class="p-8 relative bg-stone-50">
-               <span class="absolute top-6 right-6 text-[10px] font-mono uppercase bg-red-100 text-red-700 px-2 py-1 rounded inline-flex items-center gap-1"><X className="w-3 h-3" /> Context Blind</span>
-               
-               <div class="mb-6">
-                 <div class="text-[10px] font-mono uppercase tracking-widest text-stone-400 mb-2">Original Text (Austrian German)</div>
-                 <p class="text-sm text-stone-500 italic border-l-2 border-stone-200 pl-3">„Wenn jemand sagt 'da liegt der Hund begraben', wissen wir, dass es um ein verborgenes Problem geht... Unser Küchenchef serviert Ihnen knuspriges Wiener Schnitzel und flaumige Marillenknödel...“</p>
-               </div>
-
-               <div class="text-[10px] font-mono uppercase tracking-widest text-stone-400 mb-2">Standard Machine Translation (Spanish)</div>
-               <p class="text-stone-600 leading-relaxed text-sm">
-                 „Cuando alguien dice <span class="bg-red-100 text-red-800 px-1 rounded line-through decoration-red-400">ahí es donde está enterrado el perro</span>, sabemos que hay un problema oculto... Nuestro chef les servirá un crujiente Wiener Schnitzel y esponjosas <span class="bg-red-100 text-red-800 px-1 rounded line-through decoration-red-400">albóndigas de albaricoque</span>...“
-               </p>
-
-               <div class="mt-6 space-y-2">
-                 <div class="flex items-start gap-2 text-xs text-stone-500"><X className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" /> <span><strong>Literal Idioms:</strong> Translates "that's the crux of the matter" literally into "that's where the dog is buried", confusing LATAM readers.</span></div>
-                 <div class="flex items-start gap-2 text-xs text-stone-500"><X className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" /> <span><strong>Culinary Errors:</strong> Translates "Marillenknödel" (sweet apricot dumplings) as "apricot meatballs".</span></div>
-               </div>
-            </div>
-            
-            <!-- Right Side (Flixu) -->
-            <div class="p-8 relative bg-white">
-               <span class="absolute top-6 right-6 text-[10px] font-mono uppercase bg-green-100 text-green-700 px-2 py-1 rounded inline-flex items-center gap-1"><Check className="w-3 h-3" /> Culturally Aware</span>
-               
-               <div class="mb-6">
-                 <div class="text-[10px] font-mono uppercase tracking-widest text-stone-400 mb-2">Context Injected</div>
-                 <div class="flex flex-wrap gap-2">
-                   <span class="text-[10px] bg-stone-100 text-stone-600 px-2 py-1 rounded-sm font-mono">Target: LATAM</span>
-                   <span class="text-[10px] bg-stone-100 text-stone-600 px-2 py-1 rounded-sm font-mono">Domain: Gastronomy</span>
-                   <span class="text-[10px] bg-stone-100 text-stone-600 px-2 py-1 rounded-sm font-mono">Glossary: Austrian Cuisine</span>
-                 </div>
-               </div>
-
-               <div class="text-[10px] font-mono uppercase tracking-widest text-orange-700 mb-2">Flixu Output (Spanish)</div>
-               <p class="text-stone-900 leading-relaxed text-sm font-medium">
-                 „Cuando alguien dice <span class="bg-orange-100 text-orange-900 px-1 rounded">ahí está el meollo del asunto</span>, sabemos que se trata de un problema oculto... Nuestro chef les servirá un crujiente Wiener Schnitzel y esponjosos <span class="bg-orange-100 text-orange-900 px-1 rounded">Marillenknödel</span>...“
-               </p>
-
-               <div class="mt-6 space-y-2">
-                 <div class="flex items-start gap-2 text-xs text-stone-600"><Check className="w-3.5 h-3.5 text-green-600 shrink-0 mt-0.5" /> <span><strong>Dynamic Adaptation:</strong> Detects the Austrian idiom and replaces it with the correct localized LATAM equivalent.</span></div>
-                 <div class="flex items-start gap-2 text-xs text-stone-600"><Check className="w-3.5 h-3.5 text-green-600 shrink-0 mt-0.5" /> <span><strong>Domain Dictionary:</strong> Recognizes "Marillenknödel" via glossary as a protected culinary term, preserving the cultural authenticity.</span></div>
-               </div>
-            </div>
-         </div>
-      </div>
+      <TranslationComparator client:visible />
     </div>
   </Section>
 
