@@ -3,6 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/ui/Section.astro";
 import Breadcrumbs from "../../components/seo/Breadcrumbs.astro";
 import TldrBlock from "../../components/seo/TldrBlock.astro";
+import FAQSection from "../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../components/seo/SchemaOrg.astro";
 import HeroMethodology from "../../components/visuals/HeroMethodology.jsx";
 import { useTranslations, locales, getLocalizedPath } from "../../i18n/utils";
 
@@ -25,27 +27,77 @@ const breadcrumbItems = [
   { name: tNav?.home?.title || "Home", url: getLocalizedPath("/", lang) },
   { name: tNav?.method?.title || "Method", url: Astro.url.pathname },
 ];
+
+// FAQ items for FAQSection component
+const faqItems = t.methodPage.faq.items.map((item) => ({
+  question: item.question,
+  answer: item.answer,
+}));
+
+// HowTo + BreadcrumbList schema
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: t.methodPage.hero.title,
+  description: t.methodPage.hero.description,
+  step: t.methodPage.architecture.steps.map((step, i) => ({
+    "@type": "HowToStep",
+    position: i + 1,
+    name: step.title,
+    text: step.body,
+  })),
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbItems.map((item, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: item.name,
+    item: `https://flixu.ai${item.url}`,
+  })),
+};
+
+// Step type for the architecture section
+type Step = {
+  num: string;
+  title: string;
+  body: string;
+  linkText?: string;
+  linkHref?: string;
+  linkText2?: string;
+  linkHref2?: string;
+};
 ---
 
 <BaseLayout
-  title={`${t.methodPage.hero.title} | Flixu`}
-  description={t.methodPage.hero.description}
+  title={t.methodPage.metaTitle}
+  description={t.methodPage.metaDescription}
+  chapter="Method"
 >
-  <!-- HERO SECTION -->
+  <Fragment slot="schema">
+    <SchemaOrg schema={howToSchema} />
+    <SchemaOrg schema={breadcrumbSchema} />
+  </Fragment>
+
+  <!-- SECTION 1 — HERO -->
   <Section data-chapter="01 — INTRO" class="hero-section">
     <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24 items-center max-w-7xl mx-auto px-6"
+      class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24 items-center"
     >
-      <div class="hero-container !px-0">
+      <div>
         <Breadcrumbs items={breadcrumbItems} />
         <span
-          class="text-orange-600 font-mono text-sm tracking-widest uppercase mb-6 block"
+          class="text-orange-700 font-mono text-xs tracking-widest uppercase mb-6 block"
           >{t.methodPage.hero.badge}</span
         >
-        <h1>
+        <h1
+          class="font-serif text-4xl md:text-6xl text-stone-900 mb-8 tracking-tight leading-[1.1]"
+        >
           {t.methodPage.hero.title}
         </h1>
-        <p class="text-xl">
+        <p class="text-xl text-stone-500 leading-relaxed">
           {t.methodPage.hero.description}
         </p>
       </div>
@@ -55,232 +107,253 @@ const breadcrumbItems = [
     </div>
   </Section>
 
+  <!-- SECTION 2 — TL;DR -->
   <Section data-chapter="02 — TL;DR" class="tldr-section">
     <div class="max-w-3xl">
-      <TldrBlock
-        text="Raw LLMs suffer from severe contextual amnesia, causing Terminology Drift and unpredictable translations. The Flixu Method introduces an Orchestration Layer between your source data and the AI. By using Semantic Vector Retrieval (RAG) and active Glossary injection, we force the LLM into deterministic alignment with your Brand Voice—yielding zero-hallucination translations that preserve your code geometry."
-      />
+      <TldrBlock text={t.methodPage.tldr.text} label={t.methodPage.tldr.label} />
     </div>
   </Section>
 
-  <!-- WHAT IS FLIXU -->
+  <!-- SECTION 3 — CONCEPT -->
   <Section
     data-chapter="03 — CONCEPT"
-    class="content-section border-b border-stone-100"
+    class="py-24 bg-[#FDFCF8] border-b border-stone-200"
   >
     <div class="grid md:grid-cols-2 gap-16 items-start">
       <div>
-        <h2 class="mb-6">
-          {t.methodPage.whatIsFlixu.title}
+        <h2 class="font-serif text-3xl lg:text-4xl text-stone-900 leading-tight">
+          {t.methodPage.concept.h2}
         </h2>
       </div>
       <div class="space-y-6">
-        <p>
-          {t.methodPage.whatIsFlixu.copy1}
+        <p class="text-stone-600 leading-relaxed">
+          {t.methodPage.concept.p1}
         </p>
-        <p>
-          {t.methodPage.whatIsFlixu.copy2}
+        <p class="text-stone-600 leading-relaxed">
+          {t.methodPage.concept.p2}
         </p>
+        <a
+          href={getLocalizedPath(t.methodPage.concept.linkHref, lang)}
+          class="text-orange-700 hover:text-orange-800 text-sm font-medium transition-colors inline-block mt-2"
+        >
+          → {t.methodPage.concept.linkText}
+        </a>
       </div>
     </div>
   </Section>
 
-  <!-- ARCHITECTURE -->
+  <!-- SECTION 4 — ARCHITECTURE (HowTo Steps) -->
   <Section
     data-chapter="04 — ARCHITECTURE"
-    class="content-section border-b border-stone-100 bg-stone-50"
+    class="py-24 bg-paper border-b border-stone-200"
   >
     <div class="max-w-3xl mb-16">
-      <h2 class="mb-4">
-        {t.methodPage.architecture.title}
+      <h2 class="font-serif text-3xl lg:text-4xl text-stone-900 mb-4">
+        {t.methodPage.architecture.h2}
       </h2>
-      <p
-        class="text-orange-600 font-mono text-sm tracking-widest uppercase mb-6"
-      >
-        {t.methodPage.architecture.subtitle}
-      </p>
-      <p>
+      <span class="text-orange-700 font-mono text-xs tracking-widest uppercase mb-6 block">
+        {t.methodPage.architecture.badge}
+      </span>
+      <p class="text-stone-600 leading-relaxed">
         {t.methodPage.architecture.intro}
       </p>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {
-        t.methodPage.architecture.points.map((point: string, i: number) => {
-          const [title, desc] = point.split(":");
-          const isLast = i === 6;
-
-          return (
-            <div
-              class={`group relative bg-white p-8 border border-stone-200 transition-all duration-300 hover:border-stone-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] ${isLast ? "md:col-span-2 lg:col-span-3 flex flex-col md:flex-row md:items-center gap-6 md:gap-10" : ""}`}
+    <!-- Steps -->
+    <div class="space-y-12 max-w-3xl">
+      {t.methodPage.architecture.steps.map((step: Step) => (
+        <div class="pl-8 border-l-2 border-stone-200">
+          <div class="text-orange-700 font-mono text-xs font-semibold tracking-widest mb-3">
+            STEP {step.num}
+          </div>
+          <h3 class="font-serif text-xl text-stone-900 mb-4">{step.title}</h3>
+          <p class="text-stone-600 leading-relaxed">{step.body}</p>
+          {step.linkText && step.linkHref && (
+            <a
+              href={getLocalizedPath(step.linkHref, lang)}
+              class="text-orange-700 hover:text-orange-800 text-sm font-medium transition-colors inline-block mt-4"
             >
-              <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-[#b52a1c] opacity-0 group-hover:opacity-100 transition-opacity" />
+              → {step.linkText}
+            </a>
+          )}
+          {step.linkText2 && step.linkHref2 && (
+            <a
+              href={getLocalizedPath(step.linkHref2, lang)}
+              class="text-orange-700 hover:text-orange-800 text-sm font-medium transition-colors block mt-2"
+            >
+              → {step.linkText2}
+            </a>
+          )}
+        </div>
+      ))}
+    </div>
 
-              <div class={isLast ? "md:w-1/3 shrink-0" : ""}>
-                <div class="text-[#b52a1c] font-mono text-xs mb-3 font-semibold tracking-widest">
-                  LAYER {i + 1}
-                </div>
-                <h3 class="mb-2">{title}</h3>
-              </div>
-
-              <div
-                class={isLast ? "md:border-l md:border-stone-200 md:pl-10" : ""}
-              >
-                <p>{desc}</p>
-              </div>
-            </div>
-          );
-        })
-      }
+    <!-- 5-Dimensions Table (after Step 3) -->
+    <div class="max-w-4xl mt-16">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-stone-300">
+              {t.methodPage.architecture.dimensions.headers.map((h: string) => (
+                <th class="text-left py-3 px-4 font-mono text-xs text-orange-700 uppercase tracking-widest">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {t.methodPage.architecture.dimensions.rows.map((row: string[]) => (
+              <tr class="border-b border-stone-100">
+                <td class="py-3 px-4 font-medium text-stone-900">{row[0]}</td>
+                <td class="py-3 px-4 text-stone-600">{row[1]}</td>
+                <td class="py-3 px-4 text-stone-600">{row[2]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </Section>
 
-  <!-- QUALITY (PRECISION TM) -->
+  <!-- SECTION 5 — LEARNING LOOP -->
   <Section
-    data-chapter="05 — QUALITY"
-    class="content-section border-b border-stone-100"
+    data-chapter="05 — LEARNING"
+    class="py-24 bg-[#FDFCF8] border-b border-stone-200"
   >
-    <div class="grid md:grid-cols-2 gap-16 items-start">
-      <div>
-        <h2 class="mb-4">
-          {t.methodPage.quality.title}
-        </h2>
-        <p class="text-orange-600 font-mono text-sm tracking-widest uppercase">
-          {t.methodPage.quality.subtitle}
-        </p>
-      </div>
-      <div class="space-y-6">
-        <p>
-          {t.methodPage.quality.copy1}
-        </p>
-        <p>
-          {t.methodPage.quality.copy2}
-        </p>
+    <div class="max-w-3xl">
+      <h2 class="font-serif text-3xl lg:text-4xl text-stone-900 mb-8 leading-tight">
+        {t.methodPage.learning.h2}
+      </h2>
+      <div class="space-y-6 text-stone-600 leading-relaxed">
+        <p>{t.methodPage.learning.p1}</p>
+        <p>{t.methodPage.learning.p2}</p>
       </div>
     </div>
   </Section>
 
-  {
-    lang === "en" && (
-      <Section
-        data-chapter="06 — DEEP DIVE"
-        class="content-section border-b border-stone-100"
+  <!-- SECTION 6 — COMPARISON TABLE -->
+  <Section
+    data-chapter="06 — COMPARISON"
+    class="py-24 bg-paper border-b border-stone-200"
+  >
+    <div class="max-w-4xl">
+      <h2 class="font-serif text-3xl lg:text-4xl text-stone-900 mb-12">
+        {t.methodPage.comparison.h2}
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-stone-300">
+              {t.methodPage.comparison.headers.map((h: string) => (
+                <th class="text-left py-3 px-4 font-mono text-xs text-orange-700 uppercase tracking-widest">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {t.methodPage.comparison.rows.map((row: string[]) => (
+              <tr class="border-b border-stone-100">
+                <td class="py-3 px-4 font-medium text-stone-900 whitespace-nowrap">{row[0]}</td>
+                <td class="py-3 px-4 text-stone-500">{row[1]}</td>
+                <td class="py-3 px-4 text-stone-500">{row[2]}</td>
+                <td class="py-3 px-4 text-stone-900 font-medium">{row[3]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-stone-500 text-sm leading-relaxed mt-8">
+        {t.methodPage.comparison.note}
+      </p>
+      <a
+        href={getLocalizedPath(t.methodPage.comparison.linkHref, lang)}
+        class="text-orange-700 hover:text-orange-800 text-sm font-medium transition-colors inline-block mt-4"
       >
-        <div class="max-w-3xl mx-auto prose prose-stone prose-p:text-stone-600 prose-headings:text-stone-900 prose-headings:font-light">
-          <h2>The Flixu Method: Engineering Context as Code</h2>
-          <p>
-            A common misconception in the software industry is the belief that
-            raw Large Language Models (LLMs) have fully solved international
-            translation. Developers routinely wire a basic API call to OpenAI or
-            Anthropic, feed it a raw JSON file of English UI strings, and assume
-            the localization process is complete.
-          </p>
-          <p>However, this approach quickly introduces scale constraints.</p>
-          <p>
-            Raw LLMs operate without persistent context. If the model is not
-            explicitly instructed on the exact, proprietary terminology your
-            enterprise utilizes, the AI defaults to generic, colloquial synonym
-            generation. It might translate "Dashboard" accurately on Monday, but
-            on Thursday, arbitrarily translate the same string as "Control
-            Panel" or "Interface." In professional B2B software, terminology
-            inconsistency erodes user trust and can significantly impact the
-            customer experience.
-          </p>
+        → {t.methodPage.comparison.linkText}
+      </a>
+    </div>
+  </Section>
 
-          <h3>Why Prompt Engineering Cannot Scale</h3>
-          <p>
-            When teams realize raw LLMs are failing, they attempt to solve the
-            issue through manual prompt engineering. They append increasingly
-            complex text instructions to every API call: *"Respond formally. Do
-            not translate the word 'Space'. Remember that we are a B2B SaaS
-            company for dentists."*
-          </p>
-          <p>
-            Prompt engineering is fundamentally unscalable. It relies on the
-            fragile intuition of individual developers. It fractures rapidly
-            when multiple departments (Marketing, Legal, Product) require
-            entirely different tones for the exact same language. Furthermore,
-            hardcoding prompt rules directly into the codebase creates
-            significant technical debt every time the corporate branding
-            guidelines evolve.
-          </p>
+  <!-- SECTION 7 — FAQ -->
+  <Section
+    data-chapter="07 — FAQ"
+    class="py-24 bg-[#FDFCF8] border-b border-stone-200"
+  >
+    <div class="max-w-3xl">
+      <FAQSection items={faqItems} title={t.methodPage.faq.title} />
 
-          <h2>Deterministic Orchestration Over Stochastic Generation</h2>
-          <p>
-            The Flixu Method represents a fundamental architectural departure
-            from raw AI generation. We do not expose you directly to an LLM;
-            instead, we position a highly structured, mathematically
-            deterministic Orchestration Layer between your source data and the
-            inference engine.
-          </p>
-          <p>
-            We call this <strong>Context Injection</strong>.
-          </p>
-          <p>
-            When your CI/CD pipeline sends a payload to Flixu, our Orchestration
-            Layer intercepts it. Before generating a single word of translation,
-            Flixu actively queries your isolated Translation Memory (TM)
-            database via Semantic Vector Retrieval (RAG). It extracts any
-            previously approved, historically perfect translations that match
-            the current context. Simultaneously, it pulls your strict corporate
-            Glossary rules and your specific Brand Voice parameters (e.g.,
-            Target Formality: "Strict/Sie").
-          </p>
-          <p>
-            Flixu then seamlessly injects this comprehensive, mathematically
-            validated context matrix into the LLM inference prompt dynamically.
-            The AI is structurally constrained. It isn’t guessing how to
-            translate your proprietary features; it is executing a highly
-            restrictive algorithm. The output is no longer a stochastic
-            hallucination—it is a deterministic operational truth.
-          </p>
+      <!-- FAQ deep links -->
+      <div class="mt-6 space-y-3">
+        {t.methodPage.faq.items
+          .filter((item) => item.linkHref)
+          .map((item) => (
+            <a
+              href={getLocalizedPath(item.linkHref!, lang)}
+              class="text-orange-700 hover:text-orange-800 text-xs font-medium transition-colors block"
+            >
+              → {item.linkText}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
 
-          <h3>Preserving the Geometry of Code</h3>
-          <p>
-            Beyond semantic correctness, the Flixu Method explicitly addresses
-            Structural Geometry. Translating an abstract idea is entirely
-            different from translating an HTML string containing localized
-            `href` links, inline `&lt;span class="text-red-500"&gt;` styling,
-            and backend `&#123;userId&#125;` variables.
-          </p>
-          <p>
-            Raw LLMs frequently corrupt code structure. They translate variable
-            logic (breaking the backend) or delete closing HTML tags (corrupting
-            the frontend UI). The Flixu Orchestration Layer utilizes custom
-            masking parsers that actively separate the linguistic content from
-            the code geometry. The AI translates the pure semantics, and Flixu
-            reconstructs the code structure exactly as the developer engineered
-            it, ensuring absolute code safety upon deployment.
-          </p>
-          <p>
-            <strong>
-              The Flixu Method is simple: You provide the text. We engineer the
-              context. The algorithm enforces precise consistency.
-            </strong>
+  <!-- SECTION 8 — CTA -->
+  <Section
+    data-chapter="08 — START"
+    class="py-24 bg-paper text-center"
+  >
+    <div class="max-w-2xl mx-auto">
+      <h2 class="font-serif text-3xl lg:text-4xl text-stone-900 mb-10">
+        {t.methodPage.cta.h2}
+      </h2>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="px-8 py-4 bg-orange-700 text-white rounded-sm hover:bg-orange-800 transition-colors text-sm font-medium w-full sm:w-auto hidden"
+        >
+          {t.methodPage.cta.primary}
+        </a>
+        <a
+          href="mailto:founders@flixu.ai"
+          class="px-8 py-4 bg-stone-100 text-stone-900 rounded-sm hover:bg-stone-200 transition-colors text-sm font-medium w-full sm:w-auto"
+        >
+          {t.methodPage.cta.secondary}
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- AUTHOR BLOCK -->
+  <Section class="py-12 bg-[#FDFCF8]">
+    <div class="max-w-2xl mx-auto">
+      <div class="pt-8 border-t border-stone-100 flex items-start gap-4">
+        <div
+          class="w-12 h-12 bg-stone-100 rounded-full overflow-hidden grayscale relative shrink-0"
+        >
+          <span
+            class="absolute inset-0 flex items-center justify-center font-serif italic text-stone-400 text-lg"
+            >D</span
+          >
+        </div>
+        <div>
+          <div class="font-serif text-lg text-stone-900 italic">
+            {t.methodPage.author.name}
+          </div>
+          <div class="font-mono text-xs text-orange-700 uppercase tracking-widest mt-1">
+            {t.methodPage.author.role}
+          </div>
+          <p class="text-sm text-stone-500 mt-3 leading-relaxed font-sans">
+            {t.methodPage.author.bio}{" "}
+            <a
+              href={getLocalizedPath(t.methodPage.author.bioLinkHref, lang)}
+              class="text-orange-700 hover:text-orange-800 underline decoration-orange-200 underline-offset-2 transition-colors"
+            >
+              {t.methodPage.author.bioLinkText}</a>.
           </p>
         </div>
-      </Section>
-    )
-  }
-
-  <!-- CTA -->
-  <Section data-chapter="07 — START" class="content-section text-center">
-    <h2 class="mb-10">
-      {t.methodPage.cta.title}
-    </h2>
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-      <a
-        href="https://app.flixu.ai/register"
-        class="px-8 py-4 bg-[#b52a1c] text-white rounded hover:bg-[#9a2318] transition-colors text-sm font-medium w-full sm:w-auto"
-      >
-        {t.methodPage.cta.primary}
-      </a>
-      <a
-        href="mailto:enterprise@flixu.ai"
-        class="px-8 py-4 bg-stone-100 text-stone-900 rounded hover:bg-stone-200 transition-colors text-sm font-medium w-full sm:w-auto"
-      >
-        {t.methodPage.cta.secondary}
-      </a>
+      </div>
+      <div class="mt-8 text-xs text-stone-400 font-mono uppercase tracking-widest">
+        Last Updated: {t.methodPage.author.lastUpdated}
+      </div>
     </div>
   </Section>
 </BaseLayout>

@@ -20,9 +20,9 @@ export function getStaticPaths() {
 let { lang } = Astro.params;
 if (!lang) lang = "en";
 
-const title = "Client Management Hub | Flixu Translation";
+const title = "Client Management — Isolated Workspaces per Client | Flixu";
 const description =
-  "Manage all your clients, brand voices, and terminology in one centralized agency workspace.";
+  "Manage Translation Memory, Glossary, and Brand Voice per client in isolated profiles. One Flixu workspace, zero terminology crossover between clients.";
 
 const breadcrumbItems = [
   { name: "Home", url: getLocalizedPath("/", lang) },
@@ -32,24 +32,34 @@ const breadcrumbItems = [
 
 const faqs = [
   {
-    question: "How does Flixu separate client translation memories?",
+    question: "How does Flixu keep client translation memories from affecting each other?",
     answer:
-      "Flixu uses isolated workspaces for each client, ensuring translation memories and glossaries are strictly partitioned to guarantee data privacy and contextual precision.",
+      "Each client profile has its own isolated Translation Memory. When the Semantic Reranker searches for past approved translations to use as style references, it only searches within the TM assigned to the active client profile. There's no shared pool across clients — terminology approved for one client is not retrievable in another client's context.",
   },
   {
-    question: "Can I apply different brand voices to different clients?",
+    question: "Can I assign different brand voices to different clients?",
     answer:
-      "Yes, you can define unlimited distinct brand voices and assign them to specific clients. When translating for a client, Flixu automatically applies their unique tone of voice.",
-  },
-  {
-    question: "How do API tokens work with multiple clients?",
-    answer:
-      "In the Business plan, you can generate specific API tokens that are securely bound to individual Client Profiles. This ensures their specific Glossary and Brand Voice are automatically triggered by your backend calls.",
+      "Yes. You can create as many Brand Voice profiles as you need and assign one to each client. When a project is opened under a client profile, that client's brand voice is applied to every translation request automatically. You're not limited to one voice per account — each client can have distinct tone, formality, and style parameters.",
   },
   {
     question: "Is there a limit to how many clients I can manage?",
     answer:
-      "There are no limits on the number of clients you can create and manage within your Flixu agency workspace, regardless of your subscription tier.",
+      "There's no cap on the number of client profiles you can create or manage within a Flixu workspace, regardless of subscription tier.",
+  },
+  {
+    question: "How do API tokens work with multiple clients?",
+    answer:
+      "On Business plans, you can generate API tokens scoped to individual client profiles. A backend call authenticated with a client-specific token automatically routes to that client's Translation Memory, Glossary, and Brand Voice — without requiring those parameters in each API request. This is the intended setup for agencies building localization into automated client-facing pipelines.",
+  },
+  {
+    question: "If I update a client's Glossary, does it apply to all future translations for that client?",
+    answer:
+      "Yes. Glossary changes at the client profile level apply to all subsequent translations under that profile. Existing approved translations in the Translation Memory are not retroactively changed — they remain as previously approved. New translations run after the update will apply the new or modified glossary terms as constraints.",
+  },
+  {
+    question: "Can multiple team members work on the same client profile simultaneously?",
+    answer:
+      "Yes. Client profiles support the full Team Collaboration feature — multiple translators, project managers, and reviewers can work within the same client profile with role-based access control. A Translator sees their assigned projects; an Admin can manage the Glossary and Brand Voice settings.",
   },
 ];
 
@@ -80,6 +90,7 @@ const schema = {
 <BaseLayout title={title} description={description}>
   <SchemaOrg schema={schema} slot="schema" />
 
+  <!-- 01 — HERO -->
   <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
     <div
       class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24 items-center max-w-7xl mx-auto px-6"
@@ -90,13 +101,18 @@ const schema = {
           class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
           >Feature Spotlight</span
         >
-        <h1 class="mb-6">Client Management, Simplified.</h1>
+        <h1 class="mb-6">One workspace. Multiple clients. Zero terminology crossover.</h1>
         <p class="max-w-2xl text-xl text-stone-600 mb-8">
-          Organize Translation Memories, Glossaries, and Brand Voices by client.
-          Never mix terminology again.
+          Each client brings their own approved terms, tone of voice, and
+          translation history. The Client Management layer keeps all of it
+          separated — so the legal terminology from one client never appears in
+          the marketing copy of another.
         </p>
-        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
-          Start Organizing Clients
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          Start Organizing Clients →
         </a>
       </div>
       <div class="relative w-full aspect-[4/3] hidden md:block">
@@ -105,44 +121,105 @@ const schema = {
     </div>
   </Section>
 
+  <!-- 02 — TL;DR -->
   <Section data-chapter="02 — TL;DR" class="tldr-section">
     <div class="max-w-3xl">
       <TldrBlock
-        text="Flixu replaces messy folder structures and scattered spreadsheets with dedicated Client Profiles. Each profile encapsulates the specific Translation Memory (TM), Glossary terms, and Brand Voice rules for that client. When you start a translation project, Flixu automatically retrieves the correct client context, ensuring zero cross-contamination of terminology."
+        label="What is Client Management in Flixu?"
+        text="Client Profiles are isolated workspaces within a single Flixu account. Each profile holds a dedicated Translation Memory, Glossary, and Brand Voice configuration for that client. When a translator opens a project, the correct context is already loaded — no manual switching, no risk of carrying a term from one client into another client's content."
       />
     </div>
   </Section>
 
-  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+  <!-- 03 — HOW IT WORKS -->
+  <Section data-chapter="03 — HOW IT WORKS" class="content-section mt-12">
     <div class="max-w-3xl">
-      <h2 class="mb-12">How does Flixu organize client terminology?</h2>
+      <h2 class="mb-8">How Client Management organizes your workspace.</h2>
+
+      <p class="text-stone-600 leading-relaxed mb-10">
+        For agencies and multi-brand teams, the core problem is isolation:
+        keeping Client A's approved terminology from drifting into Client B's
+        output, without requiring the translator to manually check which
+        glossary is active on each project. Client Management works through
+        three structural layers:
+      </p>
+
+      <div class="space-y-10">
+        <!-- Step 1 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">1</div>
+          <div>
+            <h3 class="text-xl mb-3">Create a client profile</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Each client gets a dedicated profile in the workspace: a named
+              entity that holds their Translation Memory, Glossary terms, and
+              Brand Voice configuration. The profile is the container —
+              everything that belongs to that client lives inside it and applies
+              only to projects assigned to it.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">2</div>
+          <div>
+            <h3 class="text-xl mb-3">Assign assets to the profile</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Upload the client's approved translations as Translation Memory,
+              add their approved terminology to the Glossary, and configure their
+              Brand Voice if they have tone requirements (formal register for a
+              law firm; casual and direct for a consumer app). Each asset is
+              scoped to that client — it won't appear in or influence
+              translations for any other client.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">3</div>
+          <div>
+            <h3 class="text-xl mb-3">Open a project and work</h3>
+            <p class="text-stone-600 leading-relaxed">
+              When a team member opens a project assigned to a client profile,
+              the correct TM, Glossary, and Brand Voice are already active. The
+              translator doesn't configure anything — the context was loaded
+              when the project was created. The system enforces client-specific
+              rules from the first string.
+            </p>
+            <p class="text-stone-500 text-sm mt-3">
+              → How Brand Voice configuration works:
+              <a href={getLocalizedPath("/features/brand-voice", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Brand Voice Manager</a>
+              <br />
+              → How Glossary constraints are applied:
+              <a href={getLocalizedPath("/features/glossary-enforcement", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Glossary Enforcement</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 04 — CAPABILITIES -->
+  <Section data-chapter="04 — CAPABILITIES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">What each client profile contains.</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div class="flex flex-col gap-4">
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
-              ></path><circle cx="9" cy="7" r="4"></circle><path
-                d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path
-                d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </div>
-          <h3 class="text-xl">Isolated Memories</h3>
+          <h3 class="text-xl">Isolated Translation Memory</h3>
           <p class="text-stone-600 leading-relaxed">
-            Legal terminology from Client A will never infect marketing copy for
-            Client B. Flixu strictly partitions TM vector databases per client
-            for absolute semantic integrity.
+            Each client's approved translations are stored in a separate
+            Translation Memory. The semantic retrieval layer only searches
+            within the assigned client's TM — a legal term approved for one
+            client will never surface as a suggestion for another client's
+            project.
           </p>
         </div>
 
@@ -150,25 +227,15 @@ const schema = {
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M12 20h9"></path><path
-                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
           </div>
           <h3 class="text-xl">Brand Voice Assignment</h3>
           <p class="text-stone-600 leading-relaxed">
-            Attach a specific tone of voice instruction to a client profile.
-            Every text you translate for them will automatically be forced into
-            that precise style and register.
+            A specific Brand Voice profile attaches to each client. When a
+            translator works on that client's content, the brand voice
+            configuration is applied to every translation request automatically
+            — no manual step required, no risk of using the wrong tone for the
+            wrong client.
           </p>
         </div>
 
@@ -176,25 +243,14 @@ const schema = {
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path
-                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-              ></path></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
           </div>
-          <h3 class="text-xl">Centralized Glossary</h3>
+          <h3 class="text-xl">Centralized Glossary per Client</h3>
           <p class="text-stone-600 leading-relaxed">
-            Manage terms, forbidden words, and required capitalizations
-            logically mapped to the client level rather than the document level.
+            Each client's Glossary — approved terms, forbidden words, required
+            capitalizations, product names — is mapped at the client level, not
+            the document level. A term added to Client A's Glossary applies to
+            every project under that client's profile.
           </p>
         </div>
 
@@ -202,35 +258,157 @@ const schema = {
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
           </div>
-          <h3 class="text-xl">Activity & Quota Tracking</h3>
+          <h3 class="text-xl">Activity and Volume Tracking</h3>
           <p class="text-stone-600 leading-relaxed">
-            Track translation volumes per client. In the Business plan, utilize
-            API tokens restricted to specific client datasets.
+            Translation volume is tracked per client profile, giving agencies
+            visibility into output by client for internal reporting. On Business
+            plans, API tokens can be scoped to individual client profiles —
+            backend calls automatically route to the correct TM, Glossary, and
+            Brand Voice without specifying them per request.
           </p>
         </div>
       </div>
     </div>
   </Section>
 
+  <!-- 05 — WHEN THIS MATTERS MOST -->
+  <Section data-chapter="05 — USE CASES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-10">When client isolation changes the workflow.</h2>
+
+      <!-- Agencies -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">Translation agencies managing five or more active clients</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          When an agency runs multiple clients through a single workspace
+          without client-level isolation, the practical risk is terminology
+          drift. An approved medical term from a pharma client appears in TM
+          suggestions for a consumer brand. A formal tone setting leaks into a
+          casual app translation. These aren't rare edge cases — they're the
+          predictable consequence of a flat workspace structure.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          Client profiles eliminate this by design. The workspace sees multiple
+          clients; each translator sees only the context that belongs to the
+          client they're working on. No configuration reminder before each
+          project, no manual check that the right glossary is loaded.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Agency workflows and multi-client management:
+          <a href={getLocalizedPath("/for/agencies", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Agencies</a>
+        </p>
+      </div>
+
+      <!-- Multi-brand -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">Multi-brand marketing teams</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          A marketing team managing localization for three product lines — each
+          with different brand voices, different approved terminology, and
+          different regional requirements — faces the same isolation problem
+          within a single company. Client Management handles multi-brand setups
+          the same way it handles multi-client agency setups: each brand is a
+          profile, and its assets are scoped accordingly.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Global marketing team workflows:
+          <a href={getLocalizedPath("/for/global-marketing", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Global Marketing Teams</a>
+        </p>
+      </div>
+
+      <!-- Developer API -->
+      <div>
+        <h3 class="text-xl mb-4">Development teams with per-client API integrations</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          On Business plans, API tokens can be issued and scoped to individual
+          client profiles. A backend call using a specific token automatically
+          loads the corresponding client's Translation Memory, Glossary, and
+          Brand Voice — without passing those parameters explicitly in each
+          request. For agencies with developer teams building localization into
+          client-facing pipelines, that scoping eliminates a layer of per-call
+          configuration.
+        </p>
+        <div class="bg-stone-50 border border-stone-200 rounded-sm p-5 text-sm text-stone-700 leading-relaxed font-mono mt-4">
+          <p class="text-stone-400 text-xs mb-2">// Conceptual illustration — actual API parameters in the documentation</p>
+          <p>{"{"}</p>
+          <p class="ml-4">"client_id": "cli_example_a1b2",</p>
+          <p class="ml-4">"source_text": "Please review the contract terms.",</p>
+          <p class="ml-4">"enforce_glossary": true</p>
+          <p>{"}"}</p>
+          <p class="text-stone-400 text-xs mt-2">// Routes to Client A's Translation Memory and Glossary automatically</p>
+        </div>
+        <p class="text-stone-500 text-sm mt-4">
+          → Developer API details:
+          <a href={getLocalizedPath("/product/developer-api", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Developer API</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 06 — FAQ -->
   <Section
-    data-chapter="04 — FAQ"
+    data-chapter="06 — FAQ"
     class="content-section bg-stone-50 border-t border-stone-200 mt-24"
   >
     <div class="max-w-3xl mx-auto">
       <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- 07 — CTA -->
+  <Section data-chapter="07 — CTA" class="content-section mt-24 mb-16">
+    <div class="max-w-3xl text-center mx-auto">
+      <h2 class="mb-6">Set up your first client profile in under five minutes.</h2>
+      <p class="text-stone-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+        Create a profile, upload a glossary, assign a brand voice. Every
+        project you create under it inherits that context automatically from
+        the first string.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center justify-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          Start translating for free →
+        </a>
+        <a
+          href={getLocalizedPath("/features/glossary-enforcement", lang)}
+          class="inline-flex items-center justify-center gap-2 border border-stone-300 text-stone-700 px-6 py-3 rounded-sm font-medium hover:bg-stone-50 transition-colors"
+        >
+          Explore Glossary Enforcement →
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 08 — RELATED FEATURES -->
+  <Section data-chapter="08 — RELATED" class="content-section border-t border-stone-200 pt-12 mb-16">
+    <div class="max-w-3xl">
+      <h3 class="text-sm font-mono text-stone-400 uppercase tracking-widest mb-6">Related Features</h3>
+      <ul class="space-y-3">
+        <li>
+          <a href={getLocalizedPath("/features/brand-voice", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Brand Voice Manager</a>
+          <span class="text-stone-500"> — Tone and formality configuration per client</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/glossary-enforcement", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Glossary Enforcement</a>
+          <span class="text-stone-500"> — Terminology constraints scoped to client profiles</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/translation-memory", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Translation Memory</a>
+          <span class="text-stone-500"> — How isolated TM retrieval works per client</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/team-collaboration", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Team Collaboration</a>
+          <span class="text-stone-500"> — Role-based access across client workspaces</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/for/agencies", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Agencies</a>
+          <span class="text-stone-500"> — Multi-client workflow overview</span>
+        </li>
+      </ul>
     </div>
   </Section>
 </BaseLayout>

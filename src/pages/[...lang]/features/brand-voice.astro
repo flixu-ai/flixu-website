@@ -20,9 +20,9 @@ export function getStaticPaths() {
 let { lang } = Astro.params;
 if (!lang) lang = "en";
 
-const title = "Brand Voice Translation Rules | Flixu";
+const title = "Brand Voice Manager — Control AI Translation Tone | Flixu";
 const description =
-  "Control the stylistic output of AI translations. Apply specific tone of voice, formality rules, and audience contexts automatically.";
+  "Define your brand tone once. Flixu injects it into every translation before the AI generates a single word — no style guide briefing, no tone drift across languages.";
 
 const breadcrumbItems = [
   { name: "Home", url: getLocalizedPath("/", lang) },
@@ -32,24 +32,34 @@ const breadcrumbItems = [
 
 const faqs = [
   {
-    question: "How does Brand Voice work in Flixu translation?",
+    question: "How does the Brand Voice Manager actually apply instructions to a translation?",
     answer:
-      "A Brand Voice is a set of natural language instructions (like 'use an enthusiastic tone' or 'avoid passive voice') that is injected directly into the LLM context before translation occurs. This forces the translation to adhere to your stylistic rules.",
+      "The instructions you write in natural language are injected into the translation payload before the language model processes the source text. The model doesn't receive the text and a separate suggestion to apply a certain style — it receives both together as a structured input. The output is generated to those specifications from the first token. This is why the enforcement is consistent: the constraint was set before inference began, not checked against afterward.",
   },
   {
-    question: "Can I have multiple brand voices?",
+    question: "Can I have multiple brand voices for different clients or projects?",
     answer:
-      "Yes, Flixu supports multiple Brand Voices per account. You can assign different voices to different clients, or even different projects (e.g., 'Marketing' vs. 'Legal').",
+      "Yes. Each account supports multiple Brand Voice profiles. You can create separate profiles for different clients, different content types (marketing vs. legal vs. UI strings), or different target markets. Profiles are assigned at the project or client workspace level — not per individual translation request. All content translated under a project inherits that project's assigned profile automatically.",
   },
   {
-    question: "Does the AI understand different levels of formality?",
+    question: "Does the Brand Voice Manager control formality in languages with complex register systems?",
     answer:
-      "Absolutely. You can specifically instruct the Brand Voice to utilize formal pronouns (such as the German 'Sie' or French 'vous') versus informal pronouns ('du' or 'tu'). The Engine will lock this grammar across all translations.",
+      "Yes. The formality dimension is specified as a hard instruction in the brand voice profile — German Sie/du, French vous/tu, Spanish usted/tú, Japanese register levels. The model applies that setting as a constraint, not as a probabilistic inference from the source text. Mixed register output within a project doesn't occur because the instruction is part of the payload for every request in that project.",
   },
   {
-    question: "How do I apply a Brand Voice to a translation?",
+    question: "What's the difference between Brand Voice Manager and a style guide document?",
     answer:
-      "You simply attach the designated Brand Voice profile to your specific Client or Project within the Flixu Workspace. All documents translated under that project will automatically inherit those rules.",
+      "A style guide document is a PDF or text file that a human translator reads and applies based on their interpretation. Consistency depends on how carefully the guide is written and how consistently it's followed — which varies across translators, sessions, and volume. The Brand Voice Manager is a configuration that's injected into every translation request automatically. No human has to read and apply it; the system does.",
+  },
+  {
+    question: "Can Brand Voice be combined with Glossary Enforcement?",
+    answer:
+      "Yes — and they work together. The glossary enforces specific terminology (product names, technical labels); the Brand Voice Manager enforces tone and register. Both are loaded before translation begins. A string can simultaneously be required to use the approved term 'Dashboard' and to use informal du register — both constraints are applied in the same pipeline step.",
+  },
+  {
+    question: "Does Brand Voice work across all 22+ supported languages?",
+    answer:
+      "Yes. The brand voice configuration is language-agnostic — the instructions are applied regardless of the target language. Formality-specific instructions (Sie/du, vous/tu) are language-aware by design: you specify the formality level, and the model applies the appropriate grammatical construct for the target language.",
   },
 ];
 
@@ -58,7 +68,7 @@ const schema = {
   "@graph": [
     {
       "@type": "SoftwareApplication",
-      name: "Flixu Brand Voice",
+      name: "Flixu Brand Voice Manager",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
     },
@@ -80,6 +90,7 @@ const schema = {
 <BaseLayout title={title} description={description}>
   <SchemaOrg schema={schema} slot="schema" />
 
+  <!-- 01 — HERO -->
   <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
     <div
       class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24 items-center max-w-7xl mx-auto px-6"
@@ -90,13 +101,18 @@ const schema = {
           class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
           >Feature Spotlight</span
         >
-        <h1 class="mb-6">Stop sounding like a robot.</h1>
+        <h1 class="mb-6">Your brand has a voice. Most AI translations ignore it.</h1>
         <p class="max-w-2xl text-xl text-stone-600 mb-8">
-          Raw AI sounds sterile. Flixu applies your specific brand personality,
-          tone, and stylistic constraints to every single sentence.
+          Generic machine translation doesn't know whether your brand is warm
+          and direct or formal and authoritative. The Brand Voice Manager lets
+          you define how your brand speaks — once — and Flixu enforces those
+          rules on every translation request, automatically.
         </p>
-        <a href={`/${lang !== "en" ? lang + "/" : ""}pricing`} class="hidden">
-          Define Your Voice
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          Define Your Voice →
         </a>
       </div>
       <div class="relative w-full aspect-[4/3] hidden md:block">
@@ -105,42 +121,113 @@ const schema = {
     </div>
   </Section>
 
+  <!-- 02 — TL;DR -->
   <Section data-chapter="02 — TL;DR" class="tldr-section">
     <div class="max-w-3xl">
       <TldrBlock
-        text="DeepL and traditional machine translation ignore style. Flixu allows you to define custom 'Brand Voices'—detailed stylistic instructions that govern formality (tu vs. Sie), sentence length, and emotional resonance. Apply these voices to your clients or projects to ensure that French marketing copy sounds just as punchy and human as the English original."
+        label="What is the Brand Voice Manager?"
+        text="The Brand Voice Manager is a configuration layer in Flixu that stores your tone definition — formality level, sentence structure, stylistic preferences, and phrasing constraints. Every translation request receives that configuration before the language model processes the text. Your German marketing copy sounds like your brand sounds in German, not like the statistical average of German business writing."
       />
     </div>
   </Section>
 
-  <Section data-chapter="03 — CAPABILITIES" class="content-section mt-12">
+  <!-- 03 — HOW IT WORKS -->
+  <Section data-chapter="03 — HOW IT WORKS" class="content-section mt-12">
     <div class="max-w-3xl">
-      <h2 class="mb-12">How does Brand Voice control the AI?</h2>
+      <h2 class="mb-8">How the Brand Voice Manager works.</h2>
+
+      <p class="text-stone-600 leading-relaxed mb-10">
+        Brand voice in a translation pipeline is a sequencing problem. Most
+        tools apply style guidance after translation — a style guide document
+        that a human reviewer checks against, or a post-generation prompt that
+        tries to adjust tone. By the time the review happens, the output already
+        has the wrong register and needs to be rewritten. Flixu applies your
+        brand voice configuration <em>before</em> the language model generates anything.
+      </p>
+
+      <div class="space-y-10">
+        <!-- Step 1 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">1</div>
+          <div>
+            <h3 class="text-xl mb-3">Define your voice</h3>
+            <p class="text-stone-600 leading-relaxed mb-4">
+              You write your brand voice instructions in natural language — the
+              same way you'd brief a human translator. Formality level, tone,
+              sentence structure, specific constructions to avoid.
+            </p>
+            <div class="bg-stone-50 border border-stone-200 rounded-sm p-5 text-sm text-stone-700 leading-relaxed font-mono">
+              <p class="mb-1"><strong>Tone:</strong> Warm, direct, slightly informal.</p>
+              <p class="mb-1"><strong>Formality:</strong> Casual (du in German, tu in French — never Sie or vous).</p>
+              <p class="mb-1"><strong>Sentences:</strong> Short to medium. Active voice. No passive constructions.</p>
+              <p><strong>Avoid:</strong> Corporate filler phrases, excessive hedging, exclamation points.</p>
+            </div>
+            <p class="text-stone-500 text-sm mt-3">
+              These instructions are stored in your workspace as a named Brand
+              Voice profile. You can create multiple profiles — one for your
+              product UI, one for marketing copy, one for legal documentation —
+              each with different parameters.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">2</div>
+          <div>
+            <h3 class="text-xl mb-3">Assign to projects or clients</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Each Brand Voice profile is assigned to a project or client
+              workspace. When a team member opens a project for that client, the
+              profile is already active. There's no configuration step per
+              translation — the voice travels with the project, not with the
+              individual request.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">3</div>
+          <div>
+            <h3 class="text-xl mb-3">Applied automatically before translation</h3>
+            <p class="text-stone-600 leading-relaxed">
+              When a translation request runs, the brand voice instructions are
+              injected into the payload before the language model receives the
+              text. The model doesn't see the source content and a suggestion to
+              apply a certain style — it sees source content with the style
+              already specified as a constraint. The output is generated to those
+              specifications from the first word.
+            </p>
+            <p class="text-stone-500 text-sm mt-3">
+              → How brand voice fits into the full analysis pipeline:
+              <a href={getLocalizedPath("/product/context", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">The Context Engine</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 04 — CAPABILITIES -->
+  <Section data-chapter="04 — CAPABILITIES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">What the Brand Voice Manager controls.</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div class="flex flex-col gap-4">
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M12 20h9"></path><path
-                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
           </div>
-          <h3 class="text-xl">Instructional Prompts</h3>
+          <h3 class="text-xl">Tone and Instructional Style</h3>
           <p class="text-stone-600 leading-relaxed">
-            Write guidelines precisely as you would for a human translator.
-            "Write in short, punchy sentences. Use active voice." The AI honors
-            these rules during token generation.
+            Write your tone guidelines the way you'd write a brief for a human
+            translator: "Use short, punchy sentences. Active voice throughout.
+            Conversational — like you're talking to a colleague, not writing a
+            press release." The language model applies those instructions to every
+            string it generates for that project.
           </p>
         </div>
 
@@ -148,25 +235,15 @@ const schema = {
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M17 6.1H3"></path><path d="M21 12.1H3"></path><path
-                d="M15.1 18H3"></path></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.1H3"></path><path d="M21 12.1H3"></path><path d="M15.1 18H3"></path></svg>
           </div>
           <h3 class="text-xl">Formality Control</h3>
           <p class="text-stone-600 leading-relaxed">
-            Eliminate awkward tone shifts. Formally lock translations to 'Sie'
-            (Formal German) or 'tu' (Informal French) to prevent the AI from
-            guessing based on the source text.
+            Lock the formal or informal register before translation begins.
+            German Sie/du, French vous/tu, Japanese keigo levels, Spanish
+            usted/tú — the formality dimension is specified as a constraint,
+            not inferred from the source text. The model can't produce mixed
+            register output because the instruction was part of the input.
           </p>
         </div>
 
@@ -174,29 +251,15 @@ const schema = {
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><rect width="18" height="18" x="3" y="3" rx="2" ry="2"
-              ></rect><line x1="3" x2="21" y1="9" y2="9"></line><line
-                x1="9"
-                x2="9"
-                y1="21"
-                y2="9"></line></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><line x1="3" x2="21" y1="9" y2="9"></line><line x1="9" x2="9" y1="21" y2="9"></line></svg>
           </div>
-          <h3 class="text-xl">Context Inheritance</h3>
+          <h3 class="text-xl">Multi-Profile Support</h3>
           <p class="text-stone-600 leading-relaxed">
-            Map Brand Voices directly to Client Profiles. When a team member
-            starts a project for that client, the voice is automatically
-            enforced without manual configuration.
+            One account, multiple voices. Assign a "Marketing" profile that's
+            warm and casual to your campaign content. Assign a "Legal" profile
+            that's precise and formal to compliance documentation. Assign a
+            client-specific profile to each agency client workspace. The profiles
+            are independent and don't affect each other.
           </p>
         </div>
 
@@ -204,46 +267,149 @@ const schema = {
           <div
             class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path
-                d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
-              ></path><polyline points="14 2 14 8 20 8"></polyline><line
-                x1="16"
-                x2="8"
-                y1="13"
-                y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line
-                x1="10"
-                x2="8"
-                y1="9"
-                y2="9"></line></svg
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg>
           </div>
           <h3 class="text-xl">Voice Testing</h3>
           <p class="text-stone-600 leading-relaxed">
-            Use the built-in Quick Translate widget to test different voices
-            against the same source string and tweak your instructions before
-            applying them to large documents.
+            Before applying a profile to a large document, test it against a
+            sample string using the Quick Translate widget. See the same source
+            sentence rendered with two different brand voice configurations side
+            by side. Adjust the instructions and re-test until the output matches
+            what you're aiming for.
           </p>
         </div>
       </div>
     </div>
   </Section>
 
+  <!-- 05 — WHEN THIS MATTERS MOST -->
+  <Section data-chapter="05 — USE CASES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-10">When brand voice enforcement changes the outcome.</h2>
+
+      <!-- Marketing Teams -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">Marketing teams running multilingual campaigns</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          A marketing team spends months developing a brand voice in English —
+          direct, warm, slightly irreverent. Their agency translates it into
+          German and it comes back formal and stiff. The content team rewrites
+          it. That correction cycle repeats for every campaign, every language,
+          every quarter.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          With Brand Voice Manager, the formality and tone are configured once.
+          The German campaign arrives with the correct register applied. The
+          team reviews for cultural nuance, not for basic tone correction.
+          According to CSA Research, 76% of buyers prefer to purchase in their
+          native language — but that preference builds trust only when the
+          translated brand voice feels intentional, not generic.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Marketing team localization workflows:
+          <a href={getLocalizedPath("/for/global-marketing", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Global Marketing Teams</a>
+        </p>
+      </div>
+
+      <!-- SaaS DACH -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">SaaS products in DACH markets</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          A product expanding into Germany faces the Sie/du decision on every
+          screen. Generic AI guesses based on the source text's formality
+          signals — which produces inconsistent output across a UI. One screen
+          says Sie, another says du, based on what the English text happened
+          to suggest. The product reads as if it wasn't designed for German
+          users.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          The Brand Voice Manager locks the register across every string in the
+          project. The product reads consistently — because the decision was
+          made once at the configuration level, not inferred string by string.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → SaaS localization workflow:
+          <a href={getLocalizedPath("/for/saas-teams", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for SaaS Teams</a>
+        </p>
+      </div>
+
+      <!-- Agencies -->
+      <div>
+        <h3 class="text-xl mb-4">Agencies managing multiple clients</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          Each client has a different voice. A legal services firm and a consumer
+          app don't sound the same, and their translated content shouldn't
+          either. A single workspace account holds a profile for each client —
+          when a translator opens a project, the correct brand voice is already
+          applied. The agency doesn't brief the AI separately for each project;
+          the configuration does it.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Agency workflow:
+          <a href={getLocalizedPath("/for/agencies", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Agencies</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 06 — FAQ -->
   <Section
-    data-chapter="04 — FAQ"
+    data-chapter="06 — FAQ"
     class="content-section bg-stone-50 border-t border-stone-200 mt-24"
   >
     <div class="max-w-3xl mx-auto">
       <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- 07 — CTA -->
+  <Section data-chapter="07 — CTA" class="content-section mt-24 mb-16">
+    <div class="max-w-3xl text-center mx-auto">
+      <h2 class="mb-6">Try it with your own text — see the difference in 30 seconds.</h2>
+      <p class="text-stone-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+        Paste a sentence, configure a brand voice profile, and compare the
+        output against standard MT. The tone difference is usually visible on
+        the first result.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center justify-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          Start translating for free →
+        </a>
+        <a
+          href={getLocalizedPath("/product/context", lang)}
+          class="inline-flex items-center justify-center gap-2 border border-stone-300 text-stone-700 px-6 py-3 rounded-sm font-medium hover:bg-stone-50 transition-colors"
+        >
+          See how the analysis layer works →
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 08 — RELATED FEATURES -->
+  <Section data-chapter="08 — RELATED" class="content-section border-t border-stone-200 pt-12 mb-16">
+    <div class="max-w-3xl">
+      <h3 class="text-sm font-mono text-stone-400 uppercase tracking-widest mb-6">Related Features</h3>
+      <ul class="space-y-3">
+        <li>
+          <a href={getLocalizedPath("/product/context", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">The Context Engine</a>
+          <span class="text-stone-500"> — How brand voice fits into the full 5-dimension analysis</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/glossary-enforcement", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Glossary Enforcement</a>
+          <span class="text-stone-500"> — Terminology constraints that work alongside brand voice</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/lqa", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">LQA & Quality Assurance</a>
+          <span class="text-stone-500"> — Automated scoring that verifies brand voice consistency</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/topic/brand-voice-consistency", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Brand Voice in Translation</a>
+          <span class="text-stone-500"> — Why AI translation struggles with brand voice</span>
+        </li>
+      </ul>
     </div>
   </Section>
 </BaseLayout>

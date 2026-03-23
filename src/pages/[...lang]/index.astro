@@ -1,31 +1,19 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/ui/Section.astro";
-import OutlineCard from "../../components/ui/OutlineCard.astro";
 import HeroAmbient from "../../components/homepage/HeroAmbient.astro";
-import WorkspaceVisual from "../../components/widget/WorkspaceVisual.jsx";
 import TranslationComparator from "../../components/widget/TranslationComparator.jsx";
+import TldrBlock from "../../components/seo/TldrBlock.astro";
+import FAQSection from "../../components/seo/FAQSection.astro";
 import SchemaOrg from "../../components/seo/SchemaOrg.astro";
-import {
-  Cpu,
-  BookMarked,
-  ArrowRight,
-  Globe,
-  FileText,
-  Layers,
-  Image,
-  Mic,
-  Sparkles,
-  X,
-  Check
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslations, locales, getLocalizedPath } from "../../i18n/utils";
 
 export const prerender = true;
 
 export function getStaticPaths() {
   return [
-    { params: { lang: undefined } }, // Root (English default)
+    { params: { lang: undefined } },
     ...locales.map((lang) => ({ params: { lang } })),
   ];
 }
@@ -35,25 +23,16 @@ if (!lang) lang = "en";
 
 const t = await useTranslations(lang);
 
-const iconMap = {
-  Cpu,
-  Globe,
-  BookMarked,
-  FileText,
-  Layers,
-  Image,
-  Mic,
-  ArrowRight,
-};
-
-const LogicIcon1 = iconMap[t.logic.c1.icon as keyof typeof iconMap];
-const LogicIcon2 = iconMap[t.logic.c2.icon as keyof typeof iconMap];
-const LogicIcon3 = iconMap[t.logic.c3.icon as keyof typeof iconMap];
-
 const isDev = import.meta.env.DEV;
 const appUrl = isDev ? "http://localhost:3000" : "https://app.flixu.ai";
 
-// Organization + SoftwareApplication schema
+// Build FAQ items for the FAQSection component (plain text only, no links)
+const faqItems = t.home.faq.items.map((item: { question: string; answer: string }) => ({
+  question: item.question,
+  answer: item.answer,
+}));
+
+// Organization + SoftwareApplication + FAQPage schema
 const homepageSchema = [
   {
     "@context": "https://schema.org",
@@ -88,61 +67,56 @@ const homepageSchema = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
+    mainEntity: t.home.faq.items.map(
+      (item: { question: string; answer: string }) => ({
         "@type": "Question",
-        name: "What is Flixu?",
+        name: item.question,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Flixu is a context-aware AI translation workspace for global product teams. It bridges the gap between raw AI APIs and enterprise translation platforms.",
+          text: item.answer,
         },
-      },
-      {
-        "@type": "Question",
-        name: "Does Flixu maintain my brand voice?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes. Flixu injects 7 layers of context—including Brand Voice, Glossaries, and Translation Memory—into every translation payload.",
-        },
-      },
-    ],
+      })
+    ),
   },
 ];
 ---
 
-<BaseLayout title={t.hero.metaTitle}>
+<BaseLayout
+  title={t.hero.metaTitle}
+  description={t.hero.metaDescription}
+>
   <Fragment slot="schema">
     {homepageSchema.map((schema) => <SchemaOrg schema={schema} />)}
   </Fragment>
 
-  <!-- HERO SECTION -->
+  <!-- SECTION 1 — HERO -->
   <Section
     id="start"
     data-chapter={`01 — ${t.rail.intro.toUpperCase()}`}
-    class="pt-16 md:pt-24 pb-16 lg:pb-24 border-b border-stone-200 relative overflow-hidden bg-paper"
+    class="pt-16 md:pt-24 pb-16 lg:pb-24 relative overflow-hidden bg-paper"
   >
     <HeroAmbient />
     <div class="relative z-10 w-full">
-      <!-- HERO GRID -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <!-- LEFT TEXT -->
-        <div class="max-w-xl">
+      <!-- HERO CONTENT — Single Column, Centered -->
+      <div class="max-w-3xl mx-auto text-center">
           <div
             class="inline-block px-3 py-1 mb-8 rounded-full border border-stone-200 bg-stone-50 text-[10px] font-mono tracking-widest uppercase text-stone-500"
           >
             {t.hero.badgeLabel}
           </div>
 
-          <h1 class="text-4xl lg:text-5xl xl:text-6xl font-serif tracking-tight mb-6 text-stone-900" set:html={t.hero.h1} />
+          <h1 class="text-4xl lg:text-5xl xl:text-6xl font-serif tracking-tight mb-6 text-stone-900">
+            {t.hero.h1}
+          </h1>
 
-          <p class="mb-12">
+          <p class="mb-12 text-lg text-stone-600">
             {t.hero.sub}
           </p>
 
-          <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <a
               href={`${appUrl}/sign-up?plan=individual&intent=individual&interval=month`}
-              class="px-8 py-4 rounded-sm bg-orange-700 text-white hover:bg-orange-800 transition-colors flex items-center gap-2 group"
+              class="px-8 py-4 rounded-sm bg-orange-700 text-white hover:bg-orange-800 transition-colors flex items-center gap-2 group hidden"
             >
               <span class="font-medium">{t.hero.btnPrimary}</span>
               <ArrowRight
@@ -159,163 +133,130 @@ const homepageSchema = [
           </div>
 
           <p
-            class="mt-4 text-xs text-stone-500 font-mono flex items-center gap-2"
+            class="mt-6 text-xs text-stone-500 font-mono flex items-center gap-2 justify-center"
           >
             <span class="block w-1.5 h-1.5 rounded-full bg-green-500"></span>
             {t.hero.badge}
           </p>
-        </div>
-
-        <!-- RIGHT PREVIEW UI -->
-        <div class="relative w-full aspect-[4/3] lg:aspect-video flex items-center justify-center">
-           <!-- Decorative Background Element -->
-           <div class="absolute inset-0 bg-stone-100 rounded-full blur-3xl opacity-50 z-0 scale-90"></div>
-           
-           <div class="relative border border-stone-200 rounded-lg shadow-2xl overflow-hidden bg-white w-full h-fit flex items-center justify-center z-10 rotate-1 hover:rotate-0 transition-transform duration-500 ease-out">
-             <div class="absolute inset-0 bg-stone-50 flex items-center justify-center text-stone-400 font-mono text-xs uppercase tracking-widest z-0">
-                UI Preview Placeholder
-             </div>
-             <img src="/assets/flixu-workspace-preview.jpg" alt="Flixu AI Translation Workspace Preview" class="object-cover w-full opacity-90 hover:opacity-100 transition-opacity relative z-10" />
-           </div>
-        </div>
       </div>
 
       <!-- TRUST BAR -->
       <div
-        class="mt-4 pt-4 border-t border-stone-200 w-full flex flex-col md:flex-row items-center gap-4 md:gap-8 opacity-80 grayscale mix-blend-multiply"
+        class="mt-8 pt-4 border-t border-stone-200 max-w-xl mx-auto flex flex-col items-center gap-3 opacity-80 grayscale mix-blend-multiply"
       >
         <span
-          class="text-[10px] font-mono uppercase tracking-widest text-stone-500 shrink-0 mb-4 md:mb-0"
+          class="text-[10px] font-mono uppercase tracking-widest text-stone-500"
         >
-          {t.home?.accelerated || "Accelerated by & Member of"}
+          {t.home.accelerated}
         </span>
-        <div class="flex items-center gap-8 md:gap-12 w-full overflow-hidden flex-wrap">
+        <div class="flex items-center justify-center gap-8">
           <span
             class="font-sans font-bold text-lg tracking-tight text-stone-800"
-            >NVIDIA INCEPTION</span
+            >{t.home.nvidiaInception}</span
           >
           <span
             class="font-sans font-bold text-lg tracking-tight text-stone-800"
-            >Google for Startups</span
+            >{t.home.googleStartups}</span
           >
         </div>
       </div>
     </div>
   </Section>
 
-  <!-- MISSING MIDDLE SECTION (Moved up) -->
+  <!-- TL;DR / ANSWER-FIRST BLOCK -->
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 py-10">
+    <TldrBlock label={t.home.tldr.label} text={t.home.tldr.text} />
+  </div>
+
+  <!-- SECTION 2 — THE MISSING MIDDLE -->
   <Section
     data-chapter="02 — THE MISSING MIDDLE"
     class="py-32 border-b border-stone-200 bg-paper"
   >
     <div class="w-full">
       <div class="mb-16 max-w-3xl">
-        <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">The Problem</span>
-        <h2 class="mb-6">Serving the Missing Middle of B2B Localization.</h2>
+        <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">{t.home.missingMiddle.preTitle}</span>
+        <h2 class="mb-6">{t.home.missingMiddle.h2}</h2>
         <p class="text-stone-600 text-lg">
-          For a decade, the translation industry has been fractured into two
-          extremes. The market forces growing SaaS companies into a difficult
-          choice between generic, context-blind automation or slow, highly complex
-          human workflows.
+          {t.home.missingMiddle.intro}
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Raw AI Card -->
+        <!-- Card 1 — Low End -->
         <div class="p-8 border border-stone-200 bg-white rounded-sm shadow-sm flex flex-col">
-          <div class="font-mono text-xs text-stone-400 mb-6 uppercase tracking-widest border-b border-stone-100 pb-4">The Low End</div>
-          <h3 class="text-xl mb-4 text-stone-900">Raw AI APIs</h3>
+          <div class="font-mono text-xs text-stone-400 mb-6 uppercase tracking-widest border-b border-stone-100 pb-4">{t.home.missingMiddle.lowEnd.label}</div>
+          <h3 class="text-xl mb-4 text-stone-900">{t.home.missingMiddle.lowEnd.h3}</h3>
           <p class="text-stone-600 mb-6 text-sm flex-grow">
-            Tools like Google Translate and DeepL provide instantaneous generation at low costs. However, they lack contextual architecture.
+            {t.home.missingMiddle.lowEnd.p}
           </p>
           <ul class="text-sm text-stone-500 space-y-3 mt-auto">
-            <li class="flex items-center gap-2"><span class="text-red-500">✕</span> No Glossary enforcement</li>
-            <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Robotic, homogenous tone</li>
-            <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Zero translation memory</li>
+            {t.home.missingMiddle.lowEnd.specs.map((spec: string) => (
+              <li class="flex items-center gap-2"><span class="text-red-500">✕</span> {spec}</li>
+            ))}
           </ul>
         </div>
 
-        <!-- Flixu Card (The Missing Middle) -->
+        <!-- Card 2 — Flixu (Highlighted) -->
         <div class="p-8 border-2 border-orange-700 bg-white rounded-sm shadow-md flex flex-col relative transform md:-translate-y-4">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-700 text-white text-[10px] uppercase tracking-widest font-mono px-3 py-1 rounded-full whitespace-nowrap">The Missing Middle</div>
-          <div class="font-mono text-xs text-orange-700 mb-6 uppercase tracking-widest border-b border-stone-100 pb-4">Flixu Context Engine</div>
-          <h3 class="text-xl mb-4 text-stone-900">Stateful Intelligence</h3>
+          <div class="font-mono text-xs text-orange-700 mb-6 uppercase tracking-widest border-b border-stone-100 pb-4">{t.home.missingMiddle.flixu.label}</div>
+          <h3 class="text-xl mb-4 text-stone-900">{t.home.missingMiddle.flixu.h3}</h3>
           <p class="text-stone-700 mb-6 text-sm flex-grow font-medium">
-            The instant, scalable speed of a raw API, combined inextricably with the rigorous brand compliance mechanics of an enterprise platform.
+            {t.home.missingMiddle.flixu.p}
           </p>
           <ul class="text-sm text-stone-700 space-y-3 mt-auto font-medium">
-            <li class="flex items-center gap-2"><span class="text-green-600">✓</span> 7-Layer Context Injection</li>
-            <li class="flex items-center gap-2"><span class="text-green-600">✓</span> Programmable Brand Voice</li>
-            <li class="flex items-center gap-2"><span class="text-green-600">✓</span> CI/CD developer ready</li>
+            {t.home.missingMiddle.flixu.specs.map((spec: string) => (
+              <li class="flex items-center gap-2"><span class="text-green-600">✓</span> {spec}</li>
+            ))}
           </ul>
         </div>
 
-        <!-- Legacy TMS Card -->
+        <!-- Card 3 — High End -->
         <div class="p-8 border border-stone-200 bg-white rounded-sm shadow-sm flex flex-col">
-          <div class="font-mono text-xs text-stone-400 mb-6 uppercase tracking-widest border-b border-stone-100 pb-4">The High End</div>
-          <h3 class="text-xl mb-4 text-stone-900">Legacy TMS</h3>
+          <div class="font-mono text-xs text-stone-400 mb-6 uppercase tracking-widest border-b border-stone-100 pb-4">{t.home.missingMiddle.highEnd.label}</div>
+          <h3 class="text-xl mb-4 text-stone-900">{t.home.missingMiddle.highEnd.h3}</h3>
           <p class="text-stone-600 mb-6 text-sm flex-grow">
-            Traditional enterprise platforms provide control, but require a 9-month integration project and complex agency review cycles.
+            {t.home.missingMiddle.highEnd.p}
           </p>
           <ul class="text-sm text-stone-500 space-y-3 mt-auto">
-            <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Blocks CI/CD velocity</li>
-            <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Bureaucratic workflows</li>
-            <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Bloated pricing structures</li>
+            {t.home.missingMiddle.highEnd.specs.map((spec: string) => (
+              <li class="flex items-center gap-2"><span class="text-red-500">✕</span> {spec}</li>
+            ))}
           </ul>
         </div>
       </div>
     </div>
   </Section>
 
-  <!-- TRUST & TESTIMONIALS SECTION (Visible for now) -->
+  <!-- SECTION 3 — TRUST & TESTIMONIALS -->
   <Section
     id="trust"
     data-chapter="03 — TRUST & VALIDATION"
     class="py-32 border-b border-stone-200 bg-paper"
   >
     <div class="w-full">
-      <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">Beta Tester Voices</span>
-      <h2 class="mb-16">Trusted by Localization Managers.</h2>
+      <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">{t.home.trust.preTitle}</span>
+      <h2 class="mb-16">{t.home.trust.h2}</h2>
       
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-        <!-- Placeholder Testimonial 1 -->
-        <div class="p-8 border border-stone-200 bg-white shadow-sm rounded-sm">
-          <p class="text-stone-600 mb-6 italic">"Awaiting real beta tester feedback on glossary enforcement..."</p>
-          <div class="flex items-center gap-3">
-             <div class="w-10 h-10 bg-stone-200 rounded-full"></div>
-             <div>
-               <div class="font-bold text-sm text-stone-900">Name Pending</div>
-               <div class="text-xs text-stone-500">Localization Manager, B2B SaaS</div>
-             </div>
+        {t.home.trust.cards.map((card: { quote: string; name: string; role: string }) => (
+          <div class="p-8 border border-stone-200 bg-white shadow-sm rounded-sm">
+            <p class="text-stone-600 mb-6 italic">"{card.quote}"</p>
+            <div class="flex items-center gap-3">
+               <div class="w-10 h-10 bg-stone-200 rounded-full"></div>
+               <div>
+                 <div class="font-bold text-sm text-stone-900">{card.name}</div>
+                 <div class="text-xs text-stone-500">{card.role}</div>
+               </div>
+            </div>
           </div>
-        </div>
-        <!-- Placeholder Testimonial 2 -->
-        <div class="p-8 border border-stone-200 bg-white shadow-sm rounded-sm">
-          <p class="text-stone-600 mb-6 italic">"Awaiting real beta tester feedback on TM retrieval..."</p>
-          <div class="flex items-center gap-3">
-             <div class="w-10 h-10 bg-stone-200 rounded-full"></div>
-             <div>
-               <div class="font-bold text-sm text-stone-900">Name Pending</div>
-               <div class="text-xs text-stone-500">Head of Growth, Startup</div>
-             </div>
-          </div>
-        </div>
-        <!-- Placeholder Testimonial 3 -->
-        <div class="p-8 border border-stone-200 bg-white shadow-sm rounded-sm">
-          <p class="text-stone-600 mb-6 italic">"Awaiting real beta tester feedback on Brand Voice..."</p>
-          <div class="flex items-center gap-3">
-             <div class="w-10 h-10 bg-stone-200 rounded-full"></div>
-             <div>
-               <div class="font-bold text-sm text-stone-900">Name Pending</div>
-               <div class="text-xs text-stone-500">Lead Translator, Agency</div>
-             </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </Section>
   
-  <!-- QUALITY COMPARISON TOGGLE SECTION (Visible for now) -->
+  <!-- SECTION 4 — QUALITY COMPARATOR -->
   <Section
     id="comparison"
     data-chapter="04 — QUALITY COMPARATOR"
@@ -323,88 +264,100 @@ const homepageSchema = [
   >
     <div class="w-full">
       <div class="mb-16">
-        <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">Before & After</span>
-        <h2 class="mb-6">The Context Difference.</h2>
-        <p class="text-stone-600 max-w-2xl">Toggle between raw, context-blind APIs and Flixu's 7-layer context architecture.</p>
+        <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">{t.home.comparator.preTitle}</span>
+        <h2 class="mb-6">{t.home.comparator.h2}</h2>
+        <p class="text-stone-600 max-w-2xl">{t.home.comparator.p}</p>
       </div>
       
-      <!-- Interactive Comparison Container -->
       <TranslationComparator client:visible />
     </div>
   </Section>
 
+  <!-- SECTION 5 — MANIFESTO -->
   <Section
-    data-chapter={`06 — ${t.rail.manifesto.toUpperCase()}`}
-    class="py-32 bg-paper"
+    data-chapter={`05 — ${t.rail.manifesto.toUpperCase()}`}
+    class="py-32 border-b border-stone-200 bg-paper"
   >
     <div class="max-w-3xl mx-auto text-center">
       <span class="font-serif italic text-stone-500 text-xl mb-8 block"
-        >A note on craft.</span
+        >{t.home.manifesto.label}</span
       >
       <h2
         class="font-handwriting text-xl md:text-2xl text-stone-800 leading-relaxed mb-10"
       >
-        "Flixu wasn’t created in a boardroom. It was born on the road—somewhere
-        between client calls and spotty signal. I spent months translating for
-        clients, switching between AI tools that were fast but blind to context,
-        and human workflows that were precise but unscalable.<br /><br />
-        The frustration was clear: If translation doesn’t feel human, it doesn’t work.<br
-        /><br />
-        We built Flixu to close that gap. To build a quiet, precise workspace that
-        respects language in all its complexity."
+        "{t.home.manifesto.quote}"
       </h2>
       <div class="flex justify-center items-center gap-4">
         <div class="h-px w-12 bg-stone-300"></div>
         <span class="font-mono text-xs uppercase tracking-widest text-stone-500"
-          >The Founder</span
+          >{t.home.manifesto.signoff}</span
         >
         <div class="h-px w-12 bg-stone-300"></div>
       </div>
     </div>
   </Section>
 
-  <!-- SEO & AIO KNOWLEDGE BASE SECTION -->
-  <Section class="py-32 bg-paper border-b border-stone-200">
+  <!-- SECTION 6 — PLATFORM KNOWLEDGE / FAQ -->
+  <Section
+    data-chapter="06 — SEO & AIO KNOWLEDGE BASE"
+    class="py-32 bg-paper border-b border-stone-200"
+  >
     <div class="w-full">
-      <div class="max-w-3xl mb-16">
-        <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">Platform Overview</span>
-        <h2 class="text-3xl lg:text-4xl font-serif mb-6 text-stone-900">What is Context-Aware AI Translation?</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <!-- Left Column — Capability Breakdown -->
         <div>
-          <p class="text-stone-600 text-lg leading-relaxed mb-8">
-        Context-aware AI translation is an advanced localization methodology that analyzes the entire document structure, brand voice guidelines, and corporate glossaries before generating translated text. Unlike traditional machine translation APIs that process text sentence-by-sentence in isolation, context-aware engines like Flixu load up to seven layers of metadata into a Large Language Model (LLM) payload to ensure consistency and precision.
-          </p>
-          
-          <h3 class="font-serif text-2xl mt-8 mb-4 text-stone-900">Why Raw AI Fails at B2B Localization</h3>
-          <p class="text-stone-600 leading-relaxed mb-8">
-            Generic APIs provided by major tech companies are highly efficient for consumer translation, but they lack the stateful memory required for enterprise software deployment. When a B2B SaaS company pushes an update, the terminology must perfectly match the existing UI glossaries. Raw AI models cannot enforce these glossaries natively, leading to terminology drift and degraded user trust in international markets.
-          </p>
-
-          <h3 class="font-serif text-2xl mt-8 mb-4 text-stone-900">The Role of Translation Memory in AI</h3>
-          <p class="text-stone-600 leading-relaxed mb-8">
-            Translation Memory (TM) has been the foundation of the localization industry for decades. By combining legacy TM architecture with modern Vector Database retrieval, Flixu ensures that past human-approved translations always take precedence over AI generation. This Retrieval-Augmented Generation (RAG) approach drastically reduces the need for human review cycles, cutting localization QA time by up to 80%.
-          </p>
+          <span class="font-mono text-xs tracking-widest text-orange-700 uppercase mb-4 block">{t.home.platform.preTitle}</span>
+          <h2 class="text-3xl lg:text-4xl font-serif mb-12 text-stone-900">{t.home.platform.h2}</h2>
+          {t.home.platform.capabilities.map((cap: { h3: string; p: string; linkText: string; linkHref: string }) => (
+            <div class="mb-10">
+              <h3 class="font-serif text-2xl mt-8 mb-4 text-stone-900">{cap.h3}</h3>
+              <p class="text-stone-600 leading-relaxed mb-4">
+                {cap.p}
+              </p>
+              <a href={getLocalizedPath(cap.linkHref, lang)} class="text-orange-700 hover:text-orange-800 text-sm font-medium transition-colors">
+                → {cap.linkText}
+              </a>
+            </div>
+          ))}
         </div>
         
+        <!-- Right Column — FAQ -->
         <div>
-          <h2 class="font-serif text-3xl mb-8 mt-0 border-b border-stone-200 pb-4 text-stone-900">Frequently Asked Questions</h2>
-          <div class="space-y-6">
-            <div>
-              <h4 class="font-bold text-stone-900 mb-2 font-sans">How does Flixu preserve brand voice?</h4>
-              <p class="text-sm text-stone-600">Flixu allows organizations to define programmable brand voice profiles. These tone instructions—such as formality level, dynamic constraints, and stylistic preferences—are injected directly into the LLM context window during translation.</p>
-            </div>
-            <div>
-              <h4 class="font-bold text-stone-900 mb-2 font-sans">Which file formats does the document translator support?</h4>
-              <p class="text-sm text-stone-600">The Flixu engine supports structural layout preservation for highly technical formats including XLIFF, DOCX, Markdown, XML, and software localization files like PO/POT and iOS .strings.</p>
-            </div>
-            <div>
-              <h4 class="font-bold text-stone-900 mb-2 font-sans">Is context-aware translation faster than traditional TMS platforms?</h4>
-              <p class="text-sm text-stone-600">Yes. While legacy Translation Management Systems (TMS) require complex agency onboarding and weeks of human review, Flixu executes terminology-perfect translations in milliseconds natively within your CI/CD pipeline.</p>
-            </div>
+          <FAQSection items={faqItems} title={t.home.faq.title} />
+
+          <!-- FAQ items with optional deep links -->
+          <div class="mt-6 space-y-3">
+            {t.home.faq.items
+              .filter((item) => item.linkHref)
+              .map((item) => (
+                <a
+                  href={getLocalizedPath(item.linkHref!, lang)}
+                  class="text-orange-700 hover:text-orange-800 text-xs font-medium transition-colors block"
+                >
+                  → {item.linkText}
+                </a>
+              ))
+            }
           </div>
         </div>
       </div>
+    </div>
+  </Section>
+
+  <!-- FOOTER CTA -->
+  <Section class="py-20 bg-paper">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-stone-600 text-lg mb-6">{t.home.footerCta.text}</p>
+      <a
+        href={`${appUrl}/sign-up?plan=individual&intent=individual&interval=month`}
+        class="inline-flex items-center gap-2 px-8 py-4 rounded-sm bg-orange-700 text-white hover:bg-orange-800 transition-colors group hidden"
+      >
+        <span class="font-medium">{t.home.footerCta.cta}</span>
+        <ArrowRight
+          size={18}
+          className="group-hover:translate-x-1 transition-transform"
+        />
+      </a>
     </div>
   </Section>
 </BaseLayout>

@@ -1,0 +1,430 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "LQA — Automated Linguistic Quality Assurance | Flixu";
+const description =
+  "Flixu scores every segment across 5 LQA dimensions. Segments above threshold auto-approved. Below threshold flagged with the specific failing dimension for human review.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "LQA", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "What are the five LQA dimensions?",
+    answer:
+      "Grammar, Accuracy (meaning preservation), Terminology Consistency, Formatting (tags and placeholders), and Fluency. Each segment receives an evaluation across all five dimensions. The combined score determines whether the segment is auto-approved or routed for human review. Reviewers see which specific dimension triggered the flag — they don't need to re-evaluate the entire segment from scratch.",
+  },
+  {
+    question: "What score threshold triggers auto-approval?",
+    answer:
+      "Segments with an overall LQA score above 90, or segments that match existing Translation Memory at 99% or higher, are auto-approved without requiring human review. The threshold is configurable in project settings — teams with stricter quality requirements can raise it; teams processing high-volume low-stakes content can lower it.",
+  },
+  {
+    question: "Does LQA replace human review entirely?",
+    answer:
+      "No — and it's not designed to. LQA routes review to where it's needed, it doesn't eliminate the need for human judgment on complex, ambiguous, or culturally sensitive content. The practical effect is that reviewers spend their time on the segments that genuinely require their expertise, not on confirming that correctly translated segments are correct.",
+  },
+  {
+    question: "How does LQA differ from Translation Memory matching?",
+    answer:
+      "Translation Memory matching evaluates how similar a new source string is to previously approved translations — it's a measure of overlap with past content. LQA evaluates the quality of the freshly generated translation across five dimensions — it's a measure of output quality independent of whether the content has been translated before. Both feed into the auto-approval decision: a 99% TM match or an LQA score above 90 triggers auto-approval.",
+  },
+  {
+    question: "Does LQA work for all supported file formats?",
+    answer:
+      "Yes. LQA runs after translation, regardless of the source file format. Whether the content came from a .docx, an XLIFF file, iOS .strings, .po, JSON, or Markdown, the LQA scoring evaluates the translated segments against the same five dimensions. The Formatting dimension specifically checks that the structural elements of each file type — variables, tags, placeholders — survived the translation intact.",
+  },
+  {
+    question: "Can I see LQA scores for completed projects to track quality trends?",
+    answer:
+      "Each translated segment carries its LQA score, and flagged segments are visible in the review queue with the specific failing dimension marked. For project-level quality visibility — tracking which content types or language pairs produce more flagged segments over time — that data is accessible within the project workspace.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu LQA",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  <!-- 01 — HERO -->
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">Every segment scored. Only the exceptions reviewed.</h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Flixu's LQA layer scores every translated segment across five
+          quality dimensions automatically. Segments that clear the threshold
+          are approved without a human review step. Segments that don't are
+          routed to a reviewer with the specific failing dimension flagged.
+          You read what needs reading — not everything by default.
+        </p>
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          See the quality pipeline →
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 02 — TL;DR -->
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        label="What is Flixu LQA?"
+        text="Linguistic Quality Assurance (LQA) in Flixu is an automated scoring layer that evaluates every translated segment across five dimensions: grammar, accuracy, terminology consistency, formatting, and fluency. Segments that score above the threshold — or match your Translation Memory at 99% — are auto-approved. Segments below the threshold are flagged with the specific failing dimension and routed for human review."
+      />
+    </div>
+  </Section>
+
+  <!-- 03 — HOW IT WORKS -->
+  <Section data-chapter="03 — HOW IT WORKS" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-8">How the LQA pipeline works.</h2>
+
+      <p class="text-stone-600 leading-relaxed mb-10">
+        In a standard localization workflow, quality assurance works like this:
+        translation runs, a human reviewer reads every segment, corrects what's
+        wrong, and approves what's right. The review distributes equally across
+        all content — the five obvious errors and the 995 perfectly translated
+        strings receive the same attention. Flixu's LQA changes that
+        distribution. The scoring runs automatically after translation and
+        before any human reviewer sees the output.
+      </p>
+
+      <div class="space-y-10">
+        <!-- Step 1 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">1</div>
+          <div>
+            <h3 class="text-xl mb-3">Translation with pre-loaded constraints</h3>
+            <p class="text-stone-600 leading-relaxed">
+              The translation request runs with the glossary, brand voice, and
+              Translation Memory already loaded as constraints. The context
+              layer is applied before generation — this reduces the number of
+              segments that will fail LQA because the constraints that govern
+              quality were already present when the content was generated.
+            </p>
+            <p class="text-stone-500 text-sm mt-3">
+              → How the pre-translation analysis works:
+              <a href={getLocalizedPath("/product/context", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">The Context Engine</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">2</div>
+          <div>
+            <h3 class="text-xl mb-3">Automated LQA scoring across five dimensions</h3>
+            <p class="text-stone-600 leading-relaxed mb-4">
+              Every translated segment receives a score across five dimensions:
+            </p>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border border-stone-200">
+                <thead>
+                  <tr class="bg-stone-50">
+                    <th class="text-left px-4 py-3 font-semibold border-b border-stone-200">Dimension</th>
+                    <th class="text-left px-4 py-3 font-semibold border-b border-stone-200">What it evaluates</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-stone-100">
+                    <td class="px-4 py-3 font-medium">Grammar</td>
+                    <td class="px-4 py-3 text-stone-600">Grammatical correctness in the target language</td>
+                  </tr>
+                  <tr class="border-b border-stone-100">
+                    <td class="px-4 py-3 font-medium">Accuracy</td>
+                    <td class="px-4 py-3 text-stone-600">Meaning preservation — does the translation convey what the source said?</td>
+                  </tr>
+                  <tr class="border-b border-stone-100">
+                    <td class="px-4 py-3 font-medium">Terminology Consistency</td>
+                    <td class="px-4 py-3 text-stone-600">Approved glossary terms are present and correctly applied</td>
+                  </tr>
+                  <tr class="border-b border-stone-100">
+                    <td class="px-4 py-3 font-medium">Formatting</td>
+                    <td class="px-4 py-3 text-stone-600">Tags, placeholders, and variables are intact and symmetrical with the source</td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 font-medium">Fluency</td>
+                    <td class="px-4 py-3 text-stone-600">Natural reading quality in the target language</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="text-stone-600 leading-relaxed mt-4">
+              Each dimension contributes to an overall segment score. The
+              combined score determines routing.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">3</div>
+          <div>
+            <h3 class="text-xl mb-3">Routing by threshold</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Segments that score above the configured threshold, or that match
+              existing Translation Memory at 99% or higher, are auto-approved
+              without human review. Segments below the threshold are routed to
+              the review queue — not the entire document, just the specific
+              segments that need attention, with the failing dimension marked.
+            </p>
+            <p class="text-stone-500 text-sm mt-3">
+              → Auto-approval workflow:
+              <a href={getLocalizedPath("/features/auto-approval", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Auto-Approval Workflows</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 04 — CAPABILITIES -->
+  <Section data-chapter="04 — CAPABILITIES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-12">What the LQA layer catches.</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="flex flex-col gap-4">
+          <div class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+          </div>
+          <h3 class="text-xl">Terminology consistency</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Every translated segment is cross-referenced against your active
+            glossary. If an approved term appears in the source and the
+            translation doesn't use the approved target-language equivalent,
+            the segment is flagged under the Terminology Consistency dimension.
+            Reviewers see exactly which term deviated and can correct it
+            directly.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          </div>
+          <h3 class="text-xl">Formatting and variable integrity</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Tags, HTML elements, bracketed variables, and placeholders in the
+            source are verified against the translated output. A missing
+            {'{username}'} variable, an unclosed HTML tag, or a corrupted
+            placeholder causes a Formatting flag — preventing broken strings
+            from reaching your application.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+          </div>
+          <h3 class="text-xl">Accuracy and meaning preservation</h3>
+          <p class="text-stone-600 leading-relaxed">
+            The Accuracy dimension evaluates whether the translated segment
+            preserves the meaning of the source. This catches the edge case
+            where a translation is grammatically correct but has shifted
+            meaning — paraphrased a fact incorrectly, dropped a qualifying
+            clause, or introduced a negation that wasn't in the source.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.1H3"></path><path d="M21 12.1H3"></path><path d="M15.1 18H3"></path></svg>
+          </div>
+          <h3 class="text-xl">Fluency scoring</h3>
+          <p class="text-stone-600 leading-relaxed">
+            Fluency evaluates whether the output reads naturally in the target
+            language — not just whether it's correct, but whether it sounds
+            like something written in that language rather than translated into
+            it. Low fluency scores often indicate awkward constructions or
+            literal word order carried over from the source language.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 05 — WHEN THIS MATTERS MOST -->
+  <Section data-chapter="05 — USE CASES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-10">When LQA scoring changes the workflow.</h2>
+
+      <!-- Agencies -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">Agencies managing high-volume client projects</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          Translation agencies reviewing client output manually pay for the
+          review regardless of how much of it needs correction. A project where
+          95% of segments translate correctly still requires reading all of them
+          to find the 5% that don't. LQA changes the economics: the review
+          effort concentrates on the segments that failed the quality check, not
+          the full volume.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          For agencies translating at scale, that routing difference compounds
+          across clients. Teams using LQA-based review workflows typically see
+          QA cycle time drop significantly — review time concentrates on
+          exceptions, not total output.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Agency workflows:
+          <a href={getLocalizedPath("/for/agencies", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Agencies</a>
+        </p>
+      </div>
+
+      <!-- Enterprise compliance -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">Enterprise teams with compliance documentation</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          For content where terminology accuracy carries compliance weight —
+          medical device documentation, legal contracts, regulatory filings —
+          the Terminology Consistency dimension provides a systematic check on
+          every segment, not a sampling-based review. Every term deviation
+          surfaces, regardless of document length or reviewer attention level.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Legal and compliance localization:
+          <a href={getLocalizedPath("/use-cases/legal-compliance", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Legal Compliance Use Case</a>
+        </p>
+      </div>
+
+      <!-- SaaS release -->
+      <div>
+        <h3 class="text-xl mb-4">SaaS teams shipping release notes and UI updates</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          For development teams where localization runs alongside product
+          releases, manual review of every translated string adds latency to
+          the release cycle. With auto-approval configured, segments that score
+          above 90 or match TM at 99% ship without a review step. Only the edge
+          cases — new terminology, unusual constructions, low-confidence
+          segments — require human attention. The release doesn't wait for a
+          reviewer to read everything; it waits for the small set of flagged
+          segments to be addressed.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → SaaS localization workflow:
+          <a href={getLocalizedPath("/for/saas-teams", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for SaaS Teams</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 06 — FAQ -->
+  <Section
+    data-chapter="06 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- 07 — CTA -->
+  <Section data-chapter="07 — CTA" class="content-section mt-24 mb-16">
+    <div class="max-w-3xl text-center mx-auto">
+      <h2 class="mb-6">Run your first project with automated quality scoring.</h2>
+      <p class="text-stone-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+        Upload your content, configure your glossary, and see which segments
+        clear the LQA threshold automatically — and which ones need your
+        attention.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center justify-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          Start translating for free →
+        </a>
+        <a
+          href={getLocalizedPath("/features/auto-approval", lang)}
+          class="inline-flex items-center justify-center gap-2 border border-stone-300 text-stone-700 px-6 py-3 rounded-sm font-medium hover:bg-stone-50 transition-colors"
+        >
+          See how auto-approval works →
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 08 — RELATED FEATURES -->
+  <Section data-chapter="08 — RELATED" class="content-section border-t border-stone-200 pt-12 mb-16">
+    <div class="max-w-3xl">
+      <h3 class="text-sm font-mono text-stone-400 uppercase tracking-widest mb-6">Related Features</h3>
+      <ul class="space-y-3">
+        <li>
+          <a href={getLocalizedPath("/features/auto-approval", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Auto-Approval Workflows</a>
+          <span class="text-stone-500"> — How LQA scores trigger automatic approval</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/glossary-enforcement", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Glossary Enforcement</a>
+          <span class="text-stone-500"> — Terminology constraints that feed the Terminology Consistency dimension</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/translation-memory", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Translation Memory</a>
+          <span class="text-stone-500"> — How TM matching combines with LQA for auto-approval</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/product/context", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">The Context Engine</a>
+          <span class="text-stone-500"> — Pre-translation constraints that reduce LQA flags</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/team-collaboration", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Team Collaboration</a>
+          <span class="text-stone-500"> — How review queues work with team roles</span>
+        </li>
+      </ul>
+    </div>
+  </Section>
+</BaseLayout>

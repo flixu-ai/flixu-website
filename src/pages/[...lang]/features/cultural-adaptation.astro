@@ -1,0 +1,392 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/ui/Section.astro";
+import Breadcrumbs from "../../../components/seo/Breadcrumbs.astro";
+import TldrBlock from "../../../components/seo/TldrBlock.astro";
+import FAQSection from "../../../components/seo/FAQSection.astro";
+import SchemaOrg from "../../../components/seo/SchemaOrg.astro";
+import { getLocalizedPath, locales } from "../../../i18n/utils";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } },
+    ...locales.map((lang) => ({ params: { lang } })),
+  ];
+}
+
+let { lang } = Astro.params;
+if (!lang) lang = "en";
+
+const title = "Cultural Adaptation Engine — Dates, Currencies & Measurements | Flixu";
+const description =
+  "Flixu automatically adapts currencies, measurement units, date formats, and timezone references during translation — no manual correction step required.";
+
+const breadcrumbItems = [
+  { name: "Home", url: getLocalizedPath("/", lang) },
+  { name: "Features", url: getLocalizedPath("/features", lang) },
+  { name: "Cultural Adaptation", url: Astro.url.pathname },
+];
+
+const faqs = [
+  {
+    question: "Which elements does the Cultural Adaptation Engine adapt automatically?",
+    answer:
+      "Four categories: currencies (contextual references adapted to target market conventions), measurement units (imperial to metric for European markets), date formats (MM/DD/YYYY adapted to DD/MM/YYYY for UK and European audiences), and timezone references (adapted to the target region's standard). These run automatically on every translation request — no separate configuration required.",
+  },
+  {
+    question: "Does cultural adaptation work for all 22+ supported languages?",
+    answer:
+      "Yes. Cultural adaptation runs alongside every translation request across all supported language pairs. The specific adaptation logic varies by target market — metric conversion applies for European markets, date format conversion applies for UK/European audiences, timezone adaptation is market-specific. The engine detects the target locale and applies the appropriate conversions.",
+  },
+  {
+    question: "Can I disable cultural adaptation for specific projects?",
+    answer:
+      "Yes. For content where literal accuracy takes precedence over format adaptation — legal contracts with specific numerical references, technical specifications where the original units must be preserved — you can configure the project to skip cultural adaptation. This is a project-level setting, not a global account setting.",
+  },
+  {
+    question: "Does Flixu adapt idioms and cultural metaphors automatically?",
+    answer:
+      "No. The Cultural Adaptation Engine handles format-level adaptations: currencies, measurements, date formats, and timezones. Creative adaptation of idiomatic expressions, cultural metaphors, or humor requires human editorial judgment and belongs in the review workflow. The engine handles the deterministic conversions; the judgment-dependent adaptations belong with a human reviewer.",
+  },
+  {
+    question: "What happens to explicit numerical values during currency or measurement adaptation?",
+    answer:
+      "Measurement values are converted: a specification of '10 miles' in English source content becomes '16 km' in a European-market translation. For currency contexts, the adaptation handles the surrounding conventions — the engine does not modify explicit quoted prices in your content unless the surrounding context makes the currency reference ambiguous. For products with explicit pricing, review the output to confirm the adaptation behaved as expected.",
+  },
+  {
+    question: "Is cultural adaptation a separate product or included in all plans?",
+    answer:
+      "Cultural adaptation is included in Flixu's translation pipeline — it runs alongside every translation request at no additional charge. It's part of the Pre-Translation Analysis layer, not a separate feature you enable or purchase separately.",
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "Flixu Cultural Adaptation Engine",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <SchemaOrg schema={schema} slot="schema" />
+
+  <!-- 01 — HERO -->
+  <Section data-chapter="01 — OVERVIEW" class="hero-section pb-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl">
+        <Breadcrumbs items={breadcrumbItems} />
+        <span
+          class="font-mono text-xs text-orange-700 uppercase tracking-widest mb-6 block"
+          >Feature Spotlight</span
+        >
+        <h1 class="mb-6">Translation adapts words. Cultural adaptation adapts meaning.</h1>
+        <p class="max-w-2xl text-xl text-stone-600 mb-8">
+          Dates, currencies, measurements, and timezones mean different things
+          in different markets. The Cultural Adaptation Engine handles those
+          conversions automatically alongside translation — so your German
+          audience doesn't read a Fahrenheit temperature, your French users
+          don't see an MM/DD/YYYY date, and your UK product page doesn't
+          price in dollars.
+        </p>
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          See it in action →
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 02 — TL;DR -->
+  <Section data-chapter="02 — TL;DR" class="tldr-section">
+    <div class="max-w-3xl">
+      <TldrBlock
+        label="What is the Cultural Adaptation Engine?"
+        text="The Cultural Adaptation Engine automatically adapts non-linguistic elements during translation — currencies, measurement units, date formats, and timezone references — to match the conventions of the target market. It runs alongside the translation pipeline on every request, without requiring manual adjustment per project."
+      />
+    </div>
+  </Section>
+
+  <!-- 03 — HOW IT WORKS -->
+  <Section data-chapter="03 — HOW IT WORKS" class="content-section mt-12">
+    <div class="max-w-3xl">
+      <h2 class="mb-8">How the Cultural Adaptation Engine works.</h2>
+
+      <p class="text-stone-600 leading-relaxed mb-10">
+        Localization errors that break user trust are rarely mistranslated
+        words. They're mismatched formats — a date that reads as a different
+        day in a different country, a price shown in a currency the buyer
+        doesn't use, a measurement system that requires a conversion the
+        reader shouldn't have to do. These are mechanical adaptations. They
+        don't require creative judgment. They require consistent, automatic
+        execution at the format level.
+      </p>
+
+      <div class="space-y-10">
+        <!-- Step 1 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">1</div>
+          <div>
+            <h3 class="text-xl mb-3">Currency adaptation</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Currency symbols and contextual references are adapted to the
+              target market's conventions. A US-authored document's pricing
+              context is adapted appropriately for the target region — the
+              numerical values in your content are not modified, but the
+              surrounding currency context is localized for the target audience.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">2</div>
+          <div>
+            <h3 class="text-xl mb-3">Measurement conversion</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Imperial units in source content — miles, pounds, Fahrenheit,
+              fluid ounces — are converted to metric equivalents for European
+              and other markets where metric is standard. Metric units are
+              preserved for markets that use them. The conversion runs at the
+              string level: the original value is converted and presented in
+              the target unit.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">3</div>
+          <div>
+            <h3 class="text-xl mb-3">Date format adaptation</h3>
+            <p class="text-stone-600 leading-relaxed">
+              MM/DD/YYYY (US format) is converted to DD/MM/YYYY for UK,
+              Australian, and European audiences. ISO formats are applied where
+              appropriate. This prevents the ambiguity where "03/04" reads as
+              March 4th in one market and April 3rd in another.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex gap-6">
+          <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-orange-50 text-orange-700 rounded-sm font-mono font-bold text-sm">4</div>
+          <div>
+            <h3 class="text-xl mb-3">Timezone reference adaptation</h3>
+            <p class="text-stone-600 leading-relaxed">
+              Timezone references in content — event times, scheduling
+              language, publication timestamps — are adapted to the target
+              market's regional standard. A 9 AM EST reference becomes the
+              appropriate local time for the target region where the time zone
+              is specified.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 04 — WHAT THIS REPLACES -->
+  <Section data-chapter="04 — CONTEXT" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-8">What the alternative looks like.</h2>
+
+      <p class="text-stone-600 leading-relaxed mb-6">
+        Without automated cultural adaptation, these conversions fall into one
+        of two categories: either a human reviewer catches them during QA and
+        corrects them manually, or they're missed and the final content
+        contains the source market's formats.
+      </p>
+
+      <p class="text-stone-600 leading-relaxed mb-6">
+        A German user reading a product description in metric-equivalent
+        German but with imperial measurements still has to do the conversion.
+        A French user reading "March 3rd, 2026" as "03/03/2026" in a
+        localized document may misread it without context. An e-commerce buyer
+        in the UK seeing dollar pricing on a landing page that has otherwise
+        been correctly localized receives a mixed signal.
+      </p>
+
+      <p class="text-stone-600 leading-relaxed mb-6">
+        According to CSA Research, 76% of buyers prefer to purchase in their
+        native language. Format mismatches in otherwise correct translations
+        undermine that preference — they're the detail that signals "this
+        content wasn't really built for you."
+      </p>
+
+      <p class="text-stone-600 leading-relaxed">
+        The Cultural Adaptation Engine eliminates the manual catch-and-correct
+        step for the format-level adaptations. Human review can focus on
+        linguistic quality, not unit conversion arithmetic.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 05 — WHEN THIS MATTERS MOST -->
+  <Section data-chapter="05 — USE CASES" class="content-section mt-20">
+    <div class="max-w-3xl">
+      <h2 class="mb-10">When format adaptation changes the reader experience.</h2>
+
+      <!-- E-commerce -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">E-commerce product listings</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          A product catalog localized from US English into German, French, and
+          Spanish carries measurement specs (weight, dimensions, temperature
+          ratings), pricing references, and date-stamped guarantees. Running
+          cultural adaptation alongside translation means the German version
+          arrives with metric measurements and appropriate date formats —
+          without a separate QA pass to catch mismatches. For catalogs with
+          thousands of SKUs, that automation affects every product description.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → E-commerce localization:
+          <a href={getLocalizedPath("/industries/ecommerce", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">E-Commerce Industry</a>
+        </p>
+      </div>
+
+      <!-- Marketing -->
+      <div class="mb-12">
+        <h3 class="text-xl mb-4">Global marketing campaigns</h3>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          A campaign built around a specific calendar event in the US market —
+          a launch date, a promotional window, a seasonal reference — carries
+          date and time context that needs to read correctly in each target
+          market. An event "happening March 3rd" means something specific in
+          US format; in UK format the same MM/DD/YYYY string reads differently.
+          Automatic date format adaptation eliminates the reviewer step of
+          checking every date reference for format accuracy.
+        </p>
+        <p class="text-stone-500 text-sm">
+          → Marketing team workflows:
+          <a href={getLocalizedPath("/for/global-marketing", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Flixu for Global Marketing Teams</a>
+        </p>
+      </div>
+
+      <!-- Technical docs -->
+      <div>
+        <h3 class="text-xl mb-4">Technical documentation</h3>
+        <p class="text-stone-600 leading-relaxed">
+          Product documentation that specifies operating temperatures, weight
+          limits, cable lengths, or power ratings in imperial units requires
+          conversion for European market distribution. When the documentation
+          is translated, the Cultural Adaptation Engine converts the
+          measurements automatically — no separate technical review pass
+          required for unit accuracy.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 06 — HONEST SCOPE -->
+  <Section data-chapter="06 — HONEST SCOPE" class="content-section mt-20 bg-stone-50 border-t border-b border-stone-200 py-16">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="mb-8">What cultural adaptation covers — and what it doesn't.</h2>
+
+      <p class="text-stone-600 leading-relaxed mb-6">
+        The Cultural Adaptation Engine handles format-level localization:
+        currencies, measurements, date formats, and timezones. These are
+        deterministic conversions with correct answers.
+      </p>
+
+      <p class="text-stone-600 leading-relaxed mb-6">
+        It <strong>doesn't</strong> perform creative transcreation — adapting idioms,
+        replacing culturally specific metaphors, or rewriting humor for a
+        different cultural context. A baseball analogy in English source
+        content will be translated as a baseball analogy. Whether that
+        analogy resonates with a German audience depends on the cultural
+        context of the phrase, which requires a human editor's judgment.
+      </p>
+
+      <p class="text-stone-600 leading-relaxed">
+        For projects where creative cultural adaptation is a quality
+        requirement — marketing campaigns with heavy use of idiomatic
+        language, humor-dependent copy, culturally specific references — that
+        step belongs in the human review workflow, not in the automated
+        pipeline. The Cultural Adaptation Engine handles the mechanical layer
+        so that human review time is available for the judgment-dependent
+        layer.
+      </p>
+    </div>
+  </Section>
+
+  <!-- 07 — FAQ -->
+  <Section
+    data-chapter="07 — FAQ"
+    class="content-section bg-stone-50 border-t border-stone-200 mt-24"
+  >
+    <div class="max-w-3xl mx-auto">
+      <FAQSection items={faqs} />
+    </div>
+  </Section>
+
+  <!-- 08 — CTA -->
+  <Section data-chapter="08 — CTA" class="content-section mt-24 mb-16">
+    <div class="max-w-3xl text-center mx-auto">
+      <h2 class="mb-6">See it on your own content.</h2>
+      <p class="text-stone-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+        Paste a sentence with a date, a measurement, or a currency reference
+        and translate it. The Cultural Adaptation Engine runs automatically.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={getLocalizedPath("/signup", lang)}
+          class="inline-flex items-center justify-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-sm font-medium hover:bg-orange-700 transition-colors hidden"
+        >
+          Start translating for free →
+        </a>
+        <a
+          href={getLocalizedPath("/product/context", lang)}
+          class="inline-flex items-center justify-center gap-2 border border-stone-300 text-stone-700 px-6 py-3 rounded-sm font-medium hover:bg-stone-50 transition-colors"
+        >
+          See the full analysis pipeline →
+        </a>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 09 — RELATED FEATURES -->
+  <Section data-chapter="09 — RELATED" class="content-section border-t border-stone-200 pt-12 mb-16">
+    <div class="max-w-3xl">
+      <h3 class="text-sm font-mono text-stone-400 uppercase tracking-widest mb-6">Related Features</h3>
+      <ul class="space-y-3">
+        <li>
+          <a href={getLocalizedPath("/product/context", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">The Context Engine</a>
+          <span class="text-stone-500"> — How cultural adaptation fits into the 5-dimension analysis</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/brand-voice", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Brand Voice Manager</a>
+          <span class="text-stone-500"> — Tone configuration that works alongside format adaptation</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/features/glossary-enforcement", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Glossary Enforcement</a>
+          <span class="text-stone-500"> — Terminology constraints that complement format adaptation</span>
+        </li>
+        <li>
+          <a href={getLocalizedPath("/use-cases/website-localization", lang)} class="text-orange-700 underline decoration-orange-300 hover:decoration-orange-500">Website Localization</a>
+          <span class="text-stone-500"> — Format adaptation in practice</span>
+        </li>
+      </ul>
+    </div>
+  </Section>
+</BaseLayout>

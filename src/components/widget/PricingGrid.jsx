@@ -95,7 +95,7 @@ export default function PricingGrid({ plans, enterprise }) {
 
                         <a href={planHref} className={`w-full py-3 rounded-sm text-center text-sm font-medium transition-colors ${plan.variant === 'orange' || index === 1 ? 'bg-orange-700 text-white hover:bg-orange-800' :
                                 'border border-stone-200 text-stone-900 hover:border-stone-900'
-                            } ${import.meta.env.PUBLIC_CLOSED_BETA === 'true' ? 'hidden' : ''}`}>
+                            } hidden`}>
                             {plan.cta}
                         </a>
                     </div>
@@ -124,7 +124,7 @@ export default function PricingGrid({ plans, enterprise }) {
                     data-cal-namespace="flixu-discovery-call-20-min"
                     data-cal-link="deniz-wozniak/flixu-discovery-call-20-min"
                     data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                    className={`shrink-0 px-8 py-4 bg-white border border-stone-200 text-stone-900 font-medium rounded-sm hover:-translate-y-0.5 hover:shadow-md transition-all flex items-center gap-2 ${import.meta.env.PUBLIC_CLOSED_BETA === 'true' ? 'hidden' : ''}`}
+                    className="shrink-0 px-8 py-4 bg-white border border-stone-200 text-stone-900 font-medium rounded-sm hover:-translate-y-0.5 hover:shadow-md transition-all flex items-center gap-2 hidden"
                 >
                     {enterprise.cta} <ArrowRight size={16} className="text-stone-400 group-hover:text-orange-700" />
                 </button>
