@@ -14,6 +14,7 @@ export default function PricingGrid({ plans, enterprise }) {
     const isObjectFormat = plans && !Array.isArray(plans) && plans.tabs;
     const [isYearly, setIsYearly] = useState(true);
     const [activeTab, setActiveTab] = useState(isObjectFormat ? plans.tabs[0].id : null);
+    const [utmString, setUtmString] = useState('');
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);
@@ -31,6 +32,18 @@ export default function PricingGrid({ plans, enterprise }) {
         // Dispatch initial state
         if (isObjectFormat && plans.tabs[0]) {
             handleTabChange(plans.tabs[0].id);
+        }
+
+        // Extract UTM parameters
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const utms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const out = new URLSearchParams();
+            utms.forEach(u => {
+                if (params.has(u)) out.append(u, params.get(u));
+            });
+            const str = out.toString();
+            if (str) setUtmString(`&${str}`);
         }
     }, [isObjectFormat, plans]);
 
@@ -91,7 +104,7 @@ export default function PricingGrid({ plans, enterprise }) {
                    const baseUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
                        ? 'http://localhost:3000/sign-up' 
                        : 'https://app.flixu.ai/sign-up';
-                   const planHref = `${baseUrl}?plan=${planKey}&intent=${planKey}&interval=${intervalParam}`;
+                   const planHref = `${baseUrl}?plan=${planKey}&intent=${planKey}&interval=${intervalParam}${utmString}`;
                    
                    return (
                     <div key={plan.name} className={`relative flex flex-col p-8 rounded-sm border transition-all duration-300 ${plan.variant === 'orange' || index === 1 ? 'border-orange-700 bg-[#FDFCF8] ring-1 ring-orange-700/20' :
@@ -129,9 +142,16 @@ export default function PricingGrid({ plans, enterprise }) {
                             ))}
                         </ul>
 
-                        <a href={planHref} className={`w-full py-3 rounded-sm text-center text-sm font-medium transition-colors ${plan.variant === 'orange' || index === 1 ? 'bg-orange-700 text-white hover:bg-orange-800' :
+                        <a 
+                            href={planHref} 
+                            onClick={() => {
+                                if (typeof window !== 'undefined' && window.plausible) {
+                                    window.plausible('Signup Click', { props: { plan: planKey, interval: intervalParam } });
+                                }
+                            }}
+                            className={`w-full py-3 rounded-sm text-center text-sm font-medium transition-colors ${plan.variant === 'orange' || index === 1 ? 'bg-orange-700 text-white hover:bg-orange-800' :
                                 'border border-stone-200 text-stone-900 hover:border-stone-900'
-                            } hidden`}>
+                            }`}>
                             {plan.cta}
                         </a>
                     </div>
@@ -160,7 +180,12 @@ export default function PricingGrid({ plans, enterprise }) {
                     data-cal-namespace="flixu-discovery-call-20-min"
                     data-cal-link="deniz-wozniak/flixu-discovery-call-20-min"
                     data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-                    className="shrink-0 px-8 py-4 bg-white border border-stone-200 text-stone-900 font-medium rounded-sm hover:-translate-y-0.5 hover:shadow-md transition-all flex items-center gap-2 hidden"
+                    onClick={() => {
+                        if (typeof window !== 'undefined' && window.plausible) {
+                            window.plausible('Demo Click', { props: { type: 'Enterprise' } });
+                        }
+                    }}
+                    className="shrink-0 px-8 py-4 bg-white border border-stone-200 text-stone-900 font-medium rounded-sm hover:-translate-y-0.5 hover:shadow-md transition-all flex items-center gap-2"
                 >
                     {enterprise.cta} <ArrowRight size={16} className="text-stone-400 group-hover:text-orange-700" />
                 </button>

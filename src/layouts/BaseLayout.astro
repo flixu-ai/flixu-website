@@ -131,6 +131,41 @@ const ogImageUrl = ogImage.startsWith("http") ? ogImage : `${SITE}${ogImage}`;
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init()
     </script>
+    
+    <!-- UTM Persistence for App Links -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        var params = new URLSearchParams(window.location.search);
+        var utms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'ref'];
+        var activeUtms = new URLSearchParams();
+        var hasUtms = false;
+        
+        utms.forEach(function(u) {
+          var val = params.get(u) || sessionStorage.getItem(u);
+          if (val) {
+            activeUtms.append(u, val);
+            sessionStorage.setItem(u, val);
+            hasUtms = true;
+          }
+        });
+
+        if (hasUtms) {
+          document.querySelectorAll('a').forEach(function(link) {
+            try {
+              var url = new URL(link.href);
+              if (url.hostname === 'app.flixu.ai' || url.hostname === 'localhost') {
+                utms.forEach(function(u) {
+                  if (activeUtms.has(u) && !url.searchParams.has(u)) {
+                    url.searchParams.append(u, activeUtms.get(u));
+                  }
+                });
+                link.href = url.toString();
+              }
+            } catch(e) {}
+          });
+        }
+      });
+    </script>
   </head>
   <body
     class="bg-paper text-stone-900 font-sans selection:bg-orange-100 selection:text-orange-900 overflow-x-hidden pt-20"
