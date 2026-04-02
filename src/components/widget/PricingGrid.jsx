@@ -104,7 +104,9 @@ export default function PricingGrid({ plans, enterprise }) {
                    const baseUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
                        ? 'http://localhost:3000/sign-up' 
                        : 'https://app.flixu.ai/sign-up';
-                   const planHref = `${baseUrl}?plan=${planKey}&intent=${planKey}&interval=${intervalParam}${utmString}`;
+                       
+                   const persona = (isObjectFormat && activeTab === 'dev') ? 'infra' : 'workspace';
+                   const planHref = `${baseUrl}?plan=${planKey}&persona=${persona}&interval=${intervalParam}${utmString}`;
                    
                    return (
                     <div key={plan.name} className={`relative flex flex-col p-8 rounded-sm border transition-all duration-300 ${plan.variant === 'orange' || index === 1 ? 'border-orange-700 bg-[#FDFCF8] ring-1 ring-orange-700/20' :
@@ -146,7 +148,7 @@ export default function PricingGrid({ plans, enterprise }) {
                             href={planHref} 
                             onClick={() => {
                                 if (typeof window !== 'undefined' && window.plausible) {
-                                    window.plausible('Signup Click', { props: { plan: planKey, interval: intervalParam } });
+                                    window.plausible('Signup Click', { props: { plan: planKey, interval: intervalParam, persona: persona } });
                                 }
                             }}
                             className={`w-full py-3 rounded-sm text-center text-sm font-medium transition-colors ${plan.variant === 'orange' || index === 1 ? 'bg-orange-700 text-white hover:bg-orange-800' :
